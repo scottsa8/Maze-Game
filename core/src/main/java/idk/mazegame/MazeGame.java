@@ -47,8 +47,11 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 	private int timer = 0;
 	private int MAX_FRAMES = 4;
 	private Animation<TextureRegion> animation;
-	private final float PLAYER_SPEED = 4f;
-	private final int FRAME_SPEED = 6;
+	private final float PLAYER_SPEED = 6f;
+	private final int FRAME_SPEED = 3;
+	private int lastKeyedDirection = 0;
+	private int secondlastKeyedDirection = 0;
+	private int inputDelay = 1;
 
 	@Override
 	public void create() {
@@ -106,7 +109,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 		textureRegion = textureAtlas.findRegion("playerDown", 0);
 		testSprite = new Sprite(textureRegion);
 		testSprite.setPosition(Gdx.graphics.getWidth()/2 - sprite.getWidth()/2, Gdx.graphics.getHeight()/2 - sprite.getHeight()/2);
-		testSprite.setScale(6);
+		testSprite.setScale(4);
 
 		song2.setOnCompletionListener(new Music.OnCompletionListener() {
 			@Override
@@ -140,6 +143,24 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public void render() {
+
+		if (inputDelay != 0) {
+			inputDelay--;
+			Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+			batch.begin();
+
+			batch.setProjectionMatrix(camera.combined);
+			sprite1.draw(batch);
+			testSprite.draw(batch);
+
+			batch.end();
+			return;
+		}
+
+		secondlastKeyedDirection = lastKeyedDirection;
+
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.DOWN))) {
 
 			if (timer > FRAME_SPEED) {
@@ -150,14 +171,18 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			if (currentFrame >= MAX_FRAMES)
 				currentFrame = 0;
 
-			if (currentFrame == 2)
-				testSprite.setRegion(textureAtlas.findRegion("playerLeft", 0));
+			if (secondlastKeyedDirection == 4) {
 
-			if (currentFrame == 3)
-				testSprite.setRegion(textureAtlas.findRegion("playerLeft", 2));
+				if (currentFrame == 2)
+					testSprite.setRegion(textureAtlas.findRegion("playerLeft", 0));
 
-			if (currentFrame == 0 || currentFrame == 1)
-				testSprite.setRegion(textureAtlas.findRegion("playerLeft", currentFrame));
+				if (currentFrame == 3)
+					testSprite.setRegion(textureAtlas.findRegion("playerLeft", 2));
+
+				if (currentFrame == 0 || currentFrame == 1)
+					testSprite.setRegion(textureAtlas.findRegion("playerLeft", currentFrame));
+
+			}
 
 			testSprite.translateX(-PLAYER_SPEED);
 
@@ -165,6 +190,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			playerSprite.setRegion(regions[20]);
 			camera.translate(-1f,0f);
 			timer++;
+			lastKeyedDirection = 4;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
@@ -177,14 +203,18 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			if (currentFrame >= MAX_FRAMES)
 				currentFrame = 0;
 
-			if (currentFrame == 2)
-				testSprite.setRegion(textureAtlas.findRegion("playerRight", 0));
+			if (secondlastKeyedDirection == 6) {
 
-			if (currentFrame == 3)
-				testSprite.setRegion(textureAtlas.findRegion("playerRight", 2));
+				if (currentFrame == 2)
+					testSprite.setRegion(textureAtlas.findRegion("playerRight", 0));
 
-			if (currentFrame == 0 || currentFrame == 1)
-				testSprite.setRegion(textureAtlas.findRegion("playerRight", currentFrame));
+				if (currentFrame == 3)
+					testSprite.setRegion(textureAtlas.findRegion("playerRight", 2));
+
+				if (currentFrame == 0 || currentFrame == 1)
+					testSprite.setRegion(textureAtlas.findRegion("playerRight", currentFrame));
+
+			}
 
 			testSprite.translateX(+PLAYER_SPEED);
 
@@ -192,6 +222,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			playerSprite.setRegion(regions[16]);
 			camera.translate(+1f,0f);
 			timer++;
+			lastKeyedDirection = 6;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
@@ -204,14 +235,17 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			if (currentFrame >= MAX_FRAMES)
 				currentFrame = 0;
 
-			if (currentFrame == 2)
-				testSprite.setRegion(textureAtlas.findRegion("playerDown", 0));
+			if (secondlastKeyedDirection == 2) {
 
-			if (currentFrame == 3)
-				testSprite.setRegion(textureAtlas.findRegion("playerDown", 2));
+				if (currentFrame == 2)
+					testSprite.setRegion(textureAtlas.findRegion("playerDown", 0));
 
-			if (currentFrame == 0 || currentFrame == 1)
-				testSprite.setRegion(textureAtlas.findRegion("playerDown", currentFrame));
+				if (currentFrame == 3)
+					testSprite.setRegion(textureAtlas.findRegion("playerDown", 2));
+
+				if (currentFrame == 0 || currentFrame == 1)
+					testSprite.setRegion(textureAtlas.findRegion("playerDown", currentFrame));
+			}
 
 			testSprite.translateY(-PLAYER_SPEED);
 
@@ -219,6 +253,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			playerSprite.setRegion(regions[18]);
 			camera.translate(0f,-1f);
 			timer++;
+			lastKeyedDirection = 2;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.UP) && !(Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
@@ -231,14 +266,18 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			if (currentFrame >= MAX_FRAMES)
 				currentFrame = 0;
 
-			if (currentFrame == 2)
-				testSprite.setRegion(textureAtlas.findRegion("playerUp", 0));
+			if (secondlastKeyedDirection == 8) {
 
-			if (currentFrame == 3)
-				testSprite.setRegion(textureAtlas.findRegion("playerUp", 2));
+				if (currentFrame == 2)
+					testSprite.setRegion(textureAtlas.findRegion("playerUp", 0));
 
-			if (currentFrame == 0 || currentFrame == 1)
-				testSprite.setRegion(textureAtlas.findRegion("playerUp", currentFrame));
+				if (currentFrame == 3)
+					testSprite.setRegion(textureAtlas.findRegion("playerUp", 2));
+
+				if (currentFrame == 0 || currentFrame == 1)
+					testSprite.setRegion(textureAtlas.findRegion("playerUp", currentFrame));
+
+			}
 
 			testSprite.translateY(+PLAYER_SPEED);
 
@@ -246,6 +285,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			playerSprite.setRegion(regions[14]);
 			camera.translate(0f,+1f);
 			timer++;
+			lastKeyedDirection = 8;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -272,6 +312,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			playerSprite.setRegion(regions[14]);
 			camera.translate(0f,+PLAYER_SPEED);
 			timer++;
+			lastKeyedDirection = 9;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -298,6 +339,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			playerSprite.setRegion(regions[14]);
 			camera.translate(0f,+PLAYER_SPEED);
 			timer++;
+			lastKeyedDirection = 7;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -324,6 +366,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			playerSprite.setRegion(regions[14]);
 			camera.translate(0f,+PLAYER_SPEED);
 			timer++;
+			lastKeyedDirection = 3;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -350,10 +393,12 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			playerSprite.setRegion(regions[14]);
 			camera.translate(0f,+PLAYER_SPEED);
 			timer++;
+			lastKeyedDirection = 1;
 		}
 
 
-		Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
+		//Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
+		Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		//camera.update();
@@ -370,6 +415,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 		//batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth()/2, sprite.getHeight()/2, sprite.getWidth(), sprite.getHeight(), sprite.getScaleX(), sprite.getScaleY(), sprite.getRotation() );
 		//playerSprite.draw(batch);
 		batch.end();
+		inputDelay = 1;
 	}
 
 	@Override
@@ -386,47 +432,32 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		if (keycode == Input.Keys.UP && !(keycode == Input.Keys.RIGHT || keycode == Input.Keys.LEFT)) {
-			currentFrame = 1;
-			timer = 0;
+		if (lastKeyedDirection == 8 && (secondlastKeyedDirection != 9 || secondlastKeyedDirection != 7))
 			testSprite.setRegion(textureAtlas.findRegion("playerUp", 0));
-		}
-		if (keycode == Input.Keys.DOWN) {
-			currentFrame = 1;
-			timer = 0;
-			testSprite.setRegion(textureAtlas.findRegion("playerDown", 0));
-		}
-		if (keycode == Input.Keys.LEFT) {
-			currentFrame = 1;
-			timer = 0;
-			testSprite.setRegion(textureAtlas.findRegion("playerLeft", 0));
-		}
-		if (keycode == Input.Keys.RIGHT && !(keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)) {
-			currentFrame = 1;
-			timer = 0;
-			testSprite.setRegion(textureAtlas.findRegion("playerRight", 0));
-		}
 
-		if (keycode == Input.Keys.UP && keycode == Input.Keys.RIGHT) {
-			currentFrame = 1;
-			timer = 0;
+		if (lastKeyedDirection == 2 && (secondlastKeyedDirection != 3 || secondlastKeyedDirection != 1))
+			testSprite.setRegion(textureAtlas.findRegion("playerDown", 0));
+
+		if (lastKeyedDirection == 4 && (secondlastKeyedDirection != 7 || secondlastKeyedDirection != 1))
+			testSprite.setRegion(textureAtlas.findRegion("playerLeft", 0));
+
+		if (lastKeyedDirection == 6 && (secondlastKeyedDirection != 9 || secondlastKeyedDirection != 3))
+			testSprite.setRegion(textureAtlas.findRegion("playerRight", 0));
+
+		if (lastKeyedDirection == 9 || secondlastKeyedDirection == 9)
 			testSprite.setRegion(textureAtlas.findRegion("playerRUp", 0));
-		}
-		if (keycode == Input.Keys.UP && keycode == Input.Keys.LEFT) {
-			currentFrame = 1;
-			timer = 0;
+
+		if (lastKeyedDirection == 7 || secondlastKeyedDirection == 7)
 			testSprite.setRegion(textureAtlas.findRegion("playerLUp", 0));
-		}
-		if (keycode == Input.Keys.DOWN && keycode == Input.Keys.RIGHT) {
-			currentFrame = 1;
-			timer = 0;
+
+		if (lastKeyedDirection == 3 || secondlastKeyedDirection == 3)
 			testSprite.setRegion(textureAtlas.findRegion("playerRDown", 0));
-		}
-		if (keycode == Input.Keys.DOWN && keycode == Input.Keys.LEFT) {
-			currentFrame = 1;
-			timer = 0;
+
+		if (lastKeyedDirection == 1 || secondlastKeyedDirection == 1)
 			testSprite.setRegion(textureAtlas.findRegion("playerLDown", 0));
-		}
+
+		currentFrame = 1;
+		timer = 0;
 
 		return false;
 	}
