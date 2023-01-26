@@ -14,25 +14,26 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
 
-import javax.xml.soap.Text;
-
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
 /**
- * Solving end frame for walk cycle - create an int variable which takes a value that was sent from the last direction
+ * make grid/tile-based movement
+ * make collisions
+ * make a UI
+ * make a menu
+ * make the camera move when you walk into the entrance of a new room
  *
- * dont even need to do this, cuz its gonna be tiled-based movement anyway
+ * separate stuff into classes
+ * -> put all the movement stuff, sprites, frame_counter, max_frames? into Player class
+ *
+ *
  * */
 public class MazeGame extends ApplicationAdapter implements InputProcessor {
 	private SpriteBatch batch;
-	private Sprite sprite1;
-	private Sprite playerSprite;
+	private Sprite backgroundImage;
 	private BitmapFont font;
 	private String myText;
 	private GlyphLayout layout;
-	private Texture image;
-	private TextureRegion[] regions;
-	private Sprite sprite;
 	private Sound sound;
 	private Music song1,song2;
 	private OrthographicCamera camera;
@@ -45,89 +46,77 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 	private TextureRegion textureRegion;
 	private int currentFrame = 1;
 	private int timer = 0;
-	private int MAX_FRAMES = 4;
-	private Animation<TextureRegion> animation;
+	private final int MAX_FRAMES = 4;
 	private final float PLAYER_SPEED = 6f;
 	private final int FRAME_SPEED = 3;
 	private int lastKeyedDirection = 0;
 	private int secondlastKeyedDirection = 0;
 	private int inputDelay = 1;
+	private int screenWidth;
+	private int screeenHeight;
 
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		sprite1 = new Sprite(new Texture(Gdx.files.internal("bg.png")));
-		sprite1.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
+		backgroundImage = new Sprite(new Texture(Gdx.files.internal("testRoom.png")));
+		backgroundImage.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
+
+		screenWidth = Gdx.graphics.getWidth();
+		screeenHeight = Gdx.graphics.getHeight();
 
 		float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
-//		font = new BitmapFont(Gdx.files.internal("myfont.fnt"));
-//		myText = "I took one, one cause you left me\n" + "Two, two for my family\n" + "Three, three for my heartache";
-//		layout = new GlyphLayout();
-//		layout.setText(font, myText);
-		image = new Texture("newcharSprites.png");
-		regions = new TextureRegion[80];
+		font = new BitmapFont(Gdx.files.internal("myfont.fnt"));
+		myText = "testroom";
+		layout = new GlyphLayout();
+		layout.setText(font, myText);
 
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 8; j++) {
-				regions[i*7 + j] = new TextureRegion(image, j * 16,i * 16,16,16);
-			}
-		}
-
-		animation = new Animation<TextureRegion>(0.3f,regions);
-
-		playerSprite = new Sprite(regions[18]);
-		playerSprite.setPosition(Gdx.graphics.getWidth()/2 - playerSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - playerSprite.getHeight()/2);
-		sprite = new Sprite(image);
-		sprite.setPosition(Gdx.graphics.getWidth()/2 - image.getWidth()/2, Gdx.graphics.getHeight()/2 - image.getHeight()/2.2f);
-		sprite.setScale(0.5f);
 		sound = Gdx.audio.newSound(Gdx.files.internal("firered_0001_mono.wav"));
-//		long id = sound.play();
 		song1 = Gdx.audio.newMusic(Gdx.files.internal("03 Underground.mp3"));
 		song2 = Gdx.audio.newMusic(Gdx.files.internal("27 Black Market.mp3"));
+
 		camera = new OrthographicCamera();
 //		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
-		//viewport = new FitViewport(GAME_WORLD_HEIGHT * aspectRatio, GAME_WORLD_HEIGHT, camera);
-		//viewport = new FillViewport(GAME_WORLD_HEIGHT * aspectRatio, GAME_WORLD_HEIGHT, camera);
-		viewport = new StretchViewport(GAME_WORLD_HEIGHT * aspectRatio, GAME_WORLD_HEIGHT, camera);
-		//viewport = new ExtendViewport(GAME_WORLD_WIDTH * aspectRatio, GAME_WORLD_HEIGHT, camera);
-		//viewport = new ScreenViewport(camera);
+		viewport = new ScreenViewport(camera);
 		viewport.apply();
-		camera.position.set(sprite1.getX()/2 + Gdx.graphics.getWidth()/2, sprite1.getY()/2 + Gdx.graphics.getHeight()/2,0);
-//		long ourSoundID = sound.loop(1.0f,1.0f,0.0f);
+		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 
+
+		textureAtlas = new TextureAtlas(Gdx.files.internal("charSprites.atlas"));
+		textureRegion = textureAtlas.findRegion("playerDown", 0);
+		testSprite = new Sprite(textureRegion);
+		testSprite.setPosition(Gdx.graphics.getWidth()/2 - testSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - testSprite.getHeight()/2);
+		testSprite.setScale(4f);
+
+//		long id = sound.play();
+//		long ourSoundID = sound.loop(1.0f,1.0f,0.0f);
+//
 //		Timer.schedule(new Timer.Task() {
 //			@Override
 //			public void run() {
 //				sound.pause(ourSoundID);
 //			}
 //		},10);
-
-		//song2.play();
-		//song2.setVolume(0.5f);
-
-		textureAtlas = new TextureAtlas(Gdx.files.internal("charSprites.atlas"));
-		textureRegion = textureAtlas.findRegion("playerDown", 0);
-		testSprite = new Sprite(textureRegion);
-		testSprite.setPosition(Gdx.graphics.getWidth()/2 - sprite.getWidth()/2, Gdx.graphics.getHeight()/2 - sprite.getHeight()/2);
-		testSprite.setScale(4);
-
-		song2.setOnCompletionListener(new Music.OnCompletionListener() {
-			@Override
-			public void onCompletion(Music music) {
-				song1.play();
-				song1.setVolume(0.5f);
-			}
-		});
-
-		Timer.schedule(new Timer.Task() {
-			@Override
-			public void run() {
-				if(song2.isPlaying())
-					if(song2.getPosition() >= 10.0f)
-						song2.setVolume(song2.getVolume() - 0.125f);
-			}
-		},29,1,4);
-
+//
+//		song2.play();
+//		song2.setVolume(0.5f);
+//
+//		song2.setOnCompletionListener(new Music.OnCompletionListener() {
+//			@Override
+//			public void onCompletion(Music music) {
+//				song1.play();
+//				song1.setVolume(0.5f);
+//			}
+//		});
+//
+//		Timer.schedule(new Timer.Task() {
+//			@Override
+//			public void run() {
+//				if(song2.isPlaying())
+//					if(song2.getPosition() >= 10.0f)
+//						song2.setVolume(song2.getVolume() - 0.125f);
+//			}
+//		},29,1,4);
+//
 //		sound.setVolume(id, 1.0f);
 //		sound.setPitch(id, 2.0f);
 //		sound.setPan(id, -1f, 1f);
@@ -138,7 +127,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height);
-		camera.position.set(sprite1.getX()/2 + Gdx.graphics.getWidth()/2, sprite1.getY()/2 + Gdx.graphics.getHeight()/2,0);
+		camera.position.set(backgroundImage.getX()/2 + screenWidth/2, backgroundImage.getY()/2 + screeenHeight/2,0);
 	}
 
 	@Override
@@ -146,15 +135,17 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 
 		if (inputDelay != 0) {
 			inputDelay--;
-			Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
+			//Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
+			Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 			batch.begin();
 
 			batch.setProjectionMatrix(camera.combined);
-			sprite1.draw(batch);
+			backgroundImage.draw(batch);
 			testSprite.draw(batch);
 
+			font.draw(batch, myText, 10f, screeenHeight - 10f, screenWidth, Align.topLeft, false );
 			batch.end();
 			return;
 		}
@@ -186,9 +177,6 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 
 			testSprite.translateX(-PLAYER_SPEED);
 
-			playerSprite.translateX(-1f);
-			playerSprite.setRegion(regions[20]);
-			camera.translate(-1f,0f);
 			timer++;
 			lastKeyedDirection = 4;
 		}
@@ -217,10 +205,6 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			}
 
 			testSprite.translateX(+PLAYER_SPEED);
-
-			playerSprite.translateX(+1f);
-			playerSprite.setRegion(regions[16]);
-			camera.translate(+1f,0f);
 			timer++;
 			lastKeyedDirection = 6;
 		}
@@ -248,10 +232,6 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			}
 
 			testSprite.translateY(-PLAYER_SPEED);
-
-			playerSprite.translateY(-1f);
-			playerSprite.setRegion(regions[18]);
-			camera.translate(0f,-1f);
 			timer++;
 			lastKeyedDirection = 2;
 		}
@@ -280,10 +260,6 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			}
 
 			testSprite.translateY(+PLAYER_SPEED);
-
-			playerSprite.translateY(+1f);
-			playerSprite.setRegion(regions[14]);
-			camera.translate(0f,+1f);
 			timer++;
 			lastKeyedDirection = 8;
 		}
@@ -307,10 +283,6 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 				testSprite.setRegion(textureAtlas.findRegion("playerRUp", currentFrame));
 
 			testSprite.translate(+(PLAYER_SPEED*0.707f), +(PLAYER_SPEED*0.707f));
-
-			playerSprite.translateY(+1f);
-			playerSprite.setRegion(regions[14]);
-			camera.translate(0f,+PLAYER_SPEED);
 			timer++;
 			lastKeyedDirection = 9;
 		}
@@ -334,10 +306,6 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 				testSprite.setRegion(textureAtlas.findRegion("playerLUp", currentFrame));
 
 			testSprite.translate(-(PLAYER_SPEED*0.707f), +(PLAYER_SPEED*0.707f));
-
-			playerSprite.translateY(+1f);
-			playerSprite.setRegion(regions[14]);
-			camera.translate(0f,+PLAYER_SPEED);
 			timer++;
 			lastKeyedDirection = 7;
 		}
@@ -361,10 +329,6 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 				testSprite.setRegion(textureAtlas.findRegion("playerRDown", currentFrame));
 
 			testSprite.translate(+(PLAYER_SPEED*0.707f), -(PLAYER_SPEED*0.707f));
-
-			playerSprite.translateY(+1f);
-			playerSprite.setRegion(regions[14]);
-			camera.translate(0f,+PLAYER_SPEED);
 			timer++;
 			lastKeyedDirection = 3;
 		}
@@ -388,17 +352,12 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 				testSprite.setRegion(textureAtlas.findRegion("playerLDown", currentFrame));
 
 			testSprite.translate(-(PLAYER_SPEED*0.707f), -(PLAYER_SPEED*0.707f));
-
-			playerSprite.translateY(+1f);
-			playerSprite.setRegion(regions[14]);
-			camera.translate(0f,+PLAYER_SPEED);
 			timer++;
 			lastKeyedDirection = 1;
 		}
 
-
-		//Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
-		Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
+		Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
+		//Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		//camera.update();
@@ -406,14 +365,10 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 		batch.begin();
 
 		batch.setProjectionMatrix(camera.combined);
-		sprite1.draw(batch);
+		backgroundImage.draw(batch);
 		testSprite.draw(batch);
 
-		//font.draw(batch, myText, 0, Gdx.graphics.getHeight()/2 + layout.height/2, Gdx.graphics.getWidth(), Align.center, false );
-		//batch.draw(image, Gdx.graphics.getWidth()/2 - image.getWidth()/2, Gdx.graphics.getHeight()/2 - image.getHeight()/2 ); // x 140 y 210
-		//batch.draw(regions[18], Gdx.graphics.getWidth()/2 - image.getWidth()/2, Gdx.graphics.getHeight()/2 - image.getHeight()/2);
-		//batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth()/2, sprite.getHeight()/2, sprite.getWidth(), sprite.getHeight(), sprite.getScaleX(), sprite.getScaleY(), sprite.getRotation() );
-		//playerSprite.draw(batch);
+		font.draw(batch, myText, 10f, screeenHeight - 10f, screenWidth, Align.topLeft, false );
 		batch.end();
 		inputDelay = 1;
 	}
@@ -421,8 +376,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		image.dispose();
-		sprite1.getTexture().dispose();
+		backgroundImage.getTexture().dispose();
 	}
 
 	@Override
