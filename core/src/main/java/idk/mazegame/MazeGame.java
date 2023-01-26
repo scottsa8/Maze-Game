@@ -41,6 +41,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 	private final float GAME_WORLD_HEIGHT = 900;
 	private Viewport viewport;
 
+	private Enemy e2;
 	private TextureAtlas textureAtlas;
 	private Sprite testSprite;
 	private TextureRegion textureRegion;
@@ -86,6 +87,10 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 		testSprite = new Sprite(textureRegion);
 		testSprite.setPosition(Gdx.graphics.getWidth()/2 - testSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - testSprite.getHeight()/2);
 		testSprite.setScale(4f);
+		e2 = new Enemy();
+		
+		
+
 
 //		long id = sound.play();
 //		long ourSoundID = sound.loop(1.0f,1.0f,0.0f);
@@ -144,6 +149,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 			batch.setProjectionMatrix(camera.combined);
 			backgroundImage.draw(batch);
 			testSprite.draw(batch);
+			e2.render(batch);
 
 			font.draw(batch, myText, 10f, screeenHeight - 10f, screenWidth, Align.topLeft, false );
 			batch.end();
@@ -367,6 +373,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 		batch.setProjectionMatrix(camera.combined);
 		backgroundImage.draw(batch);
 		testSprite.draw(batch);
+		e2.render(batch);
 
 		font.draw(batch, myText, 10f, screeenHeight - 10f, screenWidth, Align.topLeft, false );
 		batch.end();
