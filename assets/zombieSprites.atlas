@@ -7,84 +7,84 @@ repeat: none
 zombieDown
   rotate: false
   xy: 2, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 0
 zombieDown
   rotate: false
   xy: 138, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 2
 zombieDown
   rotate: false
   xy: 274, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 1
 zombieLeft
   rotate: false
   xy: 104, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 1
 zombieLeft
   rotate: false
   xy: 240, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 0
 zombieLeft
   rotate: false
   xy: 376, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 2
 zombieRight
   rotate: false
   xy: 36, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 2
 zombieRight
   rotate: false
   xy: 172, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 1
 zombieRight
   rotate: false
   xy: 342, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 0
 zombieUp
   rotate: false
   xy: 70, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 1
 zombieUp
   rotate: false
   xy: 206, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 0
 zombieUp
   rotate: false
   xy: 308, 2
-  size: 32, 48
-  orig: 32, 48
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 2
