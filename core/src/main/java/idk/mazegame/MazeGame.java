@@ -1,9 +1,6 @@
 package idk.mazegame;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -28,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.*;
  *
  *
  * */
-public class MazeGame extends ApplicationAdapter implements InputProcessor {
+public class MazeGame extends Game implements InputProcessor {
 	private SpriteBatch batch;
 	private Sprite backgroundImage;
 	private BitmapFont font;
@@ -42,6 +39,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 	private Viewport viewport;
 
 	private Enemy e2;
+	private Player player;
 	private TextureAtlas textureAtlas;
 	private Sprite testSprite;
 	private TextureRegion textureRegion;
@@ -54,16 +52,17 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 	private int secondlastKeyedDirection = 0;
 	private int inputDelay = 1;
 	private int screenWidth;
-	private int screeenHeight;
+	private int screenHeight;
 
 	@Override
 	public void create() {
+		//setScreen(new PlayScreen());
 		batch = new SpriteBatch();
 		backgroundImage = new Sprite(new Texture(Gdx.files.internal("testRoom.png")));
 		backgroundImage.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
 
 		screenWidth = Gdx.graphics.getWidth();
-		screeenHeight = Gdx.graphics.getHeight();
+		screenHeight = Gdx.graphics.getHeight();
 
 		float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
 		font = new BitmapFont(Gdx.files.internal("myfont.fnt"));
@@ -84,9 +83,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 
 		textureAtlas = new TextureAtlas(Gdx.files.internal("charSprites.atlas"));
 		textureRegion = textureAtlas.findRegion("playerDown", 0);
-		testSprite = new Sprite(textureRegion);
-		testSprite.setPosition(Gdx.graphics.getWidth()/2 - testSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - testSprite.getHeight()/2);
-		testSprite.setScale(4f);
+		player = new Player();
 		e2 = new Enemy();
 		
 		
@@ -132,7 +129,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height);
-		camera.position.set(backgroundImage.getX()/2 + screenWidth/2, backgroundImage.getY()/2 + screeenHeight/2,0);
+		camera.position.set(backgroundImage.getX()/2 + screenWidth/2, backgroundImage.getY()/2 + screenHeight/2,0);
 	}
 
 	@Override
@@ -148,219 +145,32 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 
 			batch.setProjectionMatrix(camera.combined);
 			backgroundImage.draw(batch);
-			testSprite.draw(batch);
 			e2.render(batch);
+			player.getPlayerSprite().draw(batch);
 
-			font.draw(batch, myText, 10f, screeenHeight - 10f, screenWidth, Align.topLeft, false );
+			font.draw(batch, myText, 10f, screenHeight - 10f, screenWidth, Align.topLeft, false );
 			batch.end();
+			super.render();
 			return;
 		}
 
-		secondlastKeyedDirection = lastKeyedDirection;
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.DOWN)))
+			player.walk(4);
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.LEFT)))
+			player.walk(6);
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.LEFT)))
+			player.walk(2);
+		if (Gdx.input.isKeyPressed(Input.Keys.UP) && !(Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.LEFT)))
+			player.walk(8);
+		if (Gdx.input.isKeyPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !(Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.LEFT)))
+			player.walk(9);
+		if (Gdx.input.isKeyPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.LEFT) && !(Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)))
+			player.walk(7);
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.LEFT)))
+			player.walk(3);
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && Gdx.input.isKeyPressed(Input.Keys.LEFT) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)))
+			player.walk(1);
 
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.DOWN))) {
-
-			if (timer > FRAME_SPEED) {
-				currentFrame++;
-				timer = 0;
-			}
-
-			if (currentFrame >= MAX_FRAMES)
-				currentFrame = 0;
-
-			if (secondlastKeyedDirection == 4) {
-
-				if (currentFrame == 2)
-					testSprite.setRegion(textureAtlas.findRegion("playerLeft", 0));
-
-				if (currentFrame == 3)
-					testSprite.setRegion(textureAtlas.findRegion("playerLeft", 2));
-
-				if (currentFrame == 0 || currentFrame == 1)
-					testSprite.setRegion(textureAtlas.findRegion("playerLeft", currentFrame));
-
-			}
-
-			testSprite.translateX(-PLAYER_SPEED);
-
-			timer++;
-			lastKeyedDirection = 4;
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
-
-			if (timer > FRAME_SPEED) {
-				currentFrame++;
-				timer = 0;
-			}
-
-			if (currentFrame >= MAX_FRAMES)
-				currentFrame = 0;
-
-			if (secondlastKeyedDirection == 6) {
-
-				if (currentFrame == 2)
-					testSprite.setRegion(textureAtlas.findRegion("playerRight", 0));
-
-				if (currentFrame == 3)
-					testSprite.setRegion(textureAtlas.findRegion("playerRight", 2));
-
-				if (currentFrame == 0 || currentFrame == 1)
-					testSprite.setRegion(textureAtlas.findRegion("playerRight", currentFrame));
-
-			}
-
-			testSprite.translateX(+PLAYER_SPEED);
-			timer++;
-			lastKeyedDirection = 6;
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
-
-			if (timer > FRAME_SPEED) {
-				currentFrame++;
-				timer = 0;
-			}
-
-			if (currentFrame >= MAX_FRAMES)
-				currentFrame = 0;
-
-			if (secondlastKeyedDirection == 2) {
-
-				if (currentFrame == 2)
-					testSprite.setRegion(textureAtlas.findRegion("playerDown", 0));
-
-				if (currentFrame == 3)
-					testSprite.setRegion(textureAtlas.findRegion("playerDown", 2));
-
-				if (currentFrame == 0 || currentFrame == 1)
-					testSprite.setRegion(textureAtlas.findRegion("playerDown", currentFrame));
-			}
-
-			testSprite.translateY(-PLAYER_SPEED);
-			timer++;
-			lastKeyedDirection = 2;
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.UP) && !(Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
-
-			if (timer > FRAME_SPEED) {
-				currentFrame++;
-				timer = 0;
-			}
-
-			if (currentFrame >= MAX_FRAMES)
-				currentFrame = 0;
-
-			if (secondlastKeyedDirection == 8) {
-
-				if (currentFrame == 2)
-					testSprite.setRegion(textureAtlas.findRegion("playerUp", 0));
-
-				if (currentFrame == 3)
-					testSprite.setRegion(textureAtlas.findRegion("playerUp", 2));
-
-				if (currentFrame == 0 || currentFrame == 1)
-					testSprite.setRegion(textureAtlas.findRegion("playerUp", currentFrame));
-
-			}
-
-			testSprite.translateY(+PLAYER_SPEED);
-			timer++;
-			lastKeyedDirection = 8;
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			if (timer > FRAME_SPEED) {
-				currentFrame++;
-				timer = 0;
-			}
-
-			if (currentFrame >= MAX_FRAMES)
-				currentFrame = 0;
-
-			if (currentFrame == 2)
-				testSprite.setRegion(textureAtlas.findRegion("playerRUp", 0));
-
-			if (currentFrame == 3)
-				testSprite.setRegion(textureAtlas.findRegion("playerRUp", 2));
-
-			if (currentFrame == 0 || currentFrame == 1)
-				testSprite.setRegion(textureAtlas.findRegion("playerRUp", currentFrame));
-
-			testSprite.translate(+(PLAYER_SPEED*0.707f), +(PLAYER_SPEED*0.707f));
-			timer++;
-			lastKeyedDirection = 9;
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			if (timer > FRAME_SPEED) {
-				currentFrame++;
-				timer = 0;
-			}
-
-			if (currentFrame >= MAX_FRAMES)
-				currentFrame = 0;
-
-			if (currentFrame == 2)
-				testSprite.setRegion(textureAtlas.findRegion("playerLUp", 0));
-
-			if (currentFrame == 3)
-				testSprite.setRegion(textureAtlas.findRegion("playerLUp", 2));
-
-			if (currentFrame == 0 || currentFrame == 1)
-				testSprite.setRegion(textureAtlas.findRegion("playerLUp", currentFrame));
-
-			testSprite.translate(-(PLAYER_SPEED*0.707f), +(PLAYER_SPEED*0.707f));
-			timer++;
-			lastKeyedDirection = 7;
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			if (timer > FRAME_SPEED) {
-				currentFrame++;
-				timer = 0;
-			}
-
-			if (currentFrame >= MAX_FRAMES)
-				currentFrame = 0;
-
-			if (currentFrame == 2)
-				testSprite.setRegion(textureAtlas.findRegion("playerRDown", 0));
-
-			if (currentFrame == 3)
-				testSprite.setRegion(textureAtlas.findRegion("playerRDown", 2));
-
-			if (currentFrame == 0 || currentFrame == 1)
-				testSprite.setRegion(textureAtlas.findRegion("playerRDown", currentFrame));
-
-			testSprite.translate(+(PLAYER_SPEED*0.707f), -(PLAYER_SPEED*0.707f));
-			timer++;
-			lastKeyedDirection = 3;
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			if (timer > FRAME_SPEED) {
-				currentFrame++;
-				timer = 0;
-			}
-
-			if (currentFrame >= MAX_FRAMES)
-				currentFrame = 0;
-
-			if (currentFrame == 2)
-				testSprite.setRegion(textureAtlas.findRegion("playerLDown", 0));
-
-			if (currentFrame == 3)
-				testSprite.setRegion(textureAtlas.findRegion("playerLDown", 2));
-
-			if (currentFrame == 0 || currentFrame == 1)
-				testSprite.setRegion(textureAtlas.findRegion("playerLDown", currentFrame));
-
-			testSprite.translate(-(PLAYER_SPEED*0.707f), -(PLAYER_SPEED*0.707f));
-			timer++;
-			lastKeyedDirection = 1;
-		}
 
 		Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
 		//Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
@@ -372,18 +182,21 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 
 		batch.setProjectionMatrix(camera.combined);
 		backgroundImage.draw(batch);
-		testSprite.draw(batch);
 		e2.render(batch);
+		player.getPlayerSprite().draw(batch);
 
-		font.draw(batch, myText, 10f, screeenHeight - 10f, screenWidth, Align.topLeft, false );
+		font.draw(batch, myText, 10f, screenHeight - 10f, screenWidth, Align.topLeft, false );
 		batch.end();
 		inputDelay = 1;
+		super.render();
+
 	}
 
 	@Override
 	public void dispose() {
 		batch.dispose();
 		backgroundImage.getTexture().dispose();
+		player.dispose();
 	}
 
 	@Override
@@ -393,32 +206,7 @@ public class MazeGame extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		if (lastKeyedDirection == 8 && (secondlastKeyedDirection != 9 || secondlastKeyedDirection != 7))
-			testSprite.setRegion(textureAtlas.findRegion("playerUp", 0));
-
-		if (lastKeyedDirection == 2 && (secondlastKeyedDirection != 3 || secondlastKeyedDirection != 1))
-			testSprite.setRegion(textureAtlas.findRegion("playerDown", 0));
-
-		if (lastKeyedDirection == 4 && (secondlastKeyedDirection != 7 || secondlastKeyedDirection != 1))
-			testSprite.setRegion(textureAtlas.findRegion("playerLeft", 0));
-
-		if (lastKeyedDirection == 6 && (secondlastKeyedDirection != 9 || secondlastKeyedDirection != 3))
-			testSprite.setRegion(textureAtlas.findRegion("playerRight", 0));
-
-		if (lastKeyedDirection == 9 || secondlastKeyedDirection == 9)
-			testSprite.setRegion(textureAtlas.findRegion("playerRUp", 0));
-
-		if (lastKeyedDirection == 7 || secondlastKeyedDirection == 7)
-			testSprite.setRegion(textureAtlas.findRegion("playerLUp", 0));
-
-		if (lastKeyedDirection == 3 || secondlastKeyedDirection == 3)
-			testSprite.setRegion(textureAtlas.findRegion("playerRDown", 0));
-
-		if (lastKeyedDirection == 1 || secondlastKeyedDirection == 1)
-			testSprite.setRegion(textureAtlas.findRegion("playerLDown", 0));
-
-		currentFrame = 1;
-		timer = 0;
+		player.idle();
 
 		return false;
 	}
