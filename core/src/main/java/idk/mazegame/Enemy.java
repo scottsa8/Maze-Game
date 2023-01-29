@@ -10,8 +10,8 @@ public class Enemy {
     private Sprite enemySprite;
 
     public Enemy() {
-        textureAtlas = new TextureAtlas(Gdx.files.internal("player1Sprites.atlas"));
-        enemySprite = new Sprite(textureAtlas.findRegion("playerDown",0));
+        textureAtlas = new TextureAtlas(Gdx.files.internal("zombieSprites.atlas"));
+        enemySprite = new Sprite(textureAtlas.findRegion("zombieDown",0));
         enemySprite.setPosition(Gdx.graphics.getWidth()/2 - enemySprite.getWidth()/2, Gdx.graphics.getHeight()/2 - enemySprite.getHeight()/2);
         enemySprite.setScale(4f);
        
