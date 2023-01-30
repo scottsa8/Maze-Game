@@ -2,6 +2,7 @@ package idk.mazegame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,17 +17,18 @@ public class Player {
     private int timer = 0;
     private int lastKeyedDirection = 0;
     private int secondlastKeyedDirection = 0;
-
+    private int up = Input.Keys.UP,down = Input.Keys.DOWN,left = Input.Keys.LEFT,right = Input.Keys.RIGHT;
+    private boolean inputIsLocked; // to use for certain where player input is disabled: tile-based movement, cutscenes, stamina, debuff
 
     private final int MAX_FRAMES = 4;
-    private final float PLAYER_SPEED = 6f;
+    private final float PLAYER_SPEED = 2f;
     private final int FRAME_SPEED = 3;
 
-    public Player() {
-        textureAtlas = new TextureAtlas(Gdx.files.internal("player1Sprites.atlas"));
+    public Player(FileHandle atlasfile) {
+        textureAtlas = new TextureAtlas(atlasfile);
         playerSprite = new Sprite(textureAtlas.findRegion("playerDown",0));
         playerSprite.setPosition(Gdx.graphics.getWidth()/2 - playerSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - playerSprite.getHeight()/2);
-        playerSprite.setScale(4f);
+        //playerSprite.setScale(4f);
     }
 
     public void walk(int direction) {
@@ -177,16 +179,16 @@ public class Player {
     }
 
     public void idle() {
-        if (lastKeyedDirection == 8 && (secondlastKeyedDirection != 9 || secondlastKeyedDirection != 7))
+        if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
             playerSprite.setRegion(textureAtlas.findRegion("playerUp", 0));
 
-        if (lastKeyedDirection == 2 && (secondlastKeyedDirection != 3 || secondlastKeyedDirection != 1))
+        if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
             playerSprite.setRegion(textureAtlas.findRegion("playerDown", 0));
 
-        if (lastKeyedDirection == 4 && (secondlastKeyedDirection != 7 || secondlastKeyedDirection != 1))
+        if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
             playerSprite.setRegion(textureAtlas.findRegion("playerLeft", 0));
 
-        if (lastKeyedDirection == 6 && (secondlastKeyedDirection != 9 || secondlastKeyedDirection != 3))
+        if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
             playerSprite.setRegion(textureAtlas.findRegion("playerRight", 0));
 
         if (lastKeyedDirection == 9 || secondlastKeyedDirection == 9)
@@ -206,6 +208,25 @@ public class Player {
 
     }
 
+    public void checkInput() {
+        if (Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(down)))
+            walk(4);
+        if (Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left)))
+            walk(6);
+        if (Gdx.input.isKeyPressed(down) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(left)))
+            walk(2);
+        if (Gdx.input.isKeyPressed(up) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(left)))
+            walk(8);
+        if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left)))
+            walk(9);
+        if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(right)))
+            walk(7);
+        if (Gdx.input.isKeyPressed(down) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(left)))
+            walk(3);
+        if (Gdx.input.isKeyPressed(down) && Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right)))
+            walk(1);
+    }
+
     public void dispose() {
         textureAtlas.dispose();
         playerSprite.getTexture().dispose();
@@ -217,5 +238,37 @@ public class Player {
 
     public void setPlayerSprite(Sprite playerSprite) {
         this.playerSprite = playerSprite;
+    }
+
+    public int getUp() {
+        return up;
+    }
+
+    public void setUp(int up) {
+        this.up = up;
+    }
+
+    public int getDown() {
+        return down;
+    }
+
+    public void setDown(int down) {
+        this.down = down;
+    }
+
+    public int getLeft() {
+        return left;
+    }
+
+    public void setLeft(int left) {
+        this.left = left;
+    }
+
+    public int getRight() {
+        return right;
+    }
+
+    public void setRight(int right) {
+        this.right = right;
     }
 }
