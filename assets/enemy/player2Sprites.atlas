@@ -32,28 +32,28 @@ playerDown
   orig: 16, 16
   offset: 0, 0
   index: 0
-playerLDown
+playerRDown
   rotate: false
   xy: 20, 74
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
-playerLDown
+playerRDown
   rotate: false
   xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
-playerLDown
+playerRDown
   rotate: false
   xy: 74, 92
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
-playerLDown
+playerRDown
   rotate: false
   xy: 74, 74
   size: 16, 16
@@ -116,28 +116,28 @@ playerLeft
   orig: 16, 16
   offset: 0, 0
   index: 2
-playerRDown
+playerLDown
   rotate: false
   xy: 56, 110
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
-playerRDown
+playerLDown
   rotate: false
   xy: 20, 38
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
-playerRDown
+playerLDown
   rotate: false
   xy: 56, 74
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
-playerRDown
+playerLDown
   rotate: false
   xy: 92, 92
   size: 16, 16
@@ -185,7 +185,7 @@ playerRight
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 4
+  index: 3
 playerRight
   rotate: false
   xy: 56, 92
