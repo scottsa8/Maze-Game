@@ -21,4 +21,11 @@ public class Enemy {
         enemySprite.draw(b);
     }
    
+    public Sprite getEnemySprite() {
+        return enemySprite;
+    }
+
+    public void setEnemySprite(Sprite enemySprite) {
+        this.enemySprite = enemySprite;
+    }
 }
