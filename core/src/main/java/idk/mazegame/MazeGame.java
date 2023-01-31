@@ -1,5 +1,7 @@
 package idk.mazegame;
 
+import java.time.ZonedDateTime;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -7,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.Random;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -41,7 +44,9 @@ public class MazeGame extends Game implements InputProcessor {
 	private OrthographicCamera camera;
 	private Viewport viewport;
 
-	private Enemy e2;
+	private int amount;
+	private int max=8,min=4;
+	private Enemy zombies[];
 	private Player player, player2;
 	private TiledMap map;
 	private IsometricTiledMapRenderer renderer;
@@ -106,8 +111,20 @@ public class MazeGame extends Game implements InputProcessor {
 		player2.setLeft(Input.Keys.A);
 		player2.setDown(Input.Keys.S);
 		player2.setRight(Input.Keys.D);
-		e2 = new Enemy();
-		e2.getEnemySprite().setPosition(128,0);
+
+		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
+		zombies = new Enemy[amount];
+		for(int i=0;i<amount;i++)
+		{
+			int x = (int)Math.floor(Math.random() *(50 - 0 + 1) + 0); //random numbers for x and y offsets
+			int y = (int)Math.floor(Math.random() *(50 - 0 + 1) + 0);
+			zombies[i] = new Enemy(Gdx.files.internal("zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
+			zombies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
+			zombies[i].getEnemySprite().setPosition(275+x,-64+y); //this needs adjusting so they spawn in the board
+			System.out.println(zombies[i].getEnemySprite().getX()+"Y:"+zombies[i].getEnemySprite().getY()); //prints x and Y for debugging
+		}
+		
+
 
 		song1.setLooping(true);
 		song1.play();
@@ -171,7 +188,11 @@ public class MazeGame extends Game implements InputProcessor {
 
 			//renderer.getBatch().setProjectionMatrix(camera.combined);
 			//backgroundImage.draw(renderer.getBatch());
-			e2.render((SpriteBatch) renderer.getBatch());
+			for(int i=0;i<amount;i++)
+			{
+				zombies[i].getEnemySprite().draw(renderer.getBatch());
+			}
+
 			player2.getPlayerSprite().draw(renderer.getBatch());
 			player.getPlayerSprite().draw(renderer.getBatch());
 
@@ -195,7 +216,10 @@ public class MazeGame extends Game implements InputProcessor {
 
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
 		//backgroundImage.draw(renderer.getBatch());
-		e2.render((SpriteBatch) renderer.getBatch());
+		for(int i=0;i<amount;i++)
+			{
+				zombies[i].getEnemySprite().draw(renderer.getBatch());
+			}
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
 
