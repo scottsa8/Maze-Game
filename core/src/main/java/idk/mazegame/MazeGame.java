@@ -1,23 +1,26 @@
 package idk.mazegame;
 
-import java.time.ZonedDateTime;
-
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.ai.steer.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.Random;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
-//import idk.mazegame.screens.PlayScreen;
+import idk.mazegame.screens.PlayScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -47,14 +50,20 @@ public class MazeGame extends Game implements InputProcessor {
 	private int amount;
 	private int max=8,min=4;
 	private Enemy zombies[];
+
 	private Player player, player2;
 	private TiledMap map;
 	private IsometricTiledMapRenderer renderer;
+	private TiledMapTileLayer entityLayer;
+	private TiledMapTileLayer floorLayer;
+	private StaticTiledMapTile tile;
+	private Vector3 tmpCoords; //buffer
 	private final float GAME_WORLD_WIDTH = 1600;
 	private final float GAME_WORLD_HEIGHT = 900;
-	private int inputDelay = 1;
-	private int screenWidth;
-	private int screenHeight;
+	private final int MAX_INPUT_DELAY = 1;
+	private int inputDelay = MAX_INPUT_DELAY;
+	private int screenWidth, screenHeight, playerX, playerY;
+	private int logDelay = 60;
 
 	@Override
 	public void create() {
@@ -62,15 +71,17 @@ public class MazeGame extends Game implements InputProcessor {
 
 		map =  new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
-		TiledMapTileLayer entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
-		TiledMapTileLayer floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-		//entityLayer.
-		//entityLayer.getCell(,).getTile().getId()
+		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
+		floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
+		tile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("tileSprites.png")),32,32,16,16));
+
+		floorLayer.getCell(23, 7).setTile(tile);
+		floorLayer.getCell(24, 8).setTile(tile);
 
 
 		batch = new SpriteBatch();
-		backgroundImage = new Sprite(new Texture(Gdx.files.internal("testRoom.png")));
-		backgroundImage.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
+//		backgroundImage = new Sprite(new Texture(Gdx.files.internal("testRoom.png")));
+//		backgroundImage.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
 
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
@@ -99,18 +110,23 @@ public class MazeGame extends Game implements InputProcessor {
 //		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
 		viewport = new ScreenViewport(camera);
 		viewport.apply();
-		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
+//		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
+		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
 		camera.zoom = 0.25f;
 
 		player = new Player(Gdx.files.internal("player1Sprites.atlas"));
 		player2 = new Player(Gdx.files.internal("enemy/player2Sprites.atlas"));
-		player.getPlayerSprite().setPosition(310,-64);
+		player.getPlayerSprite().setPosition(310,-64); //310, -64  [10px left, goes left 1 tile 10 px up, goes up 2 tiles]
 		player2.getPlayerSprite().setPosition(290,-64);
 		player2.setUp(Input.Keys.W);
 		player2.setLeft(Input.Keys.A);
 		player2.setDown(Input.Keys.S);
 		player2.setRight(Input.Keys.D);
+		player.setCoordinates(new Vector3(24,8,0));
+		player2.setCoordinates(new Vector3(23,7,0));
+		//e2 = new Enemy();
+		//e2.getEnemySprite().setPosition(128,0);
 
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
 		zombies = new Enemy[amount];
@@ -123,11 +139,10 @@ public class MazeGame extends Game implements InputProcessor {
 			zombies[i].getEnemySprite().setPosition(275+x,-64+y); //this needs adjusting so they spawn in the board
 			System.out.println(zombies[i].getEnemySprite().getX()+"Y:"+zombies[i].getEnemySprite().getY()); //prints x and Y for debugging
 		}
-		
-
 
 		song1.setLooping(true);
 		song1.play();
+		song1.setVolume(0.5f);
 
 //		long id = sound.play();
 //		long ourSoundID = sound.loop(1.0f,1.0f,0.0f);
@@ -169,66 +184,61 @@ public class MazeGame extends Game implements InputProcessor {
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height);
-		camera.position.set(backgroundImage.getX()/2 + screenWidth/2, backgroundImage.getY()/2 + screenHeight/2,0);
+//		camera.position.set(backgroundImage.getX()/2 + screenWidth/2, backgroundImage.getY()/2 + screenHeight/2,0);
 		camera.position.set(304, -48,0);
 	}
 
 	@Override
 	public void render() {
 
-		if (inputDelay != 0) {
-			inputDelay--;
-			//Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
-			Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-			renderer.setView(camera);
-			renderer.render();
-			renderer.getBatch().begin();
-
-			//renderer.getBatch().setProjectionMatrix(camera.combined);
-			//backgroundImage.draw(renderer.getBatch());
-			for(int i=0;i<amount;i++)
-			{
-				zombies[i].getEnemySprite().draw(renderer.getBatch());
-			}
-
-			player2.getPlayerSprite().draw(renderer.getBatch());
-			player.getPlayerSprite().draw(renderer.getBatch());
-
-			font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
-			renderer.getBatch().end();
-			super.render();
-
-			return;
+		if (inputDelay < 0) {
+			inputDelay = MAX_INPUT_DELAY;
+			player.checkInput(floorLayer, entityLayer);
+			// change this to update - pass in map to get floorLayer and entityLayer
+			// dont worry about Z rendering just yet
+			player2.checkInput(floorLayer, entityLayer);
+			//return;
 		}
 
-		player.checkInput();
-		player2.checkInput();
+		// redundant code - converted screen coordinates to isometric grid coordinates, no longer using this method
+		//if (logDelay == 0) {
+			//Gdx.app.log("grid pos player X", String.valueOf((int) ((camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).x / floorLayer.getTileWidth() + camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).y / floorLayer.getTileHeight()) * 3.45f - 49)));
+			//Gdx.app.log("grid pos player Y", String.valueOf((int) -((camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).y/floorLayer.getTileHeight() - camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).x/ floorLayer.getTileWidth()) * 3.45f - 4)));
+			//playerX = (int) ((camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).x / floorLayer.getTileWidth() + camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).y / floorLayer.getTileHeight()) * 3.45f - 49);
+			//playerY = (int) -((camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).y/floorLayer.getTileHeight() - camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).x/ floorLayer.getTileWidth()) * 3.45f - 4);
+			//logDelay = 40;
+		//}
+
+		try{
+			floorLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tile);
+		}
+		catch (NullPointerException e){
+			Gdx.app.log("Block:", "null");
+		}
 
 		Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
 		//Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		//camera.update();
+		renderer.setView(camera);
 		renderer.render();
 		renderer.getBatch().begin();
 
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
 		//backgroundImage.draw(renderer.getBatch());
 		for(int i=0;i<amount;i++)
-			{
-				zombies[i].getEnemySprite().draw(renderer.getBatch());
-			}
+		{
+			zombies[i].getEnemySprite().draw(renderer.getBatch());
+		}
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
 
 		//font.draw(renderer.getBatch(), myText, 10f, screenHeight - 10f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		renderer.getBatch().end();
-		inputDelay = 1;
+		inputDelay--;
 		super.render();
-
 
 	}
 
