@@ -20,7 +20,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
-import idk.mazegame.screens.PlayScreen;
+//import idk.mazegame.screens.PlayScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -49,7 +49,7 @@ public class MazeGame extends Game implements InputProcessor {
 
 	private int amount;
 	private int max=8,min=4;
-	private Enemy zombies[];
+	private Enemy enemies[];
 
 	private Player player, player2;
 	private TiledMap map;
@@ -65,6 +65,7 @@ public class MazeGame extends Game implements InputProcessor {
 	private int screenWidth, screenHeight, playerX, playerY;
 	private int logDelay = 60;
 
+
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
@@ -73,7 +74,7 @@ public class MazeGame extends Game implements InputProcessor {
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
 		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
 		floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-		tile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("tileSprites.png")),32,32,16,16));
+		tile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("tiledmaps/tileSprites.png")),32,32,16,16));
 
 		floorLayer.getCell(23, 7).setTile(tile);
 		floorLayer.getCell(24, 8).setTile(tile);
@@ -96,15 +97,15 @@ public class MazeGame extends Game implements InputProcessor {
 //		BitmapFont font32 = generator.generateFont(parameter); // font size 32
 //		generator.dispose(); // don't forget to dispose to avoid memory leaks!
 
-		font = new BitmapFont(Gdx.files.internal("myfont.fnt"));
+		font = new BitmapFont(Gdx.files.internal("UI/myfont.fnt"));
 		font.getData().setScale(0.4f);
 		myText = "testroom";
 		layout = new GlyphLayout();
 		layout.setText(font, myText);
 
-		sound = Gdx.audio.newSound(Gdx.files.internal("firered_0001_mono.wav"));
-		song1 = Gdx.audio.newMusic(Gdx.files.internal("JRPG_town_loop.ogg"));
-		song2 = Gdx.audio.newMusic(Gdx.files.internal("27 Black Market.mp3"));
+		sound = Gdx.audio.newSound(Gdx.files.internal("sound/firered_0001_mono.wav"));
+		song1 = Gdx.audio.newMusic(Gdx.files.internal("sound/JRPG_town_loop.ogg"));
+		song2 = Gdx.audio.newMusic(Gdx.files.internal("sound/27 Black Market.mp3"));
 
 		camera = new OrthographicCamera();
 //		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
@@ -115,8 +116,8 @@ public class MazeGame extends Game implements InputProcessor {
 		camera.position.set(304, -48,0);
 		camera.zoom = 0.25f;
 
-		player = new Player(Gdx.files.internal("player1Sprites.atlas"));
-		player2 = new Player(Gdx.files.internal("enemy/player2Sprites.atlas"));
+		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
+		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
 		player.getPlayerSprite().setPosition(310,-64); //310, -64  [10px left, goes left 1 tile 10 px up, goes up 2 tiles]
 		player2.getPlayerSprite().setPosition(290,-64);
 		player2.setUp(Input.Keys.W);
@@ -127,17 +128,22 @@ public class MazeGame extends Game implements InputProcessor {
 		player2.setCoordinates(new Vector3(23,7,0));
 		//e2 = new Enemy();
 		//e2.getEnemySprite().setPosition(128,0);
+		int type = (int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
+		if(type == 3)
+		{
+			//make sure player xp > 10
 
+		}
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
-		zombies = new Enemy[amount];
+		enemies = new Enemy[amount];
 		for(int i=0;i<amount;i++)
 		{
 			int x = (int)Math.floor(Math.random() *(50 - 0 + 1) + 0); //random numbers for x and y offsets
 			int y = (int)Math.floor(Math.random() *(50 - 0 + 1) + 0);
-			zombies[i] = new Enemy(Gdx.files.internal("zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
-			zombies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
-			zombies[i].getEnemySprite().setPosition(275+x,-64+y); //this needs adjusting so they spawn in the board
-			System.out.println(zombies[i].getEnemySprite().getX()+"Y:"+zombies[i].getEnemySprite().getY()); //prints x and Y for debugging
+			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
+			enemies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
+			enemies[i].getEnemySprite().setPosition(275+x,-64+y); //this needs adjusting so they spawn in the board
+			System.out.println(enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
 		}
 
 		song1.setLooping(true);
@@ -229,7 +235,7 @@ public class MazeGame extends Game implements InputProcessor {
 		//backgroundImage.draw(renderer.getBatch());
 		for(int i=0;i<amount;i++)
 		{
-			zombies[i].getEnemySprite().draw(renderer.getBatch());
+			enemies[i].getEnemySprite().draw(renderer.getBatch());
 		}
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
