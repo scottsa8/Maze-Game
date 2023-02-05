@@ -11,7 +11,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "com.badlogicgames.gdx:gdx-ai:1.8.1"
-
+		classpath "com.badlogicgames.gdx:gdx-box2d:1.11.0"
 		// This follows advice from https://blog.gradle.org/log4j-vulnerability
 		constraints {
 			classpath("org.apache.logging.log4j:log4j-core") {
