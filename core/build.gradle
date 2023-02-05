@@ -4,5 +4,5 @@ eclipse.project.name = appName + '-core'
 dependencies {
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"
 	implementation "com.badlogicgames.gdx:gdx-ai:1.8.1"
-	implementation "com.badlogicgames.gdx:gdx-box2d:1.11.0"
+
 }
