@@ -114,26 +114,51 @@ public class MazeGame extends Game implements InputProcessor {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		camera.zoom = 0.25f;
+		camera.zoom = 0.5f;
 
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
 		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
 		player.getPlayerSprite().setPosition(310,-64); //310, -64  [10px left, goes left 1 tile 10 px up, goes up 2 tiles]
-		player2.getPlayerSprite().setPosition(290,-64);
+		//player2.getPlayerSprite().setPosition(290,-64);
+		player2.getPlayerSprite().setPosition(184,-69);
 		player2.setUp(Input.Keys.W);
 		player2.setLeft(Input.Keys.A);
 		player2.setDown(Input.Keys.S);
 		player2.setRight(Input.Keys.D);
 		player.setCoordinates(new Vector3(24,8,0));
 		player2.setCoordinates(new Vector3(23,7,0));
-		//e2 = new Enemy();
-		//e2.getEnemySprite().setPosition(128,0);
-		int type = (int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
-		if(type == 3)
+		
+		String atlas ="";
+		String name="";
+		int type2=0;
+		int type = 1;//(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
+		if(type ==1)
+		{
+			atlas = "zombieSprites.atlas";
+			name="zombie";
+		}
+		if(type==2)
+		{
+			atlas = "";
+			name="skeleton";
+		}
+		if(type ==3)
 		{
 			//make sure player xp > 10
-
+			//decide to make imp/phantom (random number)
+			type = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
+			if(type2==1)
+			{
+				atlas ="";
+				name="";
+			}
+			else if(type2 == 2)
+			{
+				atlas ="";
+				name="";
+			}	
 		}
+		atlas = "enemy/"+atlas;
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
 		enemies = new Enemy[amount];
 		for(int i=0;i<amount;i++)
@@ -146,9 +171,9 @@ public class MazeGame extends Game implements InputProcessor {
 
 			int gridX = x - 17;
 			int gridY = y - 17;
-			zombies[i] = new Enemy(Gdx.files.internal("zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
-			zombies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
-			zombies[i].getEnemySprite().setPosition(
+			enemies[i] = new Enemy(Gdx.files.internal("zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
+			enemies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
+			enemies[i].getEnemySprite().setPosition(
 					292 + (gridX - gridY) * (9.5f),
 					-21 - (gridX + gridY) * (4.75f)); //this needs adjusting so they spawn in the board
 			System.out.println(enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
