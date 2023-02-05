@@ -138,11 +138,19 @@ public class MazeGame extends Game implements InputProcessor {
 		enemies = new Enemy[amount];
 		for(int i=0;i<amount;i++)
 		{
-			int x = (int)Math.floor(Math.random() *(50 - 0 + 1) + 0); //random numbers for x and y offsets
-			int y = (int)Math.floor(Math.random() *(50 - 0 + 1) + 0);
-			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
-			enemies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
-			enemies[i].getEnemySprite().setPosition(275+x,-64+y); //this needs adjusting so they spawn in the board
+			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
+			int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
+
+			//int x = 17;
+			//int y = 17;
+
+			int gridX = x - 17;
+			int gridY = y - 17;
+			zombies[i] = new Enemy(Gdx.files.internal("zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
+			zombies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
+			zombies[i].getEnemySprite().setPosition(
+					292 + (gridX - gridY) * (9.5f),
+					-21 - (gridX + gridY) * (4.75f)); //this needs adjusting so they spawn in the board
 			System.out.println(enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
 		}
 
