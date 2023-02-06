@@ -171,7 +171,7 @@ public class MazeGame extends Game {
 
 			int gridX = x - 17;
 			int gridY = y - 17;
-			enemies[i] = new Enemy(Gdx.files.internal("zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
+			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
 			enemies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
 			enemies[i].getEnemySprite().setPosition(
 					292 + (gridX - gridY) * (9.5f),
