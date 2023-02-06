@@ -25,20 +25,24 @@ import com.badlogic.gdx.utils.viewport.*;
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
 /**
- * make grid/tile-based movement
- * make collisions
+ * bugs to fix:
+ * fix grid-based movement animations
+ * fix diagonal inputs
+ * fix bug where if you release two input keys at just the right time - the movement gets locked and runs itself infinitely (might be fixed, not sure)
+ *
+ * improvements to make:
+ * create a new renderer class that inherits IsometricTiledMapRenderer that has a Z-sorting function
+ *
+ * features to add:
  * make a UI
  * make a menu
- * make the camera move when you walk into the entrance of a new room
+ * create a new room when you walk into a doorway
  *
+ * refactoring:
  * separate stuff into classes
- * -> put all the movement stuff, sprites, frame_counter, max_frames? into Player class
- *
- *
  * */
-public class MazeGame extends Game implements InputProcessor {
+public class MazeGame extends Game {
 	private SpriteBatch batch;
-	private Sprite backgroundImage;
 	private BitmapFont font;
 	private String myText;
 	private GlyphLayout layout;
@@ -65,7 +69,6 @@ public class MazeGame extends Game implements InputProcessor {
 	private int screenWidth, screenHeight, playerX, playerY;
 	private int logDelay = 60;
 
-
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
@@ -76,13 +79,11 @@ public class MazeGame extends Game implements InputProcessor {
 		floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
 		tile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("tiledmaps/tileSprites.png")),32,32,16,16));
 
+
 		floorLayer.getCell(23, 7).setTile(tile);
 		floorLayer.getCell(24, 8).setTile(tile);
 
-
 		batch = new SpriteBatch();
-//		backgroundImage = new Sprite(new Texture(Gdx.files.internal("testRoom.png")));
-//		backgroundImage.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
 
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
@@ -114,20 +115,21 @@ public class MazeGame extends Game implements InputProcessor {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		camera.zoom = 0.5f;
+		camera.zoom = 0.25f;
 
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
 		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
 		player.getPlayerSprite().setPosition(310,-64); //310, -64  [10px left, goes left 1 tile 10 px up, goes up 2 tiles]
-		//player2.getPlayerSprite().setPosition(290,-64);
-		player2.getPlayerSprite().setPosition(184,-69);
+		player2.getPlayerSprite().setPosition(290,-64);
+		//player2.getPlayerSprite().setPosition(184,-69);
+		//player2.getPlayerSprite().setPosition(300,-9);
 		player2.setUp(Input.Keys.W);
 		player2.setLeft(Input.Keys.A);
 		player2.setDown(Input.Keys.S);
 		player2.setRight(Input.Keys.D);
 		player.setCoordinates(new Vector3(24,8,0));
 		player2.setCoordinates(new Vector3(23,7,0));
-		
+
 		String atlas ="";
 		String name="";
 		int type2=0;
@@ -156,18 +158,16 @@ public class MazeGame extends Game implements InputProcessor {
 			{
 				atlas ="";
 				name="";
-			}	
+			}
 		}
 		atlas = "enemy/"+atlas;
+
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
 		enemies = new Enemy[amount];
 		for(int i=0;i<amount;i++)
 		{
 			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
 			int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
-
-			//int x = 17;
-			//int y = 17;
 
 			int gridX = x - 17;
 			int gridY = y - 17;
@@ -176,11 +176,12 @@ public class MazeGame extends Game implements InputProcessor {
 			enemies[i].getEnemySprite().setPosition(
 					292 + (gridX - gridY) * (9.5f),
 					-21 - (gridX + gridY) * (4.75f)); //this needs adjusting so they spawn in the board
+
 			System.out.println(enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
 		}
 
 		song1.setLooping(true);
-		song1.play();
+		//song1.play();
 		song1.setVolume(0.5f);
 
 //		long id = sound.play();
@@ -217,26 +218,22 @@ public class MazeGame extends Game implements InputProcessor {
 //		sound.setPitch(id, 2.0f);
 //		sound.setPan(id, -1f, 1f);
 
-		Gdx.input.setInputProcessor(this);
+		//Gdx.input.setInputProcessor(this);
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height);
-//		camera.position.set(backgroundImage.getX()/2 + screenWidth/2, backgroundImage.getY()/2 + screenHeight/2,0);
 		camera.position.set(304, -48,0);
 	}
 
 	@Override
 	public void render() {
 
-		if (inputDelay < 0) {
+		if (inputDelay == 0) {
+			player.update(floorLayer, entityLayer);
+			player2.update(floorLayer, entityLayer);
 			inputDelay = MAX_INPUT_DELAY;
-			player.checkInput(floorLayer, entityLayer);
-			// change this to update - pass in map to get floorLayer and entityLayer
-			// dont worry about Z rendering just yet
-			player2.checkInput(floorLayer, entityLayer);
-			//return;
 		}
 
 		// redundant code - converted screen coordinates to isometric grid coordinates, no longer using this method
@@ -265,7 +262,6 @@ public class MazeGame extends Game implements InputProcessor {
 		renderer.getBatch().begin();
 
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
-		//backgroundImage.draw(renderer.getBatch());
 		for(int i=0;i<amount;i++)
 		{
 			enemies[i].getEnemySprite().draw(renderer.getBatch());
@@ -277,6 +273,7 @@ public class MazeGame extends Game implements InputProcessor {
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		renderer.getBatch().end();
 		inputDelay--;
+		logDelay--;
 		super.render();
 
 	}
@@ -284,51 +281,8 @@ public class MazeGame extends Game implements InputProcessor {
 	@Override
 	public void dispose() {
 		renderer.getBatch().dispose();
-		backgroundImage.getTexture().dispose();
 		player.dispose();
 		player2.dispose();
 		song1.dispose();
-	}
-
-	@Override
-	public boolean keyDown(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		player.idle();
-		player2.idle();
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(float amountX, float amountY) {
-		return false;
 	}
 }
