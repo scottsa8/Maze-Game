@@ -2,6 +2,7 @@ package idk.mazegame;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.ai.steer.*;
+import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -25,9 +26,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
 //import idk.mazegame.screens.PlayScreen;
+
+import idk.mazegame.EnemyAI.Steering;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -61,8 +65,10 @@ public class MazeGame extends Game {
 	private int amount;
 	private int max=8,min=4;
 	private Enemy enemies[];
+	private Steering enemiesAI;
 
 	private Player player, player2;
+	private Steering target;
 	private TiledMap map;
 	private IsometricTiledMapRenderer renderer;
 	private TiledMapTileLayer entityLayer;
@@ -75,7 +81,7 @@ public class MazeGame extends Game {
 	private int inputDelay = MAX_INPUT_DELAY;
 	private int screenWidth, screenHeight, playerX, playerY;
 	private int logDelay = 60;
-	World world = new World(new Vector2(0,-98f), false);
+	World world = new World(new Vector2(0,0), false);
 	private Body p1;
 	@Override
 	public void create() {
@@ -123,12 +129,13 @@ public class MazeGame extends Game {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		//camera.zoom = 0.25f;
+		camera.zoom = 0.25f;
 
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
 		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
 		player.getPlayerSprite().setPosition(310,-64); //310, -64  [10px left, goes left 1 tile 10 px up, goes up 2 tiles]
 		player2.getPlayerSprite().setPosition(290,-64);
+		
 		//player2.getPlayerSprite().setPosition(184,-69);
 		//player2.getPlayerSprite().setPosition(300,-9);
 		player2.setUp(Input.Keys.W);
@@ -150,6 +157,7 @@ public class MazeGame extends Game {
         fixtureDef.density = 1f;
         Fixture fixture = p1.createFixture(fixtureDef);
 		
+		target = new Steering(p1, 10);
 		String atlas ="";
 		String name="";
 		int type2=0;
@@ -181,9 +189,10 @@ public class MazeGame extends Game {
 			}
 		}
 		atlas = "enemy/"+atlas;
-
+		
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
 		enemies = new Enemy[amount];
+		//enemiesAI = new Steering[amount];
 		for(int i=0;i<amount;i++)
 		{
 			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
@@ -193,10 +202,8 @@ public class MazeGame extends Game {
 			int gridY = y - 17;
 			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie",world); //include a name to set the default image easier
 			enemies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
-			enemies[i].getEnemySprite().setPosition(
-					292 + (gridX - gridY) * (9.5f),
-					-21 - (gridX + gridY) * (4.75f)); //this needs adjusting so they spawn in the board
-					enemies[i].updateBody(292 + (gridX - gridY) * (9.5f), -21 - (gridX + gridY) * (4.75f));
+			enemies[i].updateBody(292 + (gridX - gridY) * (9.5f), -21 - (gridX + gridY) * (4.75f));
+			enemiesAI = new Steering(enemies[i].getBody(),30);
 			System.out.println(enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
 		}
 
@@ -239,7 +246,10 @@ public class MazeGame extends Game {
 //		sound.setPan(id, -1f, 1f);
 
 		//Gdx.input.setInputProcessor(this);
+	
+		
 		shape.dispose();
+	
 	}
 
 	@Override
@@ -250,26 +260,24 @@ public class MazeGame extends Game {
 
 	@Override
 	public void render() {
-		world.step(Gdx.graphics.getDeltaTime(), 0, 0);
-		
+		world.step(1/60f, 6, 2);
+		Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI,target)
+		.setTimeToTarget(0.01f)
+		.setArrivalTolerance(2f)
+		.setDecelerationRadius(5);
+		enemiesAI.setBehaviour(arriveSB);
+
 		if (inputDelay == 0) {
 			player.update(floorLayer, entityLayer);
 			player2.update(floorLayer, entityLayer);
+			enemiesAI.update(0);
 			//player.getPlayerSprite().setPosition(p1.getPosition().x, p1.getPosition().y);
 			inputDelay = MAX_INPUT_DELAY;
 		}
-
-		// redundant code - converted screen coordinates to isometric grid coordinates, no longer using this method
-		//if (logDelay == 0) {
-			//Gdx.app.log("grid pos player X", String.valueOf((int) ((camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).x / floorLayer.getTileWidth() + camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).y / floorLayer.getTileHeight()) * 3.45f - 49)));
-			//Gdx.app.log("grid pos player Y", String.valueOf((int) -((camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).y/floorLayer.getTileHeight() - camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).x/ floorLayer.getTileWidth()) * 3.45f - 4)));
-			//playerX = (int) ((camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).x / floorLayer.getTileWidth() + camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).y / floorLayer.getTileHeight()) * 3.45f - 49);
-			//playerY = (int) -((camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).y/floorLayer.getTileHeight() - camera.unproject(new Vector3(player.getPlayerSprite().getX(), player.getPlayerSprite().getY(), 0)).x/ floorLayer.getTileWidth()) * 3.45f - 4);
-			//logDelay = 40;
-		//}
-
+	
 		try{
 			floorLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tile);
+			
 		}
 		catch (NullPointerException e){
 			Gdx.app.log("Block:", "null");
@@ -283,10 +291,11 @@ public class MazeGame extends Game {
 		renderer.setView(camera);
 		renderer.render();
 		renderer.getBatch().begin();
-
+		
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
 		for(int i=0;i<amount;i++)
 		{
+			
 			enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x, enemies[i].getBody().getPosition().y);
 			enemies[i].getEnemySprite().draw(renderer.getBatch());
 		}

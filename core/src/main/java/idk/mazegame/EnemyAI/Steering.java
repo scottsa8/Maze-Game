@@ -47,6 +47,22 @@ public class Steering implements Steerable<Vector2>
             body.applyForceToCenter(force, true);
             anyAccelarions = true;
         }
+        if(steeringOutput.angular != 0)
+        {
+            body.applyTorque(steeringOutput.angular * delta, true);
+            anyAccelarions = true;
+        }
+        else
+        {
+            Vector2 linVel = getLinearVelocity();
+            if(linVel.isZero())
+            {
+                float newOrientation = vectorToAngle(linVel);
+                body.setAngularVelocity(newOrientation - getAngularVelocity() * delta);
+                body.setTransform(body.getPosition(),newOrientation);
+            }
+                
+        }
         if(anyAccelarions)
         {
             Vector2 velocity = body.getLinearVelocity();
@@ -54,6 +70,10 @@ public class Steering implements Steerable<Vector2>
             if(currentSpeedSquare > maxLinearSpeed * maxLinearSpeed)
             {
                 body.setLinearVelocity(velocity.scl(maxLinearSpeed / (float)Math.sqrt(currentSpeedSquare)));
+            }
+            if(body.getAngularVelocity() > maxAngularSpeed)
+            {
+                body.setAngularVelocity(maxAngularSpeed);
             }
         }
     }
