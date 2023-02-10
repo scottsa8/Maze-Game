@@ -19,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -83,6 +84,7 @@ public class MazeGame extends Game {
 	private int logDelay = 60;
 	World world = new World(new Vector2(0,0), false);
 	private Body p1;
+	private Box2DDebugRenderer debug;
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
@@ -211,6 +213,8 @@ public class MazeGame extends Game {
 		//song1.play();
 		song1.setVolume(0.5f);
 
+		debug = new Box2DDebugRenderer(true, true, true, true, true, true);
+		
 //		long id = sound.play();
 //		long ourSoundID = sound.loop(1.0f,1.0f,0.0f);
 //
@@ -311,6 +315,7 @@ public class MazeGame extends Game {
 		logDelay--;
 		super.render();
 
+		debug.render(world,camera.combined);
 	}
 
 	@Override
