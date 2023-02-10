@@ -157,7 +157,7 @@ public class MazeGame extends Game {
         fixtureDef.density = 1f;
         Fixture fixture = p1.createFixture(fixtureDef);
 		
-		target = new Steering(p1, 10);
+		target = new Steering(p1, 1);
 		String atlas ="";
 		String name="";
 		int type2=0;
@@ -203,10 +203,10 @@ public class MazeGame extends Game {
 			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie",world); //include a name to set the default image easier
 			enemies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
 			enemies[i].updateBody(292 + (gridX - gridY) * (9.5f), -21 - (gridX + gridY) * (4.75f));
-			enemiesAI = new Steering(enemies[i].getBody(),30);
+			enemiesAI = new Steering(enemies[i].getBody(),3);
 			System.out.println(enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
 		}
-
+		
 		song1.setLooping(true);
 		//song1.play();
 		song1.setVolume(0.5f);
@@ -262,15 +262,15 @@ public class MazeGame extends Game {
 	public void render() {
 		world.step(1/60f, 6, 2);
 		Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI,target)
-		.setTimeToTarget(0.01f)
+		.setTimeToTarget(1f)
 		.setArrivalTolerance(2f)
 		.setDecelerationRadius(5);
 		enemiesAI.setBehaviour(arriveSB);
-
+		
 		if (inputDelay == 0) {
 			player.update(floorLayer, entityLayer);
 			player2.update(floorLayer, entityLayer);
-			enemiesAI.update(0);
+			enemiesAI.update(Gdx.graphics.getDeltaTime());
 			//player.getPlayerSprite().setPosition(p1.getPosition().x, p1.getPosition().y);
 			inputDelay = MAX_INPUT_DELAY;
 		}
@@ -295,7 +295,7 @@ public class MazeGame extends Game {
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
 		for(int i=0;i<amount;i++)
 		{
-			
+			enemiesAI.update(Gdx.graphics.getDeltaTime());
 			enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x, enemies[i].getBody().getPosition().y);
 			enemies[i].getEnemySprite().draw(renderer.getBatch());
 		}
