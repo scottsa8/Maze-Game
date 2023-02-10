@@ -504,4 +504,5 @@ public class Player {
     public void setCoordinates(Vector3 coordinates) {
         this.coordinates = coordinates;
     }
+
 }

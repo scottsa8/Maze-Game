@@ -16,7 +16,14 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
@@ -68,7 +75,8 @@ public class MazeGame extends Game {
 	private int inputDelay = MAX_INPUT_DELAY;
 	private int screenWidth, screenHeight, playerX, playerY;
 	private int logDelay = 60;
-
+	World world = new World(new Vector2(0,-98f), false);
+	private Body p1;
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
@@ -115,7 +123,7 @@ public class MazeGame extends Game {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		camera.zoom = 0.25f;
+		//camera.zoom = 0.25f;
 
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
 		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
@@ -130,6 +138,18 @@ public class MazeGame extends Game {
 		player.setCoordinates(new Vector3(24,8,0));
 		player2.setCoordinates(new Vector3(23,7,0));
 
+		
+		BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+		bodyDef.position.set(player.getPlayerSprite().getX(), player.getPlayerSprite().getY());
+		p1 = world.createBody(bodyDef);
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(player.getPlayerSprite().getWidth()/2, player.getPlayerSprite().getHeight()/2);
+		FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        Fixture fixture = p1.createFixture(fixtureDef);
+		
 		String atlas ="";
 		String name="";
 		int type2=0;
@@ -171,12 +191,12 @@ public class MazeGame extends Game {
 
 			int gridX = x - 17;
 			int gridY = y - 17;
-			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie"); //include a name to set the default image easier
+			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie",world); //include a name to set the default image easier
 			enemies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
 			enemies[i].getEnemySprite().setPosition(
 					292 + (gridX - gridY) * (9.5f),
 					-21 - (gridX + gridY) * (4.75f)); //this needs adjusting so they spawn in the board
-
+					enemies[i].updateBody(292 + (gridX - gridY) * (9.5f), -21 - (gridX + gridY) * (4.75f));
 			System.out.println(enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
 		}
 
@@ -219,6 +239,7 @@ public class MazeGame extends Game {
 //		sound.setPan(id, -1f, 1f);
 
 		//Gdx.input.setInputProcessor(this);
+		shape.dispose();
 	}
 
 	@Override
@@ -229,10 +250,12 @@ public class MazeGame extends Game {
 
 	@Override
 	public void render() {
-
+		world.step(Gdx.graphics.getDeltaTime(), 0, 0);
+		
 		if (inputDelay == 0) {
 			player.update(floorLayer, entityLayer);
 			player2.update(floorLayer, entityLayer);
+			//player.getPlayerSprite().setPosition(p1.getPosition().x, p1.getPosition().y);
 			inputDelay = MAX_INPUT_DELAY;
 		}
 
@@ -264,10 +287,13 @@ public class MazeGame extends Game {
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
 		for(int i=0;i<amount;i++)
 		{
+			enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x, enemies[i].getBody().getPosition().y);
 			enemies[i].getEnemySprite().draw(renderer.getBatch());
 		}
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
+	
+
 
 		//font.draw(renderer.getBatch(), myText, 10f, screenHeight - 10f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
