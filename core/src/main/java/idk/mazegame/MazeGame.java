@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
 //import idk.mazegame.screens.PlayScreen;
 
+import idk.mazegame.EnemyAI.Constants;
 import idk.mazegame.EnemyAI.Steering;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -131,7 +132,7 @@ public class MazeGame extends Game {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		camera.zoom = 0.25f;
+		//camera.zoom = 0.25f;
 
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
 		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
@@ -202,11 +203,13 @@ public class MazeGame extends Game {
 
 			int gridX = x - 17;
 			int gridY = y - 17;
-			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie",world); //include a name to set the default image easier
-			enemies[i].setScale(0.4f);  //0.5 for small enemies, 2 for a boss
-			enemies[i].updateBody(292 + (gridX - gridY) * (9.5f), -21 - (gridX + gridY) * (4.75f));
-			enemiesAI = new Steering(enemies[i].getBody(),3);
-			System.out.println(enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
+			float realX = 292 + (gridX - gridY) * (9.5f);
+			float realY = -21 - (gridX + gridY) * (4.75f);
+			System.out.println("REAL:"+realX+":"+realY);
+			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie",world, realX, realY); //include a name to set the default image easier
+			enemiesAI = new Steering(enemies[i].getBody(),3);			
+			System.out.println("SPRITE:"+enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
+			System.out.println("BODY:"+enemies[i].getBody().getPosition().x+"Y:"+enemies[i].getBody().getPosition().y); //prints x and Y for debugging
 		}
 		
 		song1.setLooping(true);
@@ -250,7 +253,11 @@ public class MazeGame extends Game {
 //		sound.setPan(id, -1f, 1f);
 
 		//Gdx.input.setInputProcessor(this);
-	
+		Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI,target)
+		.setTimeToTarget(1f)
+		.setArrivalTolerance(1f)
+		.setDecelerationRadius(5);
+		enemiesAI.setBehaviour(arriveSB);
 		
 		shape.dispose();
 	
@@ -265,11 +272,7 @@ public class MazeGame extends Game {
 	@Override
 	public void render() {
 		world.step(1/60f, 6, 2);
-		Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI,target)
-		.setTimeToTarget(1f)
-		.setArrivalTolerance(2f)
-		.setDecelerationRadius(5);
-		enemiesAI.setBehaviour(arriveSB);
+	
 		
 		if (inputDelay == 0) {
 			player.update(floorLayer, entityLayer);
@@ -300,7 +303,7 @@ public class MazeGame extends Game {
 		for(int i=0;i<amount;i++)
 		{
 			enemiesAI.update(Gdx.graphics.getDeltaTime());
-			enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x, enemies[i].getBody().getPosition().y);
+			enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
 			enemies[i].getEnemySprite().draw(renderer.getBatch());
 		}
 		player2.getPlayerSprite().draw(renderer.getBatch());
