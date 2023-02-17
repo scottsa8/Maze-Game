@@ -132,7 +132,7 @@ public class MazeGame extends Game {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		//camera.zoom = 0.25f;
+		camera.zoom = 0.25f;
 
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
 		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
@@ -150,7 +150,7 @@ public class MazeGame extends Game {
 
 		
 		BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
 		bodyDef.position.set(player.getPlayerSprite().getX(), player.getPlayerSprite().getY());
 		p1 = world.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
@@ -271,7 +271,7 @@ public class MazeGame extends Game {
 
 	@Override
 	public void render() {
-		world.step(1/60f, 6, 2);
+		world.step(1/30f, 6, 2);
 	
 		
 		if (inputDelay == 0) {
@@ -284,7 +284,6 @@ public class MazeGame extends Game {
 	
 		try{
 			floorLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tile);
-			
 		}
 		catch (NullPointerException e){
 			Gdx.app.log("Block:", "null");
@@ -303,7 +302,9 @@ public class MazeGame extends Game {
 		for(int i=0;i<amount;i++)
 		{
 			enemiesAI.update(Gdx.graphics.getDeltaTime());
-			enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
+			//enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
+			enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x - 15, enemies[i].getBody().getPosition().y - 15);
+
 			enemies[i].getEnemySprite().draw(renderer.getBatch());
 		}
 		player2.getPlayerSprite().draw(renderer.getBatch());
