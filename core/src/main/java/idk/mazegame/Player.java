@@ -27,6 +27,7 @@ public class Player {
     private final float DIAG_MOD = 1f; //0.707 for normalization
     private final int MAX_INPUT_DELAY = 1;
     private int inputDelay = MAX_INPUT_DELAY;
+    private int[] slots = new int[2];
 
     public Player(FileHandle atlasfile) {
         textureAtlas = new TextureAtlas(atlasfile);
@@ -216,6 +217,27 @@ public class Player {
 
         currentFrame = 1;
         timer = 0;
+
+    }
+
+    public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
+
+    }
+
+
+    public void slot1Add(Item itemToAdd) { //Adds the specified item (Item) to the first slot of the player
+
+    }
+
+    public void slot2Add(Item itemToAdd) { //Adds the specified item (Item) to the second slot of the player
+
+    }
+
+    public void slot1Remove(Item itemToRemove) { //Removes the specified item (Item) from the first slot of the player
+
+    }
+
+    public void slot2Remove(Item itemToRemove) { //Removes the specified item (Item) from the second slot of the player
 
     }
 
