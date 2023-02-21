@@ -16,16 +16,24 @@ public class Item {
 
     }
 
-    public void generateItem() { //Generates an item object, including the rarity and item type
-
+    public Item generateItem(int thisType, int thisTypeIndex) { //used for
+        //1. Find the item using the type and type index
+        //2. Associate this item with all of the attributes of the found item (create a csv file to hold these initial attributes)
+        //3. Create the items rarity
+        //4. Modify attributes according to rarity
+        //5. Return item
     }
 
     public void useItem() { //Performs the action of the item and modifies it accordingly
-
+        //1. Find what action is performed with this item
+        //2. Perform that action
+        //3. Modify item accordingly
+        //4. Check if durability is below or equal to 0
+        //4. a. If so, destroy item and remove it from its slot
     }
 
     private void destroyItem() { //Destroys the item object
-
+        //Simply destroy this item
     }
 
 }

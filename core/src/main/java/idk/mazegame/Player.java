@@ -221,24 +221,40 @@ public class Player {
     }
 
     public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
+        //1. Check if slot 1 is empty
+        //1. a. If so, check inventory for item to fill slot
+        //1. b. If not, put fists in slot
+        //2. Add item found to slot 1
+        //3. Remove item found from inventory
 
+        //4. Check if slot 2 is empty
+        //4. a. If so, check inventory for item to fill slot
+        //4. b. If not, put fists in slot
+        //5. b. Add item found to slot 2
+        //6. c. Remove item found from inventory
     }
 
 
-    public void slot1Add(Item itemToAdd) { //Adds the specified item (Item) to the first slot of the player
-
+    public void slot1Add(Item itemToAdd, int index) { //Adds the specified item to the first slot of the player
+        //1. Add item to slot 1
+        //2. Remove item from inventory using index
     }
 
-    public void slot2Add(Item itemToAdd) { //Adds the specified item (Item) to the second slot of the player
-
+    public void slot2Add(Item itemToAdd, int index) { //Adds the specified item to the second slot of the player
+        //1. Add item to slot 2
+        //2. Remove item from inventory using index
     }
 
-    public void slot1Remove(Item itemToRemove) { //Removes the specified item (Item) from the first slot of the player
-
+    public void slot1Remove(Item itemToRemove) { //Removes the specified item from the first slot of the player
+        //1. Remove item from slot 1
+        //2. Check if item durability is 0
+        //2. a. If no then add item to inventory
     }
 
-    public void slot2Remove(Item itemToRemove) { //Removes the specified item (Item) from the second slot of the player
-
+    public void slot2Remove(Item itemToRemove) { //Removes the specified item from the second slot of the player
+        //1. Remove item from slot 2
+        //2. Check if item durability is 0
+        //2. a. If no then add item to inventory
     }
 
     public void update(TiledMapTileLayer floorLayer, TiledMapTileLayer entityLayer) {
