@@ -1,9 +1,9 @@
 package idk.mazegame;
 
 public class Item {
+    public int type; //Melee, ranged, magic, shield, single-use
     private String name;
     private String description;
-    private int type; //Melee, ranged, etc
     private int typeIndex; //Used to find the specific item. Example: Type is melee, typeIndex is 0 so item is just fists
     private int rarity;
     private double damage;
@@ -18,7 +18,7 @@ public class Item {
 
     public Item generateItem(int thisType, int thisTypeIndex) { //used for
         //1. Find the item using the type and type index
-        //2. Associate this item with all of the attributes of the found item (create a csv file to hold these initial attributes)
+        //2. Associate this item with all the attributes of the found item (create a csv file to hold these initial attributes)
         //3. Create the items rarity
         //4. Modify attributes according to rarity
         //5. Return item
@@ -35,5 +35,4 @@ public class Item {
     private void destroyItem() { //Destroys the item object
         //Simply destroy this item
     }
-
 }

@@ -27,7 +27,8 @@ public class Player {
     private final float DIAG_MOD = 1f; //0.707 for normalization
     private final int MAX_INPUT_DELAY = 1;
     private int inputDelay = MAX_INPUT_DELAY;
-    private int[] slots = new int[2];
+    private Inventory inv = new Inventory();
+    private Item[] slots = new Item[3];
 
     public Player(FileHandle atlasfile) {
         textureAtlas = new TextureAtlas(atlasfile);
@@ -220,41 +221,55 @@ public class Player {
 
     }
 
-    public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
-        //1. Check if slot 1 is empty
-        //1. a. If so, check inventory for item to fill slot
-        //1. b. If not, put fists in slot
-        //2. Add item found to slot 1
-        //3. Remove item found from inventory
+    public void slotsCheck(int slotToCheck) { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
+        if (slotToCheck == 1 && slots[1] == null) {
+            //1. a. If so, check inventory for item to fill slot
+            Item foundItem = inv.getFirstItem();
+            //2. Add item found to slot 1
+            slots[1] = foundItem;
+            //3. Remove item found from inventory
+            inv.inventoryRemove(foundItem);
+        }
 
-        //4. Check if slot 2 is empty
-        //4. a. If so, check inventory for item to fill slot
-        //4. b. If not, put fists in slot
-        //5. b. Add item found to slot 2
-        //6. c. Remove item found from inventory
+        if (slotToCheck == 2 && slots[2] == null) {
+            //1. a. If so, check inventory for item to fill slot
+            Item foundItem = inv.getFirstItem();
+            //2. Add item found to slot 2
+            slots[2] = foundItem;
+            //3. Remove item found from inventory
+            inv.inventoryRemove(foundItem);
+        }
     }
 
 
-    public void slot1Add(Item itemToAdd, int index) { //Adds the specified item to the first slot of the player
+    public void slot1Add(Item itemToAdd) { //Adds the specified item to the first slot of the player
         //1. Add item to slot 1
-        //2. Remove item from inventory using index
+        slots[1] = itemToAdd;
+        //2. Remove item from inventory
+        inv.inventoryRemove(itemToAdd);
     }
 
-    public void slot2Add(Item itemToAdd, int index) { //Adds the specified item to the second slot of the player
+    public void slot2Add(Item itemToAdd) { //Adds the specified item to the second slot of the player
         //1. Add item to slot 2
-        //2. Remove item from inventory using index
+        slots[2] = itemToAdd;
+        //2. Remove item from inventory
+        inv.inventoryRemove(itemToAdd);
     }
 
-    public void slot1Remove(Item itemToRemove) { //Removes the specified item from the first slot of the player
-        //1. Remove item from slot 1
-        //2. Check if item durability is 0
-        //2. a. If no then add item to inventory
+    public void slot1Remove(Item itemToRemove) { //Removes the item from the first slot of the player
+        //Remove item from slot 1
+        slots[1] = null;
+
+        //Try to fill slot
+        slotsCheck(1);
     }
 
-    public void slot2Remove(Item itemToRemove) { //Removes the specified item from the second slot of the player
-        //1. Remove item from slot 2
-        //2. Check if item durability is 0
-        //2. a. If no then add item to inventory
+    public void slot2Remove(Item itemToRemove) { //Removes the item from the second slot of the player
+        //Remove item from slot 2
+        slots[2] = null;
+
+        //Try to fill slot
+        slotsCheck(2);
     }
 
     public void update(TiledMapTileLayer floorLayer, TiledMapTileLayer entityLayer) {
