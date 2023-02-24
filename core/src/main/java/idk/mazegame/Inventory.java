@@ -10,11 +10,11 @@ public class Inventory {
     }
 
     public void inventoryAdd(Item item, int slot) { //Adds the specified item to the specified space in the inventory
-        //1. If given slot is 0, add item onto end of array list
-        //2. Else, add item to the given slot in inventory
+        if (slot == 0) inv.add(item);
+        else inv.add(slot, item);
     }
 
-    public void inventoryRemove(Item item, int slot) { //Removes the specified item from the specified space in the inventory
-        //Remove item from given slot in inventory
+    public void inventoryRemove(Item item) { //Removes the specified item from the inventory
+        inv.remove(item);
     }
 }
