@@ -30,7 +30,7 @@ public class Enemy {
         Body b;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set((x + enemySprite.getWidth()/2) / Constants.PPM, (y+ enemySprite.getHeight()/2) / Constants.PPM);
+        bodyDef.position.set((x + enemySprite.getWidth()/2), (y+ enemySprite.getHeight()/2));
         
         b = world.createBody(bodyDef);
         System.out.println("body position:"+b.getPosition());
