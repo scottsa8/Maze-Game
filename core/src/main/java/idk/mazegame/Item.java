@@ -1,5 +1,8 @@
 package idk.mazegame;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
 public class Item {
     public int type; //Melee, ranged, magic, shield, single-use
     private String name;
@@ -16,7 +19,7 @@ public class Item {
 
     }
 
-    //public Item generateItem(int thisType, int thisTypeIndex) { //used for
+    //public Item generateItems(int thisType, int thisTypeIndex) { //used for creating an item
         //1. Find the item using the type and type index
         //2. Associate this item with all the attributes of the found item (create a csv file to hold these initial attributes)
         //3. Create the items rarity
