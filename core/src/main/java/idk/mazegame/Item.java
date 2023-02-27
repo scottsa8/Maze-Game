@@ -16,13 +16,13 @@ public class Item {
 
     }
 
-    public Item generateItem(int thisType, int thisTypeIndex) { //used for
+    //public Item generateItem(int thisType, int thisTypeIndex) { //used for
         //1. Find the item using the type and type index
         //2. Associate this item with all the attributes of the found item (create a csv file to hold these initial attributes)
         //3. Create the items rarity
         //4. Modify attributes according to rarity
         //5. Return item
-    }
+    //}
 
     public void useItem() { //Performs the action of the item and modifies it accordingly
         //1. Find what action is performed with this item

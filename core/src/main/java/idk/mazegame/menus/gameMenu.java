@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import idk.mazegame.GameScreen;
 import idk.mazegame.MazeGame;
-import javafx.scene.control.CheckBox;
+//import javafx.scene.control.CheckBox;
 
 public class gameMenu implements Screen{
     private final MazeGame game;
