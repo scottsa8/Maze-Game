@@ -55,7 +55,7 @@ import idk.mazegame.EnemyAI.Steering;
  * separate stuff into classes
  * */
 public class MazeGame extends Game {
-	private SpriteBatch batch;
+	public SpriteBatch batch;
 	private BitmapFont font;
 	private String myText;
 	private GlyphLayout layout;
