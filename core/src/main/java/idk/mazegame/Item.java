@@ -13,7 +13,7 @@ import java.util.Random;
 public class Item {
     public int type; //Melee, ranged, magic, shield, single-use
     private ItemAttributes attributes;
-    private String name;
+    public String name;
     private String description;
     private int typeIndex; //Used to find the specific item. Example: Type is melee, typeIndex is 0 so item is just fists
     private int rarity;
@@ -24,14 +24,20 @@ public class Item {
     private double weight; //Used for affecting the durability of the item
 
     public Item(ItemAttributes itemAttrs) { //Create generic item
+        attributes = itemAttrs;
+        generateItem(0, 0);
     }
 
     public Item(ItemAttributes itemAttrs, int t, int i) { //Create an item using the given type and index
+        attributes = itemAttrs;
+        generateItem(t, i);
     }
 
     private void generateItem(int thisType, int thisTypeIndex) { //used for creating an item
         //1. Find the item using the type and type index
         String[] itemAttrs = attributes.getAttributes(thisType, thisTypeIndex);
+
+        System.out.println(itemAttrs);
 
         //2. Associate this item with all the attributes of the found item
         type = Integer.valueOf(itemAttrs[0]);

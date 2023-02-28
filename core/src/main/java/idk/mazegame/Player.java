@@ -37,6 +37,9 @@ public class Player {
         playerSprite.setPosition(Gdx.graphics.getWidth()/2 - playerSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - playerSprite.getHeight()/2);
         coordinates = new Vector3(0,0, 0);
         //playerSprite.setScale(4f);
+
+        slots[1] = new Item(itemAttrs);
+        slots[2] = new Item(itemAttrs);
     }
 
     public void walk(int direction) {
@@ -223,7 +226,7 @@ public class Player {
     }
 
     public void slotsCheck(int slotToCheck) { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
-        if (slotToCheck == 1 && slots[1] == null) {
+        if (slotToCheck == 1 && slots[1].name.equals("Fist")) {
             //1. a. If so, check inventory for item to fill slot
             Item foundItem = inv.getFirstItem();
             //2. Add item found to slot 1
@@ -232,7 +235,7 @@ public class Player {
             inv.inventoryRemove(foundItem);
         }
 
-        if (slotToCheck == 2 && slots[2] == null) {
+        if (slotToCheck == 2 && slots[2].name.equals("Fist")) {
             //1. a. If so, check inventory for item to fill slot
             Item foundItem = inv.getFirstItem();
             //2. Add item found to slot 2
@@ -259,7 +262,7 @@ public class Player {
 
     public void slot1Remove(Item itemToRemove) { //Removes the item from the first slot of the player
         //Remove item from slot 1
-        slots[1] = null;
+        slots[1] = new Item(itemAttrs);
 
         //Try to fill slot
         slotsCheck(1);
@@ -267,13 +270,24 @@ public class Player {
 
     public void slot2Remove(Item itemToRemove) { //Removes the item from the second slot of the player
         //Remove item from slot 2
-        slots[2] = null;
+        slots[2] = new Item(itemAttrs);
 
         //Try to fill slot
         slotsCheck(2);
     }
 
     public void update(TiledMapTileLayer floorLayer, TiledMapTileLayer entityLayer) {
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) { //TESTING - Adds a sword to the inventory
+            inv.inventoryAdd(new Item(itemAttrs, 0, 1), 0);
+            slotsCheck(1);
+            slotsCheck(2);
+            System.out.println(slots);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT)) { //TESTING - Prints out the inventory contents
+            inv.printInventory();
+        }
 
         if(inputIsLocked == true) {
             return;
