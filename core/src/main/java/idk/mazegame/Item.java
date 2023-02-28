@@ -11,9 +11,10 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class Item {
+    public String name;
     public int type; //Melee, ranged, magic, shield, single-use
     private ItemAttributes attributes;
-    public String name;
+
     private String description;
     private int typeIndex; //Used to find the specific item. Example: Type is melee, typeIndex is 0 so item is just fists
     private int rarity;

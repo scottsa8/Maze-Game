@@ -225,8 +225,8 @@ public class Player {
 
     }
 
-    public void slotsCheck(int slotToCheck) { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
-        if (slotToCheck == 1 && slots[1].name.equals("Fist")) {
+    public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
+        if (slots[1].name.equals("Fist")) {
             //1. a. If so, check inventory for item to fill slot
             Item foundItem = inv.getFirstItem();
             //2. Add item found to slot 1
@@ -235,7 +235,7 @@ public class Player {
             inv.inventoryRemove(foundItem);
         }
 
-        if (slotToCheck == 2 && slots[2].name.equals("Fist")) {
+        if (slots[2].name.equals("Fist")) {
             //1. a. If so, check inventory for item to fill slot
             Item foundItem = inv.getFirstItem();
             //2. Add item found to slot 2
@@ -265,7 +265,7 @@ public class Player {
         slots[1] = new Item(itemAttrs);
 
         //Try to fill slot
-        slotsCheck(1);
+        slotsCheck();
     }
 
     public void slot2Remove(Item itemToRemove) { //Removes the item from the second slot of the player
@@ -273,15 +273,14 @@ public class Player {
         slots[2] = new Item(itemAttrs);
 
         //Try to fill slot
-        slotsCheck(2);
+        slotsCheck();
     }
 
     public void update(TiledMapTileLayer floorLayer, TiledMapTileLayer entityLayer) {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) { //TESTING - Adds a sword to the inventory
             inv.inventoryAdd(new Item(itemAttrs, 0, 1), 0);
-            slotsCheck(1);
-            slotsCheck(2);
+            slotsCheck();
             System.out.println(slots);
         }
 
