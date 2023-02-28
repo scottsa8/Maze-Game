@@ -1,6 +1,7 @@
 package idk.mazegame;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ai.steer.*;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.audio.Music;
@@ -67,7 +68,7 @@ public class MazeGame extends Game {
 	private int amount;
 	private int max=8,min=4;
 	private Enemy enemies[];
-	private Steering enemiesAI;
+	private Steering enemiesAI[];
 
 	private Player player, player2;
 	private Steering target;
@@ -147,74 +148,26 @@ public class MazeGame extends Game {
 		player2.setRight(Input.Keys.D);
 		player.setCoordinates(new Vector3(24,8,0));
 		player2.setCoordinates(new Vector3(23,7,0));
-
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyDef.BodyType.StaticBody;
-		bodyDef.position.set(player.getPlayerSprite().getX(), player.getPlayerSprite().getY());
-		p1 = world.createBody(bodyDef);
-		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(player.getPlayerSprite().getWidth()/2, player.getPlayerSprite().getHeight()/2);
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = shape;
-		fixtureDef.density = 1f;
-		Fixture fixture = p1.createFixture(fixtureDef);
-
-		target = new Steering(p1, 1);
+		//THIS NEEDS TO BE MOVED INTO THE PLAYER CLASS
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.type = BodyDef.BodyType.StaticBody;
+			bodyDef.position.set(player.getPlayerSprite().getX(), player.getPlayerSprite().getY());
+			p1 = world.createBody(bodyDef);
+			PolygonShape shape = new PolygonShape();
+			shape.setAsBox(player.getPlayerSprite().getWidth()/2, player.getPlayerSprite().getHeight()/2);
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.shape = shape;
+			fixtureDef.density = 1f;
+			Fixture fixture = p1.createFixture(fixtureDef);
+			shape.dispose();
+		//
 		
-		String atlas ="";
-		String name="";
-		int type2=0;
-		int type = 1;//(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
-		if(type ==1)
-		{
-			atlas = "zombieSprites.atlas";
-			name="zombie";
-		}
-		if(type==2)
-		{
-			atlas = "";
-			name="skeleton";
-		}
-		if(type ==3)
-		{
-			//make sure player xp > 10
-			//decide to make imp/phantom (random number)
-			type = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
-			if(type2==1)
-			{
-				atlas ="";
-				name="";
-			}
-			else if(type2 == 2)
-			{
-				atlas ="";
-				name="";
-			}
-		}
-		atlas = "enemy/"+atlas;
-
-		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
-		enemies = new Enemy[amount];
-		for(int i=0;i<amount;i++)
-		{
-			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
-			int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
-
-			int gridX = x - 17;
-			int gridY = y - 17;
-			float realX = 292 + (gridX - gridY) * (9.5f);
-			float realY = -21 - (gridX + gridY) * (4.75f);
-			System.out.println("REAL:"+realX+":"+realY);
-			enemies[i] = new Enemy(Gdx.files.internal("enemy/zombieSprites.atlas"),"zombie",world, realX, realY); //include a name to set the default image easier
-			enemiesAI = new Steering(enemies[i].getBody(),3);			
-			System.out.println("SPRITE:"+enemies[i].getEnemySprite().getX()+"Y:"+enemies[i].getEnemySprite().getY()); //prints x and Y for debugging
-			System.out.println("BODY:"+enemies[i].getBody().getPosition().x+"Y:"+enemies[i].getBody().getPosition().y); //prints x and Y for debugging		}
-		}
+		
+	
 		song1.setLooping(true);
 		//song1.play();
 		song1.setVolume(0.5f);
-
-		debug = new Box2DDebugRenderer(true, true, true, true, true, true);
+		
 		
 //		long id = sound.play();
 //		long ourSoundID = sound.loop(1.0f,1.0f,0.0f);
@@ -251,13 +204,7 @@ public class MazeGame extends Game {
 //		sound.setPan(id, -1f, 1f);
 
 		//Gdx.input.setInputProcessor(this);
-		Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI,target)
-		.setTimeToTarget(1f)
-		.setArrivalTolerance(1f)
-		.setDecelerationRadius(5);
-		enemiesAI.setBehaviour(arriveSB);
-
-		shape.dispose();
+	
 
 	}
 
@@ -274,11 +221,23 @@ public class MazeGame extends Game {
 		if (inputDelay == 0) {
 			player.update(floorLayer, entityLayer);
 			player2.update(floorLayer, entityLayer);
-			enemiesAI.update(Gdx.graphics.getDeltaTime());
 			//player.getPlayerSprite().setPosition(p1.getPosition().x, p1.getPosition().y);
 			inputDelay = MAX_INPUT_DELAY;
 		}
-
+		if(Gdx.input.isKeyJustPressed(Keys.L))
+		{
+			for(int i=0;i<amount;i++)
+			{
+				world.destroyBody(enemiesAI[i].getBody());
+			}
+			
+			createEnemies();
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.K))
+		{
+			debug = new Box2DDebugRenderer(true, true, true, true, true, true);
+		}
+		
 		try{
 			floorLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tile);
 		}
@@ -302,15 +261,20 @@ public class MazeGame extends Game {
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
-		for(int i=0;i<amount;i++)
+	
+		if(enemiesAI != null) //if there is enemies to render, render them if not skip
 		{
-			enemiesAI.update(Gdx.graphics.getDeltaTime());
-			//enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
-			enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x - 15, enemies[i].getBody().getPosition().y - 15);
-
-			enemies[i].getEnemySprite().draw(renderer.getBatch());
-			
+			for(int i=0;i<amount;i++)
+			{
+				enemiesAI[i].update(Gdx.graphics.getDeltaTime());
+				//enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
+				enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x - 15, enemies[i].getBody().getPosition().y - 15);
+	
+				enemies[i].getEnemySprite().draw(renderer.getBatch());
+				
+			}
 		}
+	
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
 
@@ -468,7 +432,11 @@ public class MazeGame extends Game {
 						-21 - (gridX + gridY) * (4.75f)); //this needs adjusting so they spawn in the board
 			}
 		}
-		debug.render(world,camera.combined);
+		if(debug !=null)
+		{
+			debug.render(world,camera.combined);
+		}
+		
 	}
 
 	@Override
@@ -478,5 +446,39 @@ public class MazeGame extends Game {
 		player.dispose();
 		player2.dispose();
 		song1.dispose();
+	}
+	public void createEnemies()
+	{
+		int type = 1;//(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
+		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
+		enemies = new Enemy[amount];
+		enemiesAI = new Steering[amount];
+		for(int i=0;i<amount;i++)
+		{
+			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
+			int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
+			int gridX = x - 17;
+			int gridY = y - 17;
+			float realX = 292 + (gridX - gridY) * (9.5f);
+			float realY = -21 - (gridX + gridY) * (4.75f);
+			enemies[i] = new Enemy(world, realX, realY, type);
+			enemiesAI[i] = enemies[i].addAI(enemies[i]);
+			int t = enemies[i].getTarget();
+			if(t==1)
+			{
+				System.out.println("player1");
+				target = new Steering(p1, 1); 
+			}
+			else if(t==2)
+			{
+				target = new Steering(p1, 1);
+				System.out.println("player2");
+			}
+			Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI[i],target)
+			.setTimeToTarget(1f)
+			.setArrivalTolerance(1f)
+			.setDecelerationRadius(5);
+			enemiesAI[i].setBehaviour(arriveSB);
+		}
 	}
 }
