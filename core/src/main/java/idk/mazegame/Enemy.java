@@ -1,11 +1,8 @@
 package idk.mazegame;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -21,6 +18,11 @@ public class Enemy {
     private Body body;
     private String name="";
     private int target=-1;
+    private int currentFrame = 0;
+    private int timer = 0;
+    private final int MAX_FRAMES = 4;
+    private final int FRAME_SPEED = 3;
+
     public Enemy(World world,float x, float y, int type) {
         String enemyAtlas = getAtlas(type);
         textureAtlas = new TextureAtlas(enemyAtlas);
@@ -51,9 +53,26 @@ public class Enemy {
     {
         return body;
     }
-    public void updateBody(float x, float y)
+    public void updateBody(float angle)
     {
-        body.setTransform(x, y,0);
+        System.out.println(angle);
+        
+        if (timer > FRAME_SPEED) {
+            currentFrame++;
+            timer = 0;
+        }
+
+        if (currentFrame >= MAX_FRAMES)
+            currentFrame = 0;
+        if(angle > 0 && angle < 90)
+        {
+            enemySprite.setRegion(textureAtlas.findRegion(name+"Right",currentFrame));
+            System.out.println(textureAtlas.findRegion(name+"Right",currentFrame));
+        }
+        else
+        {
+            
+        }
     }
     public void setScale(Float x)
     {

@@ -266,7 +266,7 @@ public class MazeGame extends Game {
 		{
 			for(int i=0;i<amount;i++)
 			{
-				enemiesAI[i].update(Gdx.graphics.getDeltaTime());
+				enemiesAI[i].update(Gdx.graphics.getDeltaTime(),enemies[i]);
 				//enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
 				enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x - 15, enemies[i].getBody().getPosition().y - 15);
 	
@@ -393,17 +393,6 @@ public class MazeGame extends Game {
 			player.getPlayerSprite().setPosition(242.5f,-97f);
 			player.getCoordinates().set(24,1,0);
 
-			for(int i=0;i<amount;i++)
-			{
-				int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
-				int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
-
-				int gridX = x - 17;
-				int gridY = y - 17;
-				enemies[i].getEnemySprite().setPosition(
-						292 + (gridX - gridY) * (9.5f),
-						-21 - (gridX + gridY) * (4.75f)); //this needs adjusting so they spawn in the board
-			}
 		}
 
 		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) {
