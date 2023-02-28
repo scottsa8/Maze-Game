@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Random;
 
 public class Item {
     public int type; //Melee, ranged, magic, shield, single-use
@@ -28,13 +29,33 @@ public class Item {
     public Item(ItemAttributes itemAttrs, int t, int i) { //Create an item using the given type and index
     }
 
-    //public Item generateItem(int thisType, int thisTypeIndex) { //used for creating an item
+    private void generateItem(int thisType, int thisTypeIndex) { //used for creating an item
         //1. Find the item using the type and type index
-        //2. Associate this item with all the attributes of the found item (create a csv file to hold these initial attributes)
+        String[] itemAttrs = attributes.getAttributes(thisType, thisTypeIndex);
+
+        //2. Associate this item with all the attributes of the found item
+        type = Integer.valueOf(itemAttrs[0]);
+        typeIndex = Integer.valueOf(itemAttrs[1]);
+        name = itemAttrs[2];
+        description = itemAttrs[3];
+        damage = Double.valueOf(itemAttrs[4]);
+        defence = Double.valueOf(itemAttrs[5]);
+        range = Double.valueOf(itemAttrs[6]);
+        durability = Double.valueOf(itemAttrs[7]);
+        weight = Double.valueOf(itemAttrs[8]);
+
         //3. Create the items rarity
+        int randomNum = new Random().nextInt(101);
+
+        if (randomNum <= 45) rarity = 1;
+        else if (randomNum <= 70) rarity = 2;
+        else if (randomNum <= 85) rarity = 3;
+        else if (randomNum <= 95) rarity = 4;
+        else if (randomNum <= 99) rarity = 5;
+        else if (randomNum <= 100) rarity = 6;
+
         //4. Modify attributes according to rarity
-        //5. Return item
-    //}
+    }
 
     public void useItem() { //Performs the action of the item and modifies it accordingly
         //1. Find what action is performed with this item

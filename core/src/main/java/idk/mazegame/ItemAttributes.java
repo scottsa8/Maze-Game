@@ -35,7 +35,8 @@ public class ItemAttributes {
         }
     }
 
-    public  String[] getAttributes(String[] index) {
+    public  String[] getAttributes(int type, int typeIndex) {
+        String[] index = {String.valueOf(type), String.valueOf(typeIndex)};
         String[] itemToReturn = meleeItems.get(0);
 
         if (index[0] == "0") {
