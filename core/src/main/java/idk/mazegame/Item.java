@@ -3,8 +3,15 @@ package idk.mazegame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
+import com.badlogic.gdx.Gdx;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class Item {
     public int type; //Melee, ranged, magic, shield, single-use
+    private ItemAttributes attributes;
     private String name;
     private String description;
     private int typeIndex; //Used to find the specific item. Example: Type is melee, typeIndex is 0 so item is just fists
@@ -15,11 +22,13 @@ public class Item {
     private double durability;
     private double weight; //Used for affecting the durability of the item
 
-    public Item() { //Create generic item (Could just be fists)
-
+    public Item(ItemAttributes itemAttrs) { //Create generic item
     }
 
-    //public Item generateItems(int thisType, int thisTypeIndex) { //used for creating an item
+    public Item(ItemAttributes itemAttrs, int t, int i) { //Create an item using the given type and index
+    }
+
+    //public Item generateItem(int thisType, int thisTypeIndex) { //used for creating an item
         //1. Find the item using the type and type index
         //2. Associate this item with all the attributes of the found item (create a csv file to hold these initial attributes)
         //3. Create the items rarity

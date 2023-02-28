@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public class Inventory {
     private ArrayList<Item> inv = new ArrayList<Item>();
+    private ItemAttributes attributes;
 
-    public Inventory() {
-
+    public Inventory(ItemAttributes itemAttrs) {
+        attributes = itemAttrs;
     }
 
     public void inventoryAdd(Item item, int slot) { //Adds the specified item to the specified space in the inventory
@@ -28,6 +29,6 @@ public class Inventory {
             }
         }
 
-        return new Item(); //If no item is found, return fists
+        return new Item(attributes); //If no item is found, return fists
     }
 }

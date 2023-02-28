@@ -27,7 +27,8 @@ public class Player {
     private final float DIAG_MOD = 1f; //0.707 for normalization
     private final int MAX_INPUT_DELAY = 1;
     private int inputDelay = MAX_INPUT_DELAY;
-    private Inventory inv = new Inventory();
+    private ItemAttributes itemAttrs = new ItemAttributes();
+    private Inventory inv = new Inventory(itemAttrs);
     private Item[] slots = new Item[3];
 
     public Player(FileHandle atlasfile) {
