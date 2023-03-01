@@ -56,9 +56,9 @@ import idk.mazegame.EnemyAI.Steering;
  * separate stuff into classes
  * */
 public class MazeGame extends Game {
-	public SpriteBatch batch;
+	private SpriteBatch batch;
 	private BitmapFont font;
-	private String myText;
+	private String myText, myRightText;
 	private GlyphLayout layout;
 	private Sound sound;
 	private Music song1,song2;
@@ -81,10 +81,10 @@ public class MazeGame extends Game {
 	private final float GAME_WORLD_HEIGHT = 900;
 	private final int MAX_INPUT_DELAY = 1;
 	private int inputDelay = MAX_INPUT_DELAY;
-	private int screenWidth, screenHeight, playerX, playerY;
+	private int screenWidth, screenHeight, playerX, playerY, roomCount = 0;
 	private int logDelay = 60;
 	World world = new World(new Vector2(0,0), false);
-	private Body p1;
+	private Body p1, p2;
 	private Box2DDebugRenderer debug;
 
 	@Override
@@ -120,6 +120,7 @@ public class MazeGame extends Game {
 		font = new BitmapFont(Gdx.files.internal("UI/myfont.fnt"));
 		font.getData().setScale(0.4f);
 		myText = "testroom";
+		myRightText = "no of rooms: " + roomCount;
 		layout = new GlyphLayout();
 		layout.setText(font, myText);
 
@@ -148,26 +149,16 @@ public class MazeGame extends Game {
 		player2.setRight(Input.Keys.D);
 		player.setCoordinates(new Vector3(24,8,0));
 		player2.setCoordinates(new Vector3(23,7,0));
-		//THIS NEEDS TO BE MOVED INTO THE PLAYER CLASS
-			BodyDef bodyDef = new BodyDef();
-			bodyDef.type = BodyDef.BodyType.StaticBody;
-			bodyDef.position.set(player.getPlayerSprite().getX(), player.getPlayerSprite().getY());
-			p1 = world.createBody(bodyDef);
-			PolygonShape shape = new PolygonShape();
-			shape.setAsBox(player.getPlayerSprite().getWidth()/2, player.getPlayerSprite().getHeight()/2);
-			FixtureDef fixtureDef = new FixtureDef();
-			fixtureDef.shape = shape;
-			fixtureDef.density = 1f;
-			Fixture fixture = p1.createFixture(fixtureDef);
-			shape.dispose();
-		//
+		p1 = player.createBody(world);
+		p2 = player2.createBody(world);
 		
-		
-	
+		createEnemies();
+
 		song1.setLooping(true);
 		//song1.play();
 		song1.setVolume(0.5f);
-		
+
+		//debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 		
 //		long id = sound.play();
 //		long ourSoundID = sound.loop(1.0f,1.0f,0.0f);
@@ -204,7 +195,6 @@ public class MazeGame extends Game {
 //		sound.setPan(id, -1f, 1f);
 
 		//Gdx.input.setInputProcessor(this);
-	
 
 	}
 
@@ -216,28 +206,29 @@ public class MazeGame extends Game {
 
 	@Override
 	public void render() {
-		world.step(1/30f, 6, 2);
+		world.step(1/10f, 6, 2);
 
 		if (inputDelay == 0) {
 			player.update(floorLayer, entityLayer);
 			player2.update(floorLayer, entityLayer);
-			//player.getPlayerSprite().setPosition(p1.getPosition().x, p1.getPosition().y);
 			inputDelay = MAX_INPUT_DELAY;
 		}
+		
 		if(Gdx.input.isKeyJustPressed(Keys.L))
 		{
 			for(int i=0;i<amount;i++)
 			{
 				world.destroyBody(enemiesAI[i].getBody());
 			}
-			
+
 			createEnemies();
 		}
+		
 		if(Gdx.input.isKeyJustPressed(Keys.K))
 		{
 			debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 		}
-		
+
 		try{
 			floorLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tile);
 		}
@@ -248,7 +239,7 @@ public class MazeGame extends Game {
 		Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
 		//Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+		
 		//camera.update();
 		renderer.setView(camera);
 		//renderer.render();
@@ -261,7 +252,7 @@ public class MazeGame extends Game {
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
-	
+
 		if(enemiesAI != null) //if there is enemies to render, render them if not skip
 		{
 			for(int i=0;i<amount;i++)
@@ -269,12 +260,12 @@ public class MazeGame extends Game {
 				enemiesAI[i].update(Gdx.graphics.getDeltaTime(),enemies[i]);
 				//enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
 				enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x - 15, enemies[i].getBody().getPosition().y - 15);
-	
+
 				enemies[i].getEnemySprite().draw(renderer.getBatch());
-				
+
 			}
 		}
-	
+
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
 
@@ -286,6 +277,7 @@ public class MazeGame extends Game {
 //		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
+		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
 		renderer.renderTileLayer(overlapLayer);
 		renderer.getBatch().end();
 		inputDelay--;
@@ -312,6 +304,13 @@ public class MazeGame extends Game {
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
 
+			for(int i=0;i<amount;i++)
+			{
+				enemies[i].getEnemySprite().draw(renderer.getBatch());
+
+			}
+			player2.getPlayerSprite().draw(renderer.getBatch());
+
 			renderer.getBatch().end();
 		}
 		if (entityLayer.getCell((int) (player.getCoordinates().x - 1), (int) (player.getCoordinates().y)) != null) {
@@ -327,6 +326,13 @@ public class MazeGame extends Game {
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(4));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
+
+			for(int i=0;i<amount;i++)
+			{
+				enemies[i].getEnemySprite().draw(renderer.getBatch());
+
+			}
+			player2.getPlayerSprite().draw(renderer.getBatch());
 
 			renderer.getBatch().end();
 
@@ -345,6 +351,13 @@ public class MazeGame extends Game {
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
 
+			for(int i=0;i<amount;i++)
+			{
+				enemies[i].getEnemySprite().draw(renderer.getBatch());
+
+			}
+			player2.getPlayerSprite().draw(renderer.getBatch());
+
 			renderer.getBatch().end();
 
 		}
@@ -360,6 +373,8 @@ public class MazeGame extends Game {
 			renderer.dispose();
 			map = new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
 			myText = "saferoom";
+			roomCount++;
+			myRightText = "no of rooms: " + roomCount;
 			renderer = new IsometricTiledMapRenderer(map, 1.2f);
 			entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
 			floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
@@ -369,15 +384,10 @@ public class MazeGame extends Game {
 
 			for(int i=0;i<amount;i++)
 			{
-				int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
-				int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
-
-				int gridX = x - 17;
-				int gridY = y - 17;
-				enemies[i].getEnemySprite().setPosition(
-						292 + (gridX - gridY) * (9.5f),
-						-21 - (gridX + gridY) * (4.75f)); //this needs adjusting so they spawn in the board
+				world.destroyBody(enemiesAI[i].getBody());
 			}
+
+			createEnemies();
 		}
 
 		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) {
@@ -386,6 +396,8 @@ public class MazeGame extends Game {
 			renderer.dispose();
 			map = new TmxMapLoader().load("tiledmaps/testRoom.tmx");
 			myText = "testroom";
+			roomCount++;
+			myRightText = "no of rooms: " + roomCount;
 			renderer = new IsometricTiledMapRenderer(map, 1.2f);
 			entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
 			floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
@@ -393,6 +405,12 @@ public class MazeGame extends Game {
 			player.getPlayerSprite().setPosition(242.5f,-97f);
 			player.getCoordinates().set(24,1,0);
 
+			for(int i=0;i<amount;i++)
+			{
+				world.destroyBody(enemiesAI[i].getBody());
+			}
+
+			createEnemies();
 		}
 
 		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) {
@@ -401,6 +419,8 @@ public class MazeGame extends Game {
 			renderer.dispose();
 			map = new TmxMapLoader().load("tiledmaps/forestRoom.tmx");
 			myText = "forestroom";
+			roomCount++;
+			myRightText = "no of rooms: " + roomCount;
 			renderer = new IsometricTiledMapRenderer(map, 1.2f);
 			entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
 			floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
@@ -410,22 +430,16 @@ public class MazeGame extends Game {
 
 			for(int i=0;i<amount;i++)
 			{
-				int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
-				int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
-
-				int gridX = x - 17;
-				int gridY = y - 17;
-
-				enemies[i].getEnemySprite().setPosition(
-						292 + (gridX - gridY) * (9.5f),
-						-21 - (gridX + gridY) * (4.75f)); //this needs adjusting so they spawn in the board
+				world.destroyBody(enemiesAI[i].getBody());
 			}
+
+			createEnemies();
 		}
+		
 		if(debug !=null)
 		{
 			debug.render(world,camera.combined);
 		}
-		
 	}
 
 	@Override
@@ -436,6 +450,7 @@ public class MazeGame extends Game {
 		player2.dispose();
 		song1.dispose();
 	}
+
 	public void createEnemies()
 	{
 		int type = 1;//(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
@@ -456,7 +471,7 @@ public class MazeGame extends Game {
 			if(t==1)
 			{
 				System.out.println("player1");
-				target = new Steering(p1, 1); 
+				target = new Steering(p1, 1);
 			}
 			else if(t==2)
 			{
