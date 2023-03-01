@@ -51,17 +51,53 @@ public class Item {
         durability = Double.valueOf(itemAttrs[7]);
         weight = Double.valueOf(itemAttrs[8]);
 
-        //3. Create the items rarity
-        int randomNum = new Random().nextInt(101);
+        if (name.equals("Fist")) {
+            System.out.println("ITEM - Error: Fist cannot have rarity. Ignore this.");
+        } else {
+            //3. Create the items rarity
+            int randomNum = new Random().nextInt(101);
 
-        if (randomNum <= 45) rarity = 1;
-        else if (randomNum <= 70) rarity = 2;
-        else if (randomNum <= 85) rarity = 3;
-        else if (randomNum <= 95) rarity = 4;
-        else if (randomNum <= 99) rarity = 5;
-        else if (randomNum <= 100) rarity = 6;
+            if (randomNum <= 45) rarity = 1;
+            else if (randomNum <= 70) rarity = 2;
+            else if (randomNum <= 85) rarity = 3;
+            else if (randomNum <= 95) rarity = 4;
+            else if (randomNum <= 99) rarity = 5;
+            else if (randomNum <= 100) rarity = 6;
 
-        //4. Modify attributes according to rarity
+            //4. Modify attributes according to rarity
+            attributeUpdate();
+        }
+    }
+
+    private void attributeUpdate() {
+        if (rarity == 1) {
+            name = "Common: " + name;
+        } else if (rarity == 2) {
+            name = "Uncommon: " + name;
+            damage *= 1.25;
+            defence *= 1.25;
+            durability *= 1.25;
+        } else if (rarity == 3) {
+            name = "Rare: " + name;
+            damage *= 1.5;
+            defence *= 1.5;
+            durability *= 1.5;
+        } else if (rarity == 4) {
+            name = "Epic: " + name;
+            damage *= 2;
+            defence *= 2;
+            durability *= 2;
+        } else if (rarity == 5) {
+            name = "Ultra: " + name;
+            damage *= 3;
+            defence *= 3;
+            durability *= 3;
+        } else if (rarity == 6) {
+            name = "Legendary: " + name;
+            damage *= 5;
+            defence *= 5;
+            durability *= 5;
+        }
     }
 
     public void useItem() { //Performs the action of the item and modifies it accordingly
