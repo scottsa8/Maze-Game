@@ -26,8 +26,8 @@ public class Steering implements Steerable<Vector2>
 
         this.maxLinearSpeed = 500;
         this.maxLinearAcceleration = 5000;
-        this.maxAngularSpeed = 30;
-        this.maxAngularAcceleration = 5;
+        this.maxAngularSpeed = 5;
+        this.maxAngularAcceleration = 1;
         this.tagged = false;
         this.steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
         this.body.setUserData(this);
@@ -38,7 +38,7 @@ public class Steering implements Steerable<Vector2>
         {
             behaviour.calculateSteering(steeringOutput);
             applySteering(delta);
-            e.updateBody(getOrientation());
+            e.updateBody(body.getAngle());
         }
     }
     public void applySteering(float delta)

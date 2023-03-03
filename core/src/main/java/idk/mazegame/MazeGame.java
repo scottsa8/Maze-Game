@@ -86,6 +86,8 @@ public class MazeGame extends Game {
 	World world = new World(new Vector2(0,0), false);
 	private Body p1, p2;
 	private Box2DDebugRenderer debug;
+	private int p1enemies,p2enemies;
+	private boolean debugger =false;
 
 	@Override
 	public void create() {
@@ -220,13 +222,15 @@ public class MazeGame extends Game {
 			{
 				world.destroyBody(enemiesAI[i].getBody());
 			}
-
+			p1enemies =0;
+			p2enemies =0;
 			createEnemies();
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.K))
 		{
 			debug = new Box2DDebugRenderer(true, true, true, true, true, true);
+			debugger = true;
 		}
 
 		try{
@@ -278,6 +282,12 @@ public class MazeGame extends Game {
 
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
+		if(debugger!=false)
+		{
+			font.draw(renderer.getBatch(),"Player1 enemies:"+p1enemies  , 107.5f, 55.5f, screenWidth, Align.topLeft, false );
+			font.draw(renderer.getBatch(),"Player2 enemies:"+p2enemies  , 107.5f, 45.5f, screenWidth, Align.topLeft, false );
+		}
+	
 		renderer.renderTileLayer(overlapLayer);
 		renderer.getBatch().end();
 		inputDelay--;
@@ -470,13 +480,13 @@ public class MazeGame extends Game {
 			int t = enemies[i].getTarget();
 			if(t==1)
 			{
-				System.out.println("player1");
+				p1enemies++;
 				target = new Steering(p1, 1);
 			}
 			else if(t==2)
 			{
+				p2enemies++;
 				target = new Steering(p2, 1);
-				System.out.println("player2");
 			}
 			Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI[i],target)
 			.setTimeToTarget(1f)
