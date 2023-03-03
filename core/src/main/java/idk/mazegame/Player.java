@@ -34,6 +34,7 @@ public class Player {
     private Inventory inv;
     private Item[] slots = new Item[3];
     private Body body;
+    private Leveling level = new Leveling();
 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs) {
         textureAtlas = new TextureAtlas(atlasfile);
@@ -46,7 +47,6 @@ public class Player {
         itemAttrs = gameAttrs;
         inv = new Inventory(itemAttrs);
         
-        slots[1] = new Item(itemAttrs);
         slots[2] = new Item(itemAttrs);
     }
 
@@ -65,6 +65,14 @@ public class Player {
         shape.dispose();
         body = b;
         return body;
+    }
+    public void increaseXP(int amount){
+        level.increaseXP(amount);
+    }
+
+    public int displayXP(){
+        int xp = level.getXP();
+        return xp;
     }
 
     public void walk(int direction) {

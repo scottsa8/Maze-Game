@@ -91,6 +91,8 @@ public class MazeGame extends Game {
 	public boolean debugger =false;
 	private Boolean pressed =false;
 	private ItemAttributes itemAttrs;
+	private int xp;
+	private int xp2;
 
 	@Override
 	public void create() {
@@ -140,7 +142,7 @@ public class MazeGame extends Game {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		//camera.zoom = 0.25f;
+		camera.zoom = 0.25f;
 
 		itemAttrs = new ItemAttributes();
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"),itemAttrs);
@@ -303,6 +305,11 @@ public class MazeGame extends Game {
 		{
 			font.draw(renderer.getBatch(),"Player1 enemies:"+p1enemies  , 107.5f, 55.5f, screenWidth, Align.topLeft, false );
 			font.draw(renderer.getBatch(),"Player2 enemies:"+p2enemies  , 107.5f, 45.5f, screenWidth, Align.topLeft, false );
+
+			xp = player.displayXP();
+			xp2 = player2.displayXP();
+			font.draw(renderer.getBatch(),"Player1 experience:"+xp, 107.5f, 35.5f, screenWidth, Align.topLeft, false );
+			font.draw(renderer.getBatch(),"Player2 experience:"+xp2, 107.5f, 25.5f, screenWidth, Align.topLeft, false );
 		}
 	
 		renderer.renderTileLayer(overlapLayer);
@@ -415,6 +422,8 @@ public class MazeGame extends Game {
 			}
 
 			createEnemies();
+			player.increaseXP(10);
+			player2.increaseXP(10);
 		}
 
 		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) {
@@ -438,6 +447,8 @@ public class MazeGame extends Game {
 			}
 
 			createEnemies();
+			player.increaseXP(10);
+			player2.increaseXP(10);
 		}
 
 		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) {
@@ -461,6 +472,8 @@ public class MazeGame extends Game {
 			}
 
 			createEnemies();
+			player.increaseXP(10);
+			player2.increaseXP(10);
 		}
 		
 		if(debug !=null)
