@@ -50,6 +50,39 @@ public class Player {
         slots[1] = new Item(itemAttrs);
         slots[2] = new Item(itemAttrs);
     }
+    // PLAYER STATS
+    private int maxHealth;
+    private int health;
+    private int stamina;
+    private int coin;
+
+
+    public void setHealth(int health)
+    {
+        this.health = health;
+    }
+    public int getHealth()
+    {
+        return health;
+    }
+
+    public void setStamina(int stamina)
+    {
+        this.stamina = stamina;
+    }
+
+    public int getStamina()
+    {
+        return stamina;
+    }
+
+
+    public void setDefaultValues(){
+
+        maxHealth = 100;
+        stamina = 0;
+        coin = 0;
+    }
 
     public Body createBody(World world) {
         Body b;
