@@ -475,7 +475,7 @@ public class MazeGame extends Game {
 			}
 			else if(t==2)
 			{
-				target = new Steering(p1, 1);
+				target = new Steering(p2, 1);
 				System.out.println("player2");
 			}
 			Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI[i],target)
