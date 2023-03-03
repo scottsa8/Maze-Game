@@ -56,7 +56,7 @@ public class Enemy {
     public void updateBody(float angle)
     {
         angle = (float) ((angle*180) / 3.14);
-        System.out.println(angle);
+       // System.out.println(angle);
         
         if (timer > FRAME_SPEED) {
             currentFrame++;
@@ -68,7 +68,7 @@ public class Enemy {
         if(angle > 0 && angle < 90)
         {
             enemySprite.setRegion(textureAtlas.findRegion(name+"Right",currentFrame));
-            System.out.println(textureAtlas.findRegion(name+"Right",currentFrame));
+          //  System.out.println(textureAtlas.findRegion(name+"Right",currentFrame));
         }
         else
         {
