@@ -142,8 +142,8 @@ public class MazeGame extends Game {
 		camera.zoom = 0.25f;
 
 		itemAttrs = new ItemAttributes();
-		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
-		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
+		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"),itemAttrs);
+		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"),itemAttrs);
 		player.getPlayerSprite().setPosition(310,-64); //310, -64  [10px left, goes left 1 tile 10 px up, goes up 2 tiles]
 		player2.getPlayerSprite().setPosition(290,-64);
 		//player2.getPlayerSprite().setPosition(184,-69);
