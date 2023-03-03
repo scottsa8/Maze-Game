@@ -35,7 +35,7 @@ public class gameMenu implements Screen{
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Skin skin = new Skin(Gdx.files.internal("UI/uiskin.json"), new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas")));
 
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera), game.batch);
+       // stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera), game.batch);
         Gdx.input.setInputProcessor(stage);
 
         //creating table 

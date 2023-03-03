@@ -2,6 +2,7 @@ package idk.mazegame;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.ai.pfa.PathFinderQueue;
 import com.badlogic.gdx.ai.steer.*;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.audio.Music;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -35,6 +37,9 @@ import com.badlogic.gdx.utils.viewport.*;
 
 import idk.mazegame.EnemyAI.Constants;
 import idk.mazegame.EnemyAI.Steering;
+import idk.mazegame.EnemyAI.PathFinding.Tile;
+import idk.mazegame.EnemyAI.PathFinding.TileGraph;
+import idk.mazegame.EnemyAI.PathFinding.pathFinder;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -135,7 +140,7 @@ public class MazeGame extends Game {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		camera.zoom = 0.25f;
+		//camera.zoom = 0.25f;
 
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
 		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
@@ -158,6 +163,9 @@ public class MazeGame extends Game {
 		//song1.play();
 		song1.setVolume(0.5f);
 
+		pathFinder x = new pathFinder(new TileGraph(), new Tile(100, 100, "one"));
+		x.step();
+		x.render(new ShapeRenderer(), batch);
 		//debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 		
 //		long id = sound.play();

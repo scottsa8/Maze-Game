@@ -20,7 +20,7 @@ public class Enemy {
     private int target=-1;
     private int currentFrame = 0;
     private int timer = 0;
-    private final int MAX_FRAMES = 4;
+    private final int MAX_FRAMES = 3;
     private final int FRAME_SPEED = 3;
 
     public Enemy(World world,float x, float y, int type) {
@@ -55,24 +55,43 @@ public class Enemy {
     }
     public void updateBody(float angle)
     {
-        System.out.println(angle);
-        
+     
+        float Realangle = (float) ((angle*180) / 3.14);
+         System.out.println(currentFrame);
+        System.out.println(Realangle);
         if (timer > FRAME_SPEED) {
             currentFrame++;
             timer = 0;
         }
 
         if (currentFrame >= MAX_FRAMES)
-            currentFrame = 0;
-        if(angle > 0 && angle < 90)
+        {
+             currentFrame = 0;
+        }
+           
+       
+        if(Realangle > 0 && Realangle <= 90)
+        {
+            enemySprite.setRegion(textureAtlas.findRegion(name+"Up",currentFrame));
+            System.out.println(textureAtlas.findRegion(name+"Up",currentFrame));
+            currentFrame++;
+        }
+        else if(Realangle>90 && Realangle <= 180)
         {
             enemySprite.setRegion(textureAtlas.findRegion(name+"Right",currentFrame));
             System.out.println(textureAtlas.findRegion(name+"Right",currentFrame));
+            currentFrame++;
         }
-        else
+        else if(Realangle >180)
         {
-            
+            enemySprite.setRegion(textureAtlas.findRegion(name+"Down",currentFrame));
+            System.out.println(textureAtlas.findRegion(name+"Down",currentFrame));
+            currentFrame++;
         }
+       
+      //  else if (angle < 180 && angle >-90 )
+        //{}
+        //else if(){}
     }
     public void setScale(Float x)
     {
