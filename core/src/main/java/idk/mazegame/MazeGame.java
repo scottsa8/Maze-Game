@@ -87,7 +87,9 @@ public class MazeGame extends Game {
 	private Body p1, p2;
 	private Box2DDebugRenderer debug;
 	private int p1enemies,p2enemies;
-	private boolean debugger =false;
+	public boolean debugger =false;
+	private Boolean pressed =false;
+	private ItemAttributes itemAttrs;
 
 	@Override
 	public void create() {
@@ -139,12 +141,15 @@ public class MazeGame extends Game {
 		camera.position.set(304, -48,0);
 		camera.zoom = 0.25f;
 
+		itemAttrs = new ItemAttributes();
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
 		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
 		player.getPlayerSprite().setPosition(310,-64); //310, -64  [10px left, goes left 1 tile 10 px up, goes up 2 tiles]
 		player2.getPlayerSprite().setPosition(290,-64);
 		//player2.getPlayerSprite().setPosition(184,-69);
 		//player2.getPlayerSprite().setPosition(300,-9);
+		player2.setUseSlot1(Input.Keys.CONTROL_RIGHT);
+		player2.setUseSlot2(Input.Keys.SHIFT_RIGHT);
 		player2.setUp(Input.Keys.W);
 		player2.setLeft(Input.Keys.A);
 		player2.setDown(Input.Keys.S);
@@ -222,15 +227,25 @@ public class MazeGame extends Game {
 			{
 				world.destroyBody(enemiesAI[i].getBody());
 			}
-			p1enemies =0;
-			p2enemies =0;
 			createEnemies();
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.K))
 		{
-			debug = new Box2DDebugRenderer(true, true, true, true, true, true);
-			debugger = true;
+			if(pressed==true)
+			{
+				debug = new Box2DDebugRenderer(false, false, false, false, false, false);
+				debugger = false;
+				pressed = false;
+			}
+			else
+			{
+				debug = new Box2DDebugRenderer(true, true, true, true, true, true);
+				debugger = true;
+				pressed = true;
+			}
+			
+		
 		}
 
 		try{
@@ -263,7 +278,7 @@ public class MazeGame extends Game {
 			{
 				enemiesAI[i].update(Gdx.graphics.getDeltaTime(),enemies[i]);
 				//enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
-				enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x - 15, enemies[i].getBody().getPosition().y - 15);
+				enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x -7 , enemies[i].getBody().getPosition().y - 7);
 
 				enemies[i].getEnemySprite().draw(renderer.getBatch());
 
@@ -463,6 +478,8 @@ public class MazeGame extends Game {
 
 	public void createEnemies()
 	{
+		p1enemies =0;
+		p2enemies =0;
 		int type = 1;//(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
 		enemies = new Enemy[amount];
@@ -471,10 +488,10 @@ public class MazeGame extends Game {
 		{
 			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
 			int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
-			int gridX = x - 17;
-			int gridY = y - 17;
-			float realX = 292 + (gridX - gridY) * (9.5f);
-			float realY = -21 - (gridX + gridY) * (4.75f);
+			int gridX = x;
+			int gridY = y;
+			float realX = 298 + (gridX - gridY) * (9.5f);
+			float realY = 166 - (gridX + gridY) * (4.75f);
 			enemies[i] = new Enemy(world, realX, realY, type);
 			enemiesAI[i] = enemies[i].addAI(enemies[i]);
 			int t = enemies[i].getTarget();
