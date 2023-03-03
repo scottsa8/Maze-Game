@@ -34,6 +34,7 @@ import com.badlogic.gdx.utils.viewport.*;
 //import idk.mazegame.screens.PlayScreen;
 
 import idk.mazegame.EnemyAI.Constants;
+import idk.mazegame.EnemyAI.CreateMapBounds;
 import idk.mazegame.EnemyAI.Steering;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -95,7 +96,7 @@ public class MazeGame extends Game {
 	public void create() {
 		//setScreen(new PlayScreen());
 
-		map =  new TmxMapLoader().load("tiledmaps/testRoom.tmx");
+		map =  new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
 		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
 		floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
@@ -139,7 +140,7 @@ public class MazeGame extends Game {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		camera.zoom = 0.25f;
+		//camera.zoom = 0.25f;
 
 		itemAttrs = new ItemAttributes();
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"),itemAttrs);
@@ -160,6 +161,7 @@ public class MazeGame extends Game {
 		p2 = player2.createBody(world);
 		
 		createEnemies();
+		CreateMapBounds x = new CreateMapBounds(map,world);
 
 		song1.setLooping(true);
 		//song1.play();
