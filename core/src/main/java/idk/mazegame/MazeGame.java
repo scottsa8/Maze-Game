@@ -35,6 +35,8 @@ import com.badlogic.gdx.utils.viewport.*;
 
 import idk.mazegame.EnemyAI.Constants;
 import idk.mazegame.EnemyAI.Steering;
+import idk.mazegame.menus.GameMenu;
+import idk.mazegame.menus.GameScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -55,8 +57,8 @@ import idk.mazegame.EnemyAI.Steering;
  * refactoring:
  * separate stuff into classes
  * */
-public class MazeGame extends Game {
-	private SpriteBatch batch;
+public class MazeGame extends Game  {
+	public SpriteBatch batch;
 	private BitmapFont font;
 	private String myText, myRightText;
 	private GlyphLayout layout;
@@ -89,8 +91,7 @@ public class MazeGame extends Game {
 
 	@Override
 	public void create() {
-		//setScreen(new PlayScreen());
-
+	
 		map =  new TmxMapLoader().load("tiledmaps/testRoom.tmx");
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
 		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
@@ -194,10 +195,13 @@ public class MazeGame extends Game {
 //		sound.setPitch(id, 2.0f);
 //		sound.setPan(id, -1f, 1f);
 
-		//Gdx.input.setInputProcessor(this);
+
 
 	}
-
+	public void setup()
+	{
+		
+	}
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height);
