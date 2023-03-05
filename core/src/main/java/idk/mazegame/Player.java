@@ -46,7 +46,8 @@ public class Player {
         //Attributes only generated once.
         itemAttrs = gameAttrs;
         inv = new Inventory(itemAttrs);
-        
+
+        slots[1] = new Item(itemAttrs);
         slots[2] = new Item(itemAttrs);
     }
 
@@ -335,6 +336,18 @@ public class Player {
             inv.printInventory();
         }
 
+        //item usage
+        if (Gdx.input.isKeyJustPressed(useSlot1)) {
+            slots[1].useItem();
+            System.out.println("Item 1 used");
+            slotsCheck();
+        }
+        if (Gdx.input.isKeyJustPressed(useSlot2)) {
+            slots[2].useItem();
+            System.out.println("Item 2 used");
+            slotsCheck();
+        }
+
 
         if(inputIsLocked == true) {
             return;
@@ -435,19 +448,6 @@ public class Player {
             }
             return;
         }
-
-        //item usage
-        if (Gdx.input.isKeyJustPressed(useSlot1)) {
-            slots[1].useItem();
-            System.out.println("Item 1 used");
-            slotsCheck();
-        }
-        if (Gdx.input.isKeyJustPressed(useSlot2)) {
-            slots[2].useItem();
-            System.out.println("Item 1 used");
-            slotsCheck();
-        }
-
 
         // collision checking
         if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left))) {

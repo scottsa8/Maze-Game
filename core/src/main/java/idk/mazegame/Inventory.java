@@ -19,7 +19,6 @@ public class Inventory {
                 //2. Else, add item to the given slot in inventory
             else inv.add(slot, item);
         }
-
     }
 
     public void inventoryRemove(Item item) { //Removes the specified item from the inventory
