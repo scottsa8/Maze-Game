@@ -37,9 +37,7 @@ import com.badlogic.gdx.utils.viewport.*;
 
 import idk.mazegame.EnemyAI.Constants;
 import idk.mazegame.EnemyAI.Steering;
-import idk.mazegame.EnemyAI.PathFinding.Tile;
-import idk.mazegame.EnemyAI.PathFinding.TileGraph;
-import idk.mazegame.EnemyAI.PathFinding.pathFinder;
+
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -163,9 +161,6 @@ public class MazeGame extends Game {
 		//song1.play();
 		song1.setVolume(0.5f);
 
-		pathFinder x = new pathFinder(new TileGraph(), new Tile(100, 100, "one"));
-		x.step();
-		x.render(new ShapeRenderer(), batch);
 		//debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 		
 //		long id = sound.play();
