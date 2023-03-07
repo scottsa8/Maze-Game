@@ -36,6 +36,7 @@ import com.badlogic.gdx.utils.viewport.*;
 //import idk.mazegame.screens.PlayScreen;
 
 import idk.mazegame.EnemyAI.Constants;
+import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
 import idk.mazegame.EnemyAI.Steering;
 
 
@@ -89,11 +90,14 @@ public class MazeGame extends Game {
 	World world = new World(new Vector2(0,0), false);
 	private Body p1, p2;
 	private Box2DDebugRenderer debug;
+	private ShapeRenderer shaper;
+	private PathFindingSystem test;
 
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
-
+		test = new PathFindingSystem();
+		test.generateGraph();
 		map =  new TmxMapLoader().load("tiledmaps/testRoom.tmx");
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
 		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
@@ -160,6 +164,8 @@ public class MazeGame extends Game {
 		song1.setLooping(true);
 		//song1.play();
 		song1.setVolume(0.5f);
+
+		shaper = new ShapeRenderer();
 
 		//debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 		
@@ -443,6 +449,10 @@ public class MazeGame extends Game {
 		{
 			debug.render(world,camera.combined);
 		}
+
+		shaper.begin(ShapeRenderer.ShapeType.Line);
+		shaper.polygon(test.graph.getNodes().get(0).p.getVertices());
+		shaper.end();
 	}
 
 	@Override
