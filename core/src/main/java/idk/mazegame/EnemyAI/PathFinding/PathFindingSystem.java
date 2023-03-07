@@ -21,10 +21,11 @@ public class PathFindingSystem
         {
             for(int col = 32;col>=0;col--)
             {
-                float x= (row-col) * Gdx.graphics.getWidth();
-                float y= (col + row) * Gdx.graphics.getHeight();
+                float x= (row-col) * 7.5f;
+                float y= (col + row) * 3.75f;
                 System.out.println(x);
                 nodes.add(new Node(new Vector2(x,y),new Vector2(row,col),count));
+                //nodes.get(0).p.getVertices()
                 count++;
             }
         }
