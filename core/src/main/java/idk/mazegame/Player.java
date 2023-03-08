@@ -82,12 +82,13 @@ public class Player {
         secondlastKeyedDirection = lastKeyedDirection;
 
         if (timer > FRAME_SPEED) {
-            currentFrame++;
+            //currentFrame++;
             timer = 0;
         }
 
         if (currentFrame >= MAX_FRAMES)
-            currentFrame = 0;
+            //currentFrame = 0;
+            ;
 
         if (direction == 9) {
             lastKeyedDirection = 9;
@@ -254,7 +255,7 @@ public class Player {
         if (lastKeyedDirection == 1)
             playerSprite.setRegion(textureAtlas.findRegion("playerLDown", 0));
 
-        currentFrame = 1;
+        //currentFrame = 1;
         timer = 0;
 
     }
@@ -382,7 +383,7 @@ public class Player {
                     targetY += 0.25f*moveAmountY;
 
                 //animation
-                if(frameCounter == 2) {
+                if(frameCounter == 5) {
                     currentFrame++;
                     if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
                         playerSprite.setRegion(textureAtlas.findRegion("playerUp", currentFrame));
@@ -439,11 +440,11 @@ public class Player {
 //                    nextStep = false;
 //                }
 
-                //idle();
                 targetX = 0;
                 targetY = 0;
                 moveAmountX = 0;
                 moveAmountY = 0;
+                frameCounter = 5;
 
             }
             return;
@@ -584,7 +585,11 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
+
+            return;
         }
+        //if no input pressed for a few ticks -> idle(), reset frame counter
+        idle();
     }
 
     public void dispose() {
