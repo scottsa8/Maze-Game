@@ -1,90 +1,90 @@
 
 zombieSprites.png
-size: 512, 64
+size: 256, 32
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 zombieDown
   rotate: false
   xy: 2, 2
-  size: 32, 32
-  orig: 32, 32
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 0
 zombieDown
   rotate: false
-  xy: 138, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 74, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 2
 zombieDown
   rotate: false
-  xy: 274, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 146, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 1
 zombieLeft
   rotate: false
-  xy: 104, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 56, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 1
 zombieLeft
   rotate: false
-  xy: 240, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 128, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 0
 zombieLeft
   rotate: false
-  xy: 376, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 200, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 2
 zombieRight
   rotate: false
-  xy: 36, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 20, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 2
 zombieRight
   rotate: false
-  xy: 172, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 92, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 1
 zombieRight
   rotate: false
-  xy: 342, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 182, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 0
 zombieUp
   rotate: false
-  xy: 70, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 38, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 1
 zombieUp
   rotate: false
-  xy: 206, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 110, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 0
 zombieUp
   rotate: false
-  xy: 308, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 164, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 2
