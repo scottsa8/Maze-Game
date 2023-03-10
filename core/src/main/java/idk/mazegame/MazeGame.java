@@ -2,16 +2,16 @@ package idk.mazegame;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.ai.pfa.PathFinderQueue;
 import com.badlogic.gdx.ai.steer.*;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
+import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -36,9 +36,8 @@ import com.badlogic.gdx.utils.viewport.*;
 //import idk.mazegame.screens.PlayScreen;
 
 import idk.mazegame.EnemyAI.Constants;
-import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
+import idk.mazegame.EnemyAI.CreateMapBounds;
 import idk.mazegame.EnemyAI.Steering;
-
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -60,7 +59,7 @@ import idk.mazegame.EnemyAI.Steering;
  * separate stuff into classes
  * */
 public class MazeGame extends Game {
-	private SpriteBatch batch;
+	public SpriteBatch batch;
 	private BitmapFont font;
 	private String myText, myRightText;
 	private GlyphLayout layout;
@@ -90,15 +89,18 @@ public class MazeGame extends Game {
 	World world = new World(new Vector2(0,0), false);
 	private Body p1, p2;
 	private Box2DDebugRenderer debug;
-	private ShapeRenderer shaper;
-	private PathFindingSystem test;
+	private int p1enemies,p2enemies;
+	public boolean debugger =false;
+	private Boolean pressed =false;
+	private ItemAttributes itemAttrs;
+	private int xp;
+	private int xp2;
 
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
-		test = new PathFindingSystem();
-		test.generateGraph();
-		map =  new TmxMapLoader().load("tiledmaps/testRoom.tmx");
+
+		map =  new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
 		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
 		floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
@@ -142,14 +144,17 @@ public class MazeGame extends Game {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		//camera.zoom = 0.25f;
+		camera.zoom = 0.25f;
 
-		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"));
-		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"));
+		itemAttrs = new ItemAttributes();
+		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"),itemAttrs);
+		player2 = new Player(Gdx.files.internal("sprites/player2Sprites.atlas"),itemAttrs);
 		player.getPlayerSprite().setPosition(310,-64); //310, -64  [10px left, goes left 1 tile 10 px up, goes up 2 tiles]
 		player2.getPlayerSprite().setPosition(290,-64);
 		//player2.getPlayerSprite().setPosition(184,-69);
 		//player2.getPlayerSprite().setPosition(300,-9);
+		player2.setUseSlot1(Input.Keys.CONTROL_RIGHT);
+		player2.setUseSlot2(Input.Keys.SHIFT_RIGHT);
 		player2.setUp(Input.Keys.W);
 		player2.setLeft(Input.Keys.A);
 		player2.setDown(Input.Keys.S);
@@ -160,12 +165,11 @@ public class MazeGame extends Game {
 		p2 = player2.createBody(world);
 		
 		createEnemies();
+		CreateMapBounds x = new CreateMapBounds(map,world);
 
 		song1.setLooping(true);
 		//song1.play();
 		song1.setVolume(0.5f);
-
-		shaper = new ShapeRenderer();
 
 		//debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 		
@@ -229,13 +233,25 @@ public class MazeGame extends Game {
 			{
 				world.destroyBody(enemiesAI[i].getBody());
 			}
-
 			createEnemies();
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.K))
 		{
-			debug = new Box2DDebugRenderer(true, true, true, true, true, true);
+			if(pressed==true)
+			{
+				debug = new Box2DDebugRenderer(false, false, false, false, false, false);
+				debugger = false;
+				pressed = false;
+			}
+			else
+			{
+				debug = new Box2DDebugRenderer(true, true, true, true, true, true);
+				debugger = true;
+				pressed = true;
+			}
+			
+		
 		}
 
 		try{
@@ -268,7 +284,7 @@ public class MazeGame extends Game {
 			{
 				enemiesAI[i].update(Gdx.graphics.getDeltaTime(),enemies[i]);
 				//enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
-				enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x - 15, enemies[i].getBody().getPosition().y - 15);
+				enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x -7 , enemies[i].getBody().getPosition().y - 7);
 
 				enemies[i].getEnemySprite().draw(renderer.getBatch());
 
@@ -287,6 +303,17 @@ public class MazeGame extends Game {
 
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
+		if(debugger!=false)
+		{
+			font.draw(renderer.getBatch(),"Player1 enemies:"+p1enemies  , 107.5f, 55.5f, screenWidth, Align.topLeft, false );
+			font.draw(renderer.getBatch(),"Player2 enemies:"+p2enemies  , 107.5f, 45.5f, screenWidth, Align.topLeft, false );
+
+			xp = player.displayXP();
+			xp2 = player2.displayXP();
+			font.draw(renderer.getBatch(),"Player1 experience:"+xp, 107.5f, 35.5f, screenWidth, Align.topLeft, false );
+			font.draw(renderer.getBatch(),"Player2 experience:"+xp2, 107.5f, 25.5f, screenWidth, Align.topLeft, false );
+		}
+	
 		renderer.renderTileLayer(overlapLayer);
 		renderer.getBatch().end();
 		inputDelay--;
@@ -397,6 +424,8 @@ public class MazeGame extends Game {
 			}
 
 			createEnemies();
+			player.increaseXP(10);
+			player2.increaseXP(10);
 		}
 
 		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) {
@@ -420,6 +449,8 @@ public class MazeGame extends Game {
 			}
 
 			createEnemies();
+			player.increaseXP(10);
+			player2.increaseXP(10);
 		}
 
 		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) {
@@ -443,16 +474,14 @@ public class MazeGame extends Game {
 			}
 
 			createEnemies();
+			player.increaseXP(10);
+			player2.increaseXP(10);
 		}
 		
 		if(debug !=null)
 		{
 			debug.render(world,camera.combined);
 		}
-
-		shaper.begin(ShapeRenderer.ShapeType.Line);
-		shaper.polygon(test.graph.getNodes().get(0).p.getVertices());
-		shaper.end();
 	}
 
 	@Override
@@ -466,6 +495,8 @@ public class MazeGame extends Game {
 
 	public void createEnemies()
 	{
+		p1enemies =0;
+		p2enemies =0;
 		int type = 1;//(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random amount of enemies between 4-8 (needs tweaking)
 		enemies = new Enemy[amount];
@@ -474,28 +505,35 @@ public class MazeGame extends Game {
 		{
 			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
 			int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
-			int gridX = x - 17;
-			int gridY = y - 17;
-			float realX = 292 + (gridX - gridY) * (9.5f);
-			float realY = -21 - (gridX + gridY) * (4.75f);
+			int gridX = x;
+			int gridY = y;
+			float realX = 298 + (gridX - gridY) * (9.5f);
+			float realY = 166 - (gridX + gridY) * (4.75f);
 			enemies[i] = new Enemy(world, realX, realY, type);
 			enemiesAI[i] = enemies[i].addAI(enemies[i]);
+			float ads= enemiesAI[i].getBoundingRadius();
+			System.out.println(ads);
 			int t = enemies[i].getTarget();
 			if(t==1)
 			{
-				System.out.println("player1");
-				target = new Steering(p1, 1);
+				p1enemies++;
+				target = new Steering(p1, 0);
 			}
 			else if(t==2)
 			{
-				target = new Steering(p1, 1);
-				System.out.println("player2");
+				p2enemies++;
+				target = new Steering(p2, 0);
 			}
+			//Seek<Vector2> seek = new Seek<Vector2>(enemiesAI[i],target);
+			//enemiesAI[i].setBehaviour(seek);
+			 
 			Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI[i],target)
 			.setTimeToTarget(1f)
 			.setArrivalTolerance(1f)
 			.setDecelerationRadius(5);
 			enemiesAI[i].setBehaviour(arriveSB);
+			
+			 
 		}
 	}
 }

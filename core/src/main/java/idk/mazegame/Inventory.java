@@ -28,13 +28,13 @@ public class Inventory {
     }
 
     public Item getFirstItem() {
-        for (int i = 0; i < inv.size() - 1; i++) {
+        for (int i = 0; i < inv.size(); i++) {
             if (inv.get(i).type != 4) { //If the item can be equipped
                 return inv.get(i);
             }
         }
 
-        return new Item(attributes); //If no item is found, return fists
+        return null; //If no item is found, return nothing
     }
 
     public void printInventory() {

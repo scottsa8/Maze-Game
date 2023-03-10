@@ -104,11 +104,20 @@ public class Item {
         //1. Find what action is performed with this item
         //2. Perform that action
         //3. Modify item accordingly
+        durability -= weight;
         //4. Check if durability is below or equal to 0
-        //4. a. If so, destroy item and remove it from its slot
+        if (durability <= 0) {
+            //4. a. If so, destroy item and remove it from its slot
+            destroyItem();
+        }
     }
 
     private void destroyItem() { //Destroys the item object
         //Simply destroy this item
+        type = -1;
+        typeIndex = 0;
+        name = "Destroyed item.";
+        description = "This item has been destroyed.";
+        System.out.println("destroyed");
     }
 }

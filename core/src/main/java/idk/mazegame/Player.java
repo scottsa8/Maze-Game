@@ -21,6 +21,7 @@ public class Player {
     private int lastKeyedDirection = 0;
     private int secondlastKeyedDirection = 0;
     private int up = Input.Keys.UP, down = Input.Keys.DOWN, left = Input.Keys.LEFT, right = Input.Keys.RIGHT;
+    private int useSlot1 = Input.Keys.Q, useSlot2 = Input.Keys.E;
     private boolean inputIsLocked = false, isMoving = false, nextStep = false; // to use for certain parts where player input is disabled: tile-based movement, cutscenes, stamina, debuff
     private float moveAmountX = 0f, moveAmountY = 0f, targetX = 0, targetY = 0;
     private final int MAX_FRAMES = 4;
@@ -29,19 +30,23 @@ public class Player {
     private final float DIAG_MOD = 1f; //0.707 for normalization
     private final int MAX_INPUT_DELAY = 1;
     private int inputDelay = MAX_INPUT_DELAY;
-    private ItemAttributes itemAttrs = new ItemAttributes();
-    private Inventory inv = new Inventory(itemAttrs);
+    private ItemAttributes itemAttrs;
+    private Inventory inv;
     private Item[] slots = new Item[3];
     private Body body;
+    private Leveling level = new Leveling();
 
-    public Player(FileHandle atlasfile) {
+    public Player(FileHandle atlasfile, ItemAttributes gameAttrs) {
         textureAtlas = new TextureAtlas(atlasfile);
         playerSprite = new Sprite(textureAtlas.findRegion("playerDown",0));
         playerSprite.setPosition(Gdx.graphics.getWidth()/2 - playerSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - playerSprite.getHeight()/2);
         coordinates = new Vector3(0,0, 0);
         //playerSprite.setScale(4f);
+
+        //Attributes only generated once.
+        itemAttrs = gameAttrs;
+        inv = new Inventory(itemAttrs);
         
-        slots[1] = new Item(itemAttrs);
         slots[2] = new Item(itemAttrs);
     }
 
@@ -60,6 +65,14 @@ public class Player {
         shape.dispose();
         body = b;
         return body;
+    }
+    public void increaseXP(int amount){
+        level.increaseXP(amount);
+    }
+
+    public int displayXP(){
+        int xp = level.getXP();
+        return xp;
     }
 
     public void walk(int direction) {
@@ -246,22 +259,36 @@ public class Player {
     }
 
     public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
+        System.out.println(slots);
+
+        if (slots[1].type < 0) {
+            slot1Remove();
+        }
+
+        if (slots[2].type < 0) {
+            slot2Remove();
+        }
+
         if (slots[1].name.equals("Fist")) {
             //1. a. If so, check inventory for item to fill slot
             Item foundItem = inv.getFirstItem();
-            //2. Add item found to slot 1
-            slots[1] = foundItem;
-            //3. Remove item found from inventory
-            inv.inventoryRemove(foundItem);
+            if (foundItem != null) {
+                //2. Add item found to slot 1
+                slots[1] = foundItem;
+                //3. Remove item found from inventory
+                inv.inventoryRemove(foundItem);
+            }
         }
 
         if (slots[2].name.equals("Fist")) {
             //1. a. If so, check inventory for item to fill slot
             Item foundItem = inv.getFirstItem();
-            //2. Add item found to slot 2
-            slots[2] = foundItem;
-            //3. Remove item found from inventory
-            inv.inventoryRemove(foundItem);
+            if (foundItem != null) {
+                //2. Add item found to slot 2
+                slots[2] = foundItem;
+                //3. Remove item found from inventory
+                inv.inventoryRemove(foundItem);
+            }
         }
     }
 
@@ -280,7 +307,7 @@ public class Player {
         inv.inventoryRemove(itemToAdd);
     }
 
-    public void slot1Remove(Item itemToRemove) { //Removes the item from the first slot of the player
+    public void slot1Remove() { //Removes the item from the first slot of the player
         //Remove item from slot 1
         slots[1] = new Item(itemAttrs);
 
@@ -288,21 +315,20 @@ public class Player {
         slotsCheck();
     }
 
-    public void slot2Remove(Item itemToRemove) { //Removes the item from the second slot of the player
+    public void slot2Remove() { //Removes the item from the second slot of the player
         //Remove item from slot 2
         slots[2] = new Item(itemAttrs);
 
         //Try to fill slot
         slotsCheck();
     }
-    
+
     public void update(TiledMapTileLayer floorLayer, TiledMapTileLayer entityLayer) {
         getBody().setTransform(getBody().getPosition().set(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),0);
         
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) { //TESTING - Adds a sword to the inventory
             inv.inventoryAdd(new Item(itemAttrs, 0, 1), 0);
             slotsCheck();
-            System.out.println(slots);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT)) { //TESTING - Prints out the inventory contents
@@ -409,6 +435,19 @@ public class Player {
             }
             return;
         }
+
+        //item usage
+        if (Gdx.input.isKeyJustPressed(useSlot1)) {
+            slots[1].useItem();
+            System.out.println("Item 1 used");
+            slotsCheck();
+        }
+        if (Gdx.input.isKeyJustPressed(useSlot2)) {
+            slots[2].useItem();
+            System.out.println("Item 1 used");
+            slotsCheck();
+        }
+
 
         // collision checking
         if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left))) {
@@ -560,6 +599,10 @@ public class Player {
     public void setPlayerSprite(Sprite playerSprite) {
         this.playerSprite = playerSprite;
     }
+
+    public void setUseSlot1(int use) { useSlot1 = use; }
+
+    public void setUseSlot2(int use) { useSlot2 = use; }
 
     public int getUp() {
         return up;

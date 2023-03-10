@@ -26,9 +26,9 @@ public class Enemy {
     public Enemy(World world,float x, float y, int type) {
         String enemyAtlas = getAtlas(type);
         textureAtlas = new TextureAtlas(enemyAtlas);
-        enemySprite = new Sprite(textureAtlas.findRegion(name+"Down",0));
+        enemySprite = new Sprite(textureAtlas.findRegion(name+"Right",0));
         enemySprite.setPosition(Gdx.graphics.getWidth()/2 - enemySprite.getWidth()/2, Gdx.graphics.getHeight()/2 - enemySprite.getHeight()/2);
-        enemySprite.setScale(0.4f);
+      //  enemySprite.setScale(0.4f);
         this.body = createBody(world,x,y);
         
     }
@@ -37,7 +37,7 @@ public class Enemy {
         Body b;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set((x + enemySprite.getWidth()/2), (y+ enemySprite.getHeight()/2));
+        bodyDef.position.set((x + enemySprite.getWidth()/2), (y- enemySprite.getHeight()/2));
         
         b = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
@@ -53,45 +53,35 @@ public class Enemy {
     {
         return body;
     }
-    public void updateBody(float angle)
+    public void updateBody(float angle, Enemy e)
     {
-     
-        float Realangle = (float) ((angle*180) / 3.14);
-         System.out.println(currentFrame);
-        System.out.println(Realangle);
+        angle = (float) ((angle*180) / 3.14);
+      //  System.out.println(angle);
+        
         if (timer > FRAME_SPEED) {
             currentFrame++;
             timer = 0;
         }
 
         if (currentFrame >= MAX_FRAMES)
+            currentFrame = 0;
+        if(angle > 0 && angle < 90)
         {
-             currentFrame = 0;
+            e.getEnemySprite().setRegion(textureAtlas.findRegion(name+"Up",currentFrame));
+          //  System.out.println(textureAtlas.findRegion(name+"Right",currentFrame));
         }
-           
-       
-        if(Realangle > 0 && Realangle <= 90)
+        else if(angle>90 && angle <= 180)
         {
-            enemySprite.setRegion(textureAtlas.findRegion(name+"Up",currentFrame));
-            System.out.println(textureAtlas.findRegion(name+"Up",currentFrame));
+            e.getEnemySprite().setRegion(textureAtlas.findRegion(name+"Right",currentFrame));
+          //  System.out.println(textureAtlas.findRegion(name+"Right",currentFrame));
             currentFrame++;
         }
-        else if(Realangle>90 && Realangle <= 180)
+        else if(angle >180)
         {
-            enemySprite.setRegion(textureAtlas.findRegion(name+"Right",currentFrame));
-            System.out.println(textureAtlas.findRegion(name+"Right",currentFrame));
+            e.getEnemySprite().setRegion(textureAtlas.findRegion(name+"Down",currentFrame));
+            //System.out.println(textureAtlas.findRegion(name+"Down",currentFrame));
             currentFrame++;
         }
-        else if(Realangle >180)
-        {
-            enemySprite.setRegion(textureAtlas.findRegion(name+"Down",currentFrame));
-            System.out.println(textureAtlas.findRegion(name+"Down",currentFrame));
-            currentFrame++;
-        }
-       
-      //  else if (angle < 180 && angle >-90 )
-        //{}
-        //else if(){}
     }
     public void setScale(Float x)
     {
@@ -111,7 +101,7 @@ public class Enemy {
     }
     public Steering addAI(Enemy e)
     {
-        Steering AI = new Steering(e.getBody(),3);
+        Steering AI = new Steering(e.getBody(),5);
         return AI;
     }
     private String getAtlas(int type)
