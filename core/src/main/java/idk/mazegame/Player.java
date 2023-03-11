@@ -37,6 +37,8 @@ public class Player {
     private Leveling level = new Leveling();
 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs) {
+
+        setDefaultValues();
         textureAtlas = new TextureAtlas(atlasfile);
         playerSprite = new Sprite(textureAtlas.findRegion("playerDown",0));
         playerSprite.setPosition(Gdx.graphics.getWidth()/2 - playerSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - playerSprite.getHeight()/2);
@@ -66,6 +68,15 @@ public class Player {
         return health;
     }
 
+    public void setCoin(int coin)
+    {
+        this.coin = coin;
+    }
+    public int getCoin()
+    {
+        return coin;
+    }
+
     public void setStamina(int stamina)
     {
         this.stamina = stamina;
@@ -80,6 +91,7 @@ public class Player {
     public void setDefaultValues(){
 
         maxHealth = 100;
+        health = 100;
         stamina = 0;
         coin = 0;
     }
