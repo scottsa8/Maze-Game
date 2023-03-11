@@ -55,7 +55,7 @@ public class Player {
     // PLAYER STATS
     private int maxHealth;
     private int health;
-    private int stamina;
+    private double stamina;
     private int coin;
 
 
@@ -77,12 +77,13 @@ public class Player {
         return coin;
     }
 
-    public void setStamina(int stamina)
+    public void setStamina(double stamina)
     {
-        this.stamina = stamina;
+        if (stamina <= 100)
+            this.stamina = stamina;
     }
 
-    public int getStamina()
+    public double getStamina()
     {
         return stamina;
     }

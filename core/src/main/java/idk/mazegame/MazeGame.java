@@ -37,6 +37,8 @@ import idk.mazegame.EnemyAI.Constants;
 import idk.mazegame.EnemyAI.CreateMapBounds;
 import idk.mazegame.EnemyAI.Steering;
 
+import static java.lang.Math.sqrt;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
 /**
@@ -229,6 +231,40 @@ public class MazeGame extends Game {
 			player2.update(floorLayer, entityLayer);
 			inputDelay = MAX_INPUT_DELAY;
 		}
+
+		if(enemies != null)
+		{
+			boolean awayFromAll = true;
+			for (Enemy enemy : enemies) {
+				double x1 = enemy.getEnemySprite().getX();
+				double x2 = player.getPlayerSprite().getX();
+				double y1 = enemy.getEnemySprite().getY();
+				double y2 = player.getPlayerSprite().getY();
+
+				double distance = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+				if (distance < 10)
+					awayFromAll = false;
+			}
+			if (awayFromAll)
+				player.setStamina(player.getStamina() + 0.05);
+		}
+
+		if(enemies != null)
+		{
+			boolean awayFromAll = true;
+			for (Enemy enemy : enemies) {
+				double x1 = enemy.getEnemySprite().getX();
+				double x2 = player2.getPlayerSprite().getX();
+				double y1 = enemy.getEnemySprite().getY();
+				double y2 = player2.getPlayerSprite().getY();
+
+				double distance = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+				if (distance < 10)
+					awayFromAll = false;
+			}
+			if (awayFromAll)
+				player2.setStamina(player2.getStamina() + 0.05);
+		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.L))
 		{
@@ -311,14 +347,14 @@ public class MazeGame extends Game {
 
 		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -100.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -120.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), staminaText + player.getStamina(), 107.5f, -130.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), staminaText + (int)player.getStamina(), 107.5f, -130.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), coinText + player.getCoin(), 107.5f, -140.5f, screenWidth, Align.topLeft, false);
 
 		// player stat display
 
 		font.draw(renderer.getBatch(), "Player 2: ", 437.5f, -100.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), healthText + player2.getHealth(), 437.5f, -120.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), staminaText + player2.getStamina(), 437.5f, -130.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), staminaText + (int)player2.getStamina(), 437.5f, -130.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), coinText + player2.getCoin(), 437.5f, -140.5f, screenWidth, Align.topLeft, false);
 
 		if(debugger!=false)
