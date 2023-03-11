@@ -22,10 +22,10 @@ public class graphPath{
             if(Math.abs(node.pos.x - targetPos.x) < 8
             && Math.abs(node.pos.y - targetPos.y) < 8)
             {
-                start = node;
+                end = node;
             }
         }
-       // System.out.println(entityPos + " , " + start.pos + " || " + targetPos + " , " + end.pos);
+       System.out.println(entityPos + " , " + start.pos + " || " + targetPos + " , " + end.pos);
     
         GraphPath<Node> path =  new DefaultGraphPath<Node>();
         new IndexedAStarPathFinder<>(graph).searchNodePath(start, end, dh, path);

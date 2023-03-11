@@ -1,4 +1,5 @@
 package idk.mazegame;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.BooleanArray;
+
 import idk.mazegame.EnemyAI.Constants;
 import idk.mazegame.EnemyAI.Steering;
 
@@ -22,15 +25,22 @@ public class Enemy {
     private int timer = 0;
     private final int MAX_FRAMES = 3;
     private final int FRAME_SPEED = 3;
+    private int number;
+    private boolean dead = false;
 
-    public Enemy(World world,float x, float y, int type) {
+    public Enemy(World world,float x, float y, int type, int index) {
         String enemyAtlas = getAtlas(type);
         textureAtlas = new TextureAtlas(enemyAtlas);
         enemySprite = new Sprite(textureAtlas.findRegion(name+"Right",0));
         enemySprite.setPosition(Gdx.graphics.getWidth()/2 - enemySprite.getWidth()/2, Gdx.graphics.getHeight()/2 - enemySprite.getHeight()/2);
       //  enemySprite.setScale(0.4f);
+        number = index;
         this.body = createBody(world,x,y);
-        
+        this.body.setUserData("enemy"+","+index);        
+    }
+    public void updateUserData(int index)
+    {
+        this.body.setUserData("enemy"+","+index);        
     }
     private Body createBody(World world,float x, float y)
     {
@@ -38,7 +48,6 @@ public class Enemy {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set((x + enemySprite.getWidth()/2), (y- enemySprite.getHeight()/2));
-        
         b = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(enemySprite.getWidth()/2 / Constants.PPM, enemySprite.getHeight()/2 / Constants.PPM);
@@ -155,8 +164,24 @@ public class Enemy {
     {
         target = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
     }
-    public void dispose()
+    public void dispose(Enemy e)
     {
-        this.dispose();
+     
+        
     }
+    public void attack(Player p)
+    {
+        //player take damage.
+    }
+    public void die(Enemy e)
+    {
+        textureAtlas.dispose();
+        e.enemySprite.getTexture().dispose();
+        this.dead=true;
+    }
+    public boolean isDead()
+    {
+        return dead;
+    }
+  
 }

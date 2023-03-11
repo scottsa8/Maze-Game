@@ -21,7 +21,8 @@ public class Node{
             pos.x + 4, pos.y,
             pos.x, pos.y + 2,
             pos.x +4, pos.y +4,
-            pos.x+8,pos.y+2
+            pos.x+8,pos.y+2 
         });
     }
 }
+

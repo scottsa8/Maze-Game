@@ -30,7 +30,7 @@ public class Steering implements Steerable<Vector2>
         this.maxAngularAcceleration = 10;
         this.tagged = false;
         this.steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
-        this.body.setUserData(this);
+        //this.body.setUserData(this);
     }
     public void update(float delta, Enemy e)
     {

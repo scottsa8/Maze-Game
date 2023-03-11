@@ -1,5 +1,6 @@
 package idk.mazegame.EnemyAI.PathFinding;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -7,26 +8,29 @@ public class PathFindingSystem
 {
     public static Graph graph;
     public static DistanceHeuristic dh;
-    
+    private TiledMapTileLayer floorLayer;
+    private TiledMapTileLayer blockLayer;
     public PathFindingSystem()
     {
         dh = new DistanceHeuristic();
     }
-    public void generateGraph()
+    public void generateGraph(TiledMap map)
     {
         Array<Node> nodes = new Array<>();
         int count =0;
-
+        floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
+        blockLayer = (TiledMapTileLayer) map.getLayers().get(1);
         for(int row=32;row>=0;row--)
         {
-            for(int col = 32;col>=0;col--)
+            for(int col=32;col>=0;col--)
             {
-                float x= (row-col) * 7.5f;
-                float y= (col + row) * 3.75f;
-                System.out.println(x);
-                nodes.add(new Node(new Vector2(x,y),new Vector2(row,col),count));
-                //nodes.get(0).p.getVertices()
-                count++;
+                float x= (row-col) * 7.5f +800f;
+                float y= (col + row) * 3.75f+350f;
+                if(floorLayer.getCell(row, col) != null && blockLayer.getCell(row, col) == null) 
+                {
+                    nodes.add(new Node(new Vector2(x,y),new Vector2(row,col),count));
+                    count++;
+                }
             }
         }
 

@@ -1,14 +1,21 @@
 package idk.mazegame;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture.AsynchronousCompletionTask;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Timer;
+
 import idk.mazegame.EnemyAI.Constants;
 
 public class Player {
@@ -35,6 +42,8 @@ public class Player {
     private Item[] slots = new Item[3];
     private Body body;
     private Leveling level = new Leveling();
+    private World world;
+    private Body attackCircle;
 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs) {
         textureAtlas = new TextureAtlas(atlasfile);
@@ -46,11 +55,14 @@ public class Player {
         //Attributes only generated once.
         itemAttrs = gameAttrs;
         inv = new Inventory(itemAttrs);
-        
+
+        slots[1] = new Item(itemAttrs);
         slots[2] = new Item(itemAttrs);
+       
     }
 
     public Body createBody(World world) {
+        this.world = world;
         Body b;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -81,12 +93,13 @@ public class Player {
         secondlastKeyedDirection = lastKeyedDirection;
 
         if (timer > FRAME_SPEED) {
-            currentFrame++;
+            //currentFrame++;
             timer = 0;
         }
 
         if (currentFrame >= MAX_FRAMES)
-            currentFrame = 0;
+            //currentFrame = 0;
+            ;
 
         if (direction == 9) {
             lastKeyedDirection = 9;
@@ -253,13 +266,13 @@ public class Player {
         if (lastKeyedDirection == 1)
             playerSprite.setRegion(textureAtlas.findRegion("playerLDown", 0));
 
-        currentFrame = 1;
+        //currentFrame = 1;
         timer = 0;
 
     }
 
     public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
-        System.out.println(slots);
+      //  System.out.println(slots);
 
         if (slots[1].type < 0) {
             slot1Remove();
@@ -335,6 +348,22 @@ public class Player {
             inv.printInventory();
         }
 
+        //item usage
+        if (Gdx.input.isKeyPressed(useSlot1)) {
+            slots[1].useItem();
+           if(attackCircle == null)
+            {
+                meleeAttack();   
+            }
+
+            slotsCheck();
+        }
+        if (Gdx.input.isKeyJustPressed(useSlot2)) {
+            slots[2].useItem();
+            System.out.println("Item 2 used");
+            slotsCheck();
+        }
+
 
         if(inputIsLocked == true) {
             return;
@@ -369,7 +398,7 @@ public class Player {
                     targetY += 0.25f*moveAmountY;
 
                 //animation
-                if(frameCounter == 2) {
+                if(frameCounter == 5) {
                     currentFrame++;
                     if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
                         playerSprite.setRegion(textureAtlas.findRegion("playerUp", currentFrame));
@@ -426,28 +455,15 @@ public class Player {
 //                    nextStep = false;
 //                }
 
-                //idle();
                 targetX = 0;
                 targetY = 0;
                 moveAmountX = 0;
                 moveAmountY = 0;
+                frameCounter = 5;
 
             }
             return;
         }
-
-        //item usage
-        if (Gdx.input.isKeyJustPressed(useSlot1)) {
-            slots[1].useItem();
-            System.out.println("Item 1 used");
-            slotsCheck();
-        }
-        if (Gdx.input.isKeyJustPressed(useSlot2)) {
-            slots[2].useItem();
-            System.out.println("Item 1 used");
-            slotsCheck();
-        }
-
 
         // collision checking
         if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left))) {
@@ -584,12 +600,17 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
+
+            return;
         }
+        //if no input pressed for a few ticks -> idle(), reset frame counter
+        idle();
     }
 
     public void dispose() {
         textureAtlas.dispose();
         playerSprite.getTexture().dispose();
+        
     }
 
     public Sprite getPlayerSprite() {
@@ -655,5 +676,54 @@ public class Player {
     public Body getBody() {
         return body;
     }
+    public void meleeAttack()
+    {
+        Vector2 pos = new Vector2();
+        if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
+        pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
+        if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
+        if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -6, getPlayerSprite().getHeight()/2 / Constants.PPM);
+        if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 6, getPlayerSprite().getHeight()/2 / Constants.PPM);
+        if (lastKeyedDirection == 9)
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM+6, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
+        if (lastKeyedDirection == 7)
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM-6, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
+        if (lastKeyedDirection == 3)
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM +6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
+        if (lastKeyedDirection == 1)
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
+               
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.bullet = true;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f);
+       
+        attackCircle = world.createBody(bodyDef);
+        attackCircle.setUserData("attack");
 
+        CircleShape shape = new CircleShape();
+        shape.setPosition(pos);
+        shape.setRadius(2);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        Fixture fixture = attackCircle.createFixture(fixtureDef);
+        shape.dispose();
+
+        Timer timer=new Timer();
+                timer.scheduleTask(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        try{
+                            world.destroyBody(attackCircle);
+                            attackCircle=null;
+                        }
+                      catch(Exception e){};
+                    }
+                },0.01f);  
+            
+    }
 }
