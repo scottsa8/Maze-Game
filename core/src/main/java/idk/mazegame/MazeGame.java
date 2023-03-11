@@ -104,14 +104,15 @@ public class MazeGame extends Game {
 
 	@Override
 	public void create() {
-		collsion();		
+		test = new PathFindingSystem();
 		map =  new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
+		test.generateGraph(map);
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
 		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
 		floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
 		overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
 		tile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("tiledmaps/tileSprites.png")),32,32,16,16));
-
+		collsion();		
 		
 		floorLayer.getCell(23, 7).setTile(tile);
 		floorLayer.getCell(24, 8).setTile(tile);
@@ -215,8 +216,7 @@ public class MazeGame extends Game {
 //		sound.setPan(id, -1f, 1f);
 
 		//Gdx.input.setInputProcessor(this);
-		test = new PathFindingSystem();
-		test.generateGraph(map);
+	
 	}
 
 	@Override
@@ -230,9 +230,9 @@ public class MazeGame extends Game {
 		world.step(1/10f, 6, 2);
 
 		shaper.begin(ShapeRenderer.ShapeType.Line);
-		for(int i=0;i<PathFindingSystem.graph.getNodeCount();i++)
+		for(int ads=0;ads<PathFindingSystem.graph.getNodeCount();ads++)
 		{
-			shaper.polygon(PathFindingSystem.graph.getNodes().get(i).p.getVertices());
+			shaper.polygon(PathFindingSystem.graph.getNodes().get(ads).p.getVertices());
 		}
 		shaper.end();
 
