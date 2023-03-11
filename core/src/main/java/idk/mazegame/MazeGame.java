@@ -32,6 +32,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.ArrayMap.Entries;
 import com.badlogic.gdx.utils.viewport.*;
 
 import idk.mazegame.EnemyAI.PathFinding.Node;
@@ -74,7 +75,7 @@ public class MazeGame extends Game {
 	private int max=8,min=4;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private ArrayList<Steering> enemiesAI = new ArrayList<>();
-
+	public static ArrayList<Steering> entities = new ArrayList<>();
 	private Player player, player2;
 	private Steering target;
 	private TiledMap map;
@@ -150,7 +151,7 @@ public class MazeGame extends Game {
 //		camera.position.set(backgroundImage.getX()/2 + Gdx.graphics.getWidth()/2, backgroundImage.getY()/2 + Gdx.graphics.getHeight()/2,0);
 		//camera.position.set(848, -48,0);
 		camera.position.set(304, -48,0);
-		//camera.zoom = 0.25f;
+		camera.zoom = 0.25f;
 
 		itemAttrs = new ItemAttributes();
 		player = new Player(Gdx.files.internal("sprites/player1Sprites.atlas"),itemAttrs);
@@ -309,7 +310,16 @@ public class MazeGame extends Game {
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
-
+		if(entities!= null)
+		{
+			for(int i=0;i<entities.size();i++)
+			{
+				System.out.println(entities.size());
+				entities.get(i).update(Gdx.graphics.getDeltaTime());
+				System.out.println(entities.get(i).getPosition());
+			}
+			
+		}
 		if(enemiesAI != null) //if there is enemies to render, render them if not skip
 		{
 			for(int i=0;i<enemies.size();i++)

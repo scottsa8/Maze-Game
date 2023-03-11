@@ -32,6 +32,14 @@ public class Steering implements Steerable<Vector2>
         this.steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
         //this.body.setUserData(this);
     }
+    public void update(float delta)
+    {
+        if(behaviour != null)
+        {
+            behaviour.calculateSteering(steeringOutput);
+            applySteering(delta);
+        }
+    }
     public void update(float delta, Enemy e)
     {
         if(behaviour != null)
