@@ -229,12 +229,7 @@ public class MazeGame extends Game {
 	public void render() {
 		world.step(1/10f, 6, 2);
 
-		shaper.begin(ShapeRenderer.ShapeType.Line);
-		for(int ads=0;ads<PathFindingSystem.graph.getNodeCount();ads++)
-		{
-			shaper.polygon(PathFindingSystem.graph.getNodes().get(ads).p.getVertices());
-		}
-		shaper.end();
+
 
 		if (inputDelay == 0) {
 			player.update(floorLayer, entityLayer);
@@ -525,8 +520,12 @@ public class MazeGame extends Game {
 		{
 			debug.render(world,camera.combined);
 		}
-		
-	
+		shaper.begin(ShapeRenderer.ShapeType.Line);
+		for(int ads=0;ads<PathFindingSystem.graph.getNodeCount();ads++)
+		{
+			shaper.polygon(PathFindingSystem.graph.getNodes().get(ads).p.getVertices());
+		}
+		shaper.end();
 	}
 
 	@Override
