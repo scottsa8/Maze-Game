@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Timer;
+
 import idk.mazegame.EnemyAI.Constants;
 
 public class Player {
@@ -35,7 +38,9 @@ public class Player {
     private Item[] slots = new Item[3];
     private Body body;
     private Leveling level = new Leveling();
-
+    private World world;
+    private Body attackCircle;
+    private int ammo =0; // temp for now, not sure how max ammo will work 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs) {
 
         setDefaultValues();
@@ -98,6 +103,7 @@ public class Player {
     }
 
     public Body createBody(World world) {
+        this.world = world;
         Body b;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -307,7 +313,7 @@ public class Player {
     }
 
     public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
-        System.out.println(slots);
+    //    System.out.println(slots);
 
         if (slots[1].type < 0) {
             slot1Remove();
@@ -386,7 +392,16 @@ public class Player {
         //item usage
         if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
-            System.out.println("Item 1 used");
+       //    if(ammo <7)
+         //   {
+           //     rangeAttack(1);
+           // }
+            if(attackCircle ==null)
+            {
+                String x = slots[1].name;
+                meleeAttack(x);
+            }
+            
             slotsCheck();
         }
         if (Gdx.input.isKeyJustPressed(useSlot2)) {
@@ -706,5 +721,127 @@ public class Player {
     public Body getBody() {
         return body;
     }
+    public void meleeAttack(String name)
+    {
+        Vector2 pos = new Vector2();
+        if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
+        pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +12);
+        if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM -12);
+        if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -12, getPlayerSprite().getHeight()/2 / Constants.PPM);
+        if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 12, getPlayerSprite().getHeight()/2 / Constants.PPM);
+        if (lastKeyedDirection == 9)
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM+6, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
+        if (lastKeyedDirection == 7)
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM-6, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
+        if (lastKeyedDirection == 3)
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM +6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
+        if (lastKeyedDirection == 1)
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
+               
+        attackCircle = ShapeMaker.createCircle(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
+        attackCircle.setUserData(name.toString());
+       
+        Timer timer=new Timer();
+                timer.scheduleTask(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        try{
+                            world.destroyBody(attackCircle);
+                            attackCircle=null;
+                        }
+                      catch(Exception e){};
+                    }
+                },0.1f);  
+    }
+    public void rangeAttack(int range)
+    {
+        Body dest;
+        int offset =0;
+        if(range==0) //short range
+        {
+            offset =0;
+        }
+        else if(range ==1)//long range
+        {
+            offset=30;
+        }
+        Vector2 pos = new Vector2();
+        Vector2 dir = new Vector2();
+        if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
+        {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +(30+offset));
+            dir = new Vector2(0,1);
+        }
+        if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
+        {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM -(30+offset));
+            dir = new Vector2(0,2);  
+        }
+        if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
+        {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -(30+offset), getPlayerSprite().getHeight()/2 / Constants.PPM);
+            dir = new Vector2(2,0);  
+        }
+        if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
+        {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + (30+offset), getPlayerSprite().getHeight()/2 / Constants.PPM);
+            dir = new Vector2(1,0);
+        }
+        if (lastKeyedDirection == 9)
+        {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + (15+offset), getPlayerSprite().getHeight()/2 / Constants.PPM +(15+offset));
+            dir = new Vector2(1,1);
+        }
+        if (lastKeyedDirection == 7)
+        {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM-(15+offset), getPlayerSprite().getHeight()/2 / Constants.PPM +(15+offset));
+            dir = new Vector2(2,1);
+        }
+        if (lastKeyedDirection == 3)
+        {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM +(15+offset), getPlayerSprite().getHeight()/2 / Constants.PPM -(15+offset));
+            dir = new Vector2(1,2); 
+        }
+        if (lastKeyedDirection == 1)
+        {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -(15+offset), getPlayerSprite().getHeight()/2 / Constants.PPM -(15+offset));
+            dir = new Vector2(2,2);
+        }
 
+            dest = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),
+            pos, true, world);
+            dest.setUserData("dest");
+            
+            MazeGame.entities.add(new Projectile(world,new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),dir,ammo));
+            dir= new Vector2(0,0);
+          
+            Timer timer=new Timer();
+            timer.scheduleTask(new Timer.Task() {
+                @Override
+                public void run() {
+                    try{
+                        world.destroyBody(dest);
+                        ammo++;
+                    }
+                    catch(Exception e){};
+                }
+            },1.2f);  
+            
+        
+        
+
+    }
+    public int getAmmo()
+    {
+        return ammo;
+    }
+    public void reload()
+    {
+        ammo=0;
+    }
 }
+
+

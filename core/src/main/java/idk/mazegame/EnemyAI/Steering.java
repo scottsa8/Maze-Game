@@ -24,13 +24,21 @@ public class Steering implements Steerable<Vector2>
         this.body = body;
         this.boundingRadius = boundingRadius;
 
-        this.maxLinearSpeed = 500;
-        this.maxLinearAcceleration = 5000;
-        this.maxAngularSpeed = 5;
-        this.maxAngularAcceleration = 1;
+        this.maxLinearSpeed = 100;
+        this.maxLinearAcceleration = 100;
+        this.maxAngularSpeed = 10;
+        this.maxAngularAcceleration = 10;
         this.tagged = false;
         this.steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
-        this.body.setUserData(this);
+        //this.body.setUserData(this);
+    }
+    public void update(float delta)
+    {
+        if(behaviour != null)
+        {
+            behaviour.calculateSteering(steeringOutput);
+            applySteering(delta);
+        }
     }
     public void update(float delta, Enemy e)
     {
