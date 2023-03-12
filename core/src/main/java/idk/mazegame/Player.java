@@ -1,5 +1,6 @@
 package idk.mazegame;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.CompletableFuture.AsynchronousCompletionTask;
 
@@ -46,6 +47,7 @@ public class Player {
     private Leveling level = new Leveling();
     private World world;
     private Body attackCircle;
+    private int ammo =0; // temp for now, not sure how max ammo will work 
 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs) {
         textureAtlas = new TextureAtlas(atlasfile);
@@ -351,9 +353,9 @@ public class Player {
         }
 
         //item usage
-        if (Gdx.input.isKeyPressed(useSlot1)) {
+        if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
-           if(attackCircle == null)
+           if(ammo <7)
             {
                 rangeAttack(1);
             }
@@ -716,8 +718,6 @@ public class Player {
     public void rangeAttack(int range)
     {
         Body dest;
-        Body origin;
-        Body arrow;
         int offset =0;
         if(range==0) //short range
         {
@@ -728,56 +728,77 @@ public class Player {
             offset=30;
         }
         Vector2 pos = new Vector2();
-       
+        Vector2 dir = new Vector2();
         if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
+        {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +(30+offset));
-         
+            dir = new Vector2(0,1);
+        }
         if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
+        {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM -(30+offset));
-      
+            dir = new Vector2(0,2);  
+        }
         if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
+        {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -(30+offset), getPlayerSprite().getHeight()/2 / Constants.PPM);
+            dir = new Vector2(2,0);  
+        }
         if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
+        {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + (30+offset), getPlayerSprite().getHeight()/2 / Constants.PPM);
+            dir = new Vector2(1,0);
+        }
         if (lastKeyedDirection == 9)
+        {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + (15+offset), getPlayerSprite().getHeight()/2 / Constants.PPM +(15+offset));
+            dir = new Vector2(1,1);
+        }
         if (lastKeyedDirection == 7)
+        {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM-(15+offset), getPlayerSprite().getHeight()/2 / Constants.PPM +(15+offset));
+            dir = new Vector2(2,1);
+        }
         if (lastKeyedDirection == 3)
+        {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM +(15+offset), getPlayerSprite().getHeight()/2 / Constants.PPM -(15+offset));
+            dir = new Vector2(1,2); 
+        }
         if (lastKeyedDirection == 1)
+        {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -(15+offset), getPlayerSprite().getHeight()/2 / Constants.PPM -(15+offset));
+            dir = new Vector2(2,2);
+        }
 
             dest = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),
             pos, true, world);
             dest.setUserData("dest");
-            //origin = ShapeMaker.createCircle(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),new Vector2(0,2), true, world);
-            //origin.setUserData("origin");
-            arrow = ShapeMaker.createCircle(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),new Vector2(0,10), true, world);
-            Steering control = new Steering(arrow,1);
-            //control.setMaxAngularAcceleration(0);
-            //control.setMaxAngularSpeed(0);
-            Steering destination = new Steering(dest, 1);
             
-            Arrive<Vector2> arriveSB = new Arrive<Vector2>(control,destination)
-			.setTimeToTarget(1f)
-			.setArrivalTolerance(1f)
-			.setDecelerationRadius(5);
-			control.setBehaviour(arriveSB);
-            MazeGame.entities.add(control);
-            
+            MazeGame.entities.add(new Projectile(world,new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),dir,ammo));
+            dir= new Vector2(0,0);
+          
             Timer timer=new Timer();
-                    timer.scheduleTask(new Timer.Task() {
-                        @Override
-                        public void run() {
-                            try{
-                                MazeGame.entities.clear();
-                                world.destroyBody(dest);
-                                world.destroyBody(arrow);
-                            }
-                          catch(Exception e){};
-                        }
-                    },0.01f);  
+            timer.scheduleTask(new Timer.Task() {
+                @Override
+                public void run() {
+                    try{
+                        world.destroyBody(dest);
+                        ammo++;
+                    }
+                    catch(Exception e){};
+                }
+            },1.2f);  
+            
+        
+        
 
+    }
+    public int getAmmo()
+    {
+        return ammo;
+    }
+    public void reload()
+    {
+        ammo=0;
     }
 }

@@ -33,6 +33,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.ArrayMap.Entries;
+import java.util.Iterator;
 import com.badlogic.gdx.utils.viewport.*;
 
 import idk.mazegame.EnemyAI.PathFinding.Node;
@@ -75,7 +76,7 @@ public class MazeGame extends Game {
 	private int max=8,min=4;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private ArrayList<Steering> enemiesAI = new ArrayList<>();
-	public static ArrayList<Steering> entities = new ArrayList<>();
+	public static ArrayList<Projectile> entities = new ArrayList<>();
 	private Player player, player2;
 	private Steering target;
 	private TiledMap map;
@@ -98,7 +99,7 @@ public class MazeGame extends Game {
 	private ItemAttributes itemAttrs;
 	private int xp;
 	private int xp2;
-	private boolean colliding,hitting=false;
+	private boolean colliding,hitting,hit=false;
 	private int amount;
 	private ShapeRenderer shaper;
 	private PathFindingSystem test;
@@ -258,6 +259,21 @@ public class MazeGame extends Game {
 				}
 			}
 		}
+		System.out.println(entities.size());
+		System.out.println("Player 1 ammo: "+player.getAmmo());
+		System.out.println("Player 2 ammo: "+player2.getAmmo());
+
+		if(player.getAmmo()==7 || player2.getAmmo() ==7)
+		{
+			for(int i=0;i<entities.size();i++)
+			{
+				world.destroyBody(entities.get(i).getBody());
+			}			
+			entities.clear();
+			player.reload();
+			player2.reload();
+		}
+		
 		
 		if(Gdx.input.isKeyJustPressed(Keys.L))
 		{
@@ -312,13 +328,10 @@ public class MazeGame extends Game {
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
 		if(entities!= null)
 		{
-			for(int i=0;i<entities.size();i++)
+			for(int counter =0; counter<entities.size();counter++)
 			{
-				System.out.println(entities.size());
-				entities.get(i).update(Gdx.graphics.getDeltaTime());
-				System.out.println(entities.get(i).getPosition());
+				entities.get(counter).update();
 			}
-			
 		}
 		if(enemiesAI != null) //if there is enemies to render, render them if not skip
 		{
@@ -611,8 +624,8 @@ public class MazeGame extends Game {
 						colliding=true;
 					}
 					if(contact.getFixtureB().getBody().getUserData().toString().contains("enemy")&&
-					contact.getFixtureA().getBody().getUserData()=="attack") 
-					{
+					(contact.getFixtureA().getBody().getUserData()=="attack"))
+					{		
 						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
 						System.out.println(x);
 						int y = Integer.parseInt(x[1]);
@@ -621,7 +634,7 @@ public class MazeGame extends Game {
 						hitting= true;
 					}
 					else if(contact.getFixtureA().getBody().getUserData().toString().contains("enemy")&&
-					contact.getFixtureB().getBody().getUserData()=="attack")
+					(contact.getFixtureB().getBody().getUserData()=="attack"))
 					{
 						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
 					
@@ -630,6 +643,48 @@ public class MazeGame extends Game {
 						enemies.get(y).die(enemies.get(y));
 						System.out.println("killed enemy"+y);
 						hitting= true;
+					}
+					if(contact.getFixtureA().getBody().getUserData().toString().contains("proj") &&
+					contact.getFixtureB().getBody().getUserData().toString().contains("enemy"))
+					{		
+						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
+						int y = Integer.parseInt(x[1]);
+						String[] p = contact.getFixtureA().getBody().getUserData().toString().split(",");
+						int t = Integer.parseInt(p[1]);
+						System.out.println(t);
+						enemies.get(y).die(enemies.get(y));
+						System.out.println("killed enemy"+y);
+						hitting= true;
+						entities.get(t).setHit(true);				
+					}
+					else if(contact.getFixtureB().getBody().getUserData().toString().contains("proj") &&
+					contact.getFixtureA().getBody().getUserData().toString().contains("enemy"))
+					{		
+						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
+						int y = Integer.parseInt(x[1]);
+						String[] p = contact.getFixtureB().getBody().getUserData().toString().split(",");
+						int t = Integer.parseInt(p[1]);
+						System.out.println(t);
+						enemies.get(y).die(enemies.get(y));
+						System.out.println("killed enemy"+y);
+						hitting= true;
+						entities.get(t).setHit(true);				
+					}
+					else if(contact.getFixtureB().getBody().getUserData().toString().contains("proj") &&
+					contact.getFixtureA().getBody().getUserData()=="dest")
+					{
+						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
+						int y = Integer.parseInt(x[1]);
+						System.out.println(y);
+						entities.get(y).setHit(true);
+					}
+					else if(contact.getFixtureA().getBody().getUserData().toString().contains("proj") &&
+					contact.getFixtureB().getBody().getUserData()=="dest")
+					{
+						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
+						int y = Integer.parseInt(x[1]);
+						System.out.println(y);
+						entities.get(y).setHit(true);
 					}
 				}	
 				catch(Exception e)
@@ -641,6 +696,7 @@ public class MazeGame extends Game {
 			public void endContact(Contact contact) {
 				colliding=false;
 				hitting=false;
+				hit =false;
 			}
 			@Override
 			public void preSolve(Contact contact, Manifold oldManifold) {}

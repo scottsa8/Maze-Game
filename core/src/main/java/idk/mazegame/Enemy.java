@@ -50,7 +50,7 @@ public class Enemy {
         bodyDef.position.set((x + enemySprite.getWidth()/2), (y- enemySprite.getHeight()/2));
         b = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(enemySprite.getWidth()/2 / Constants.PPM, enemySprite.getHeight()/2 / Constants.PPM);
+        shape.setAsBox(enemySprite.getWidth()/2 / Constants.PPM, enemySprite.getHeight()/2 / Constants.PPM + 1);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
