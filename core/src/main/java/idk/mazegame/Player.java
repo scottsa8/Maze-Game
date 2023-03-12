@@ -1,15 +1,7 @@
 package idk.mazegame;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.CompletableFuture.AsynchronousCompletionTask;
-
-import javax.swing.MenuElement;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.ai.btree.Task;
-import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -21,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 
 import idk.mazegame.EnemyAI.Constants;
-import idk.mazegame.EnemyAI.Steering;
 
 public class Player {
     private TextureAtlas textureAtlas;
@@ -50,8 +41,9 @@ public class Player {
     private World world;
     private Body attackCircle;
     private int ammo =0; // temp for now, not sure how max ammo will work 
-
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs) {
+
+        setDefaultValues();
         textureAtlas = new TextureAtlas(atlasfile);
         playerSprite = new Sprite(textureAtlas.findRegion("playerDown",0));
         playerSprite.setPosition(Gdx.graphics.getWidth()/2 - playerSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - playerSprite.getHeight()/2);
@@ -64,7 +56,50 @@ public class Player {
 
         slots[1] = new Item(itemAttrs);
         slots[2] = new Item(itemAttrs);
-       
+    }
+    // PLAYER STATS
+    private int maxHealth;
+    private int health;
+    private double stamina;
+    private int coin;
+
+
+    public void setHealth(int health)
+    {
+        this.health = health;
+    }
+    public int getHealth()
+    {
+        return health;
+    }
+
+    public void setCoin(int coin)
+    {
+        this.coin = coin;
+    }
+    public int getCoin()
+    {
+        return coin;
+    }
+
+    public void setStamina(double stamina)
+    {
+        if (stamina <= 100)
+            this.stamina = stamina;
+    }
+
+    public double getStamina()
+    {
+        return stamina;
+    }
+
+
+    public void setDefaultValues(){
+
+        maxHealth = 100;
+        health = 100;
+        stamina = 0;
+        coin = 0;
     }
 
     public Body createBody(World world) {
@@ -278,7 +313,7 @@ public class Player {
     }
 
     public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
-      //  System.out.println(slots);
+    //    System.out.println(slots);
 
         if (slots[1].type < 0) {
             slot1Remove();
@@ -621,7 +656,6 @@ public class Player {
     public void dispose() {
         textureAtlas.dispose();
         playerSprite.getTexture().dispose();
-        
     }
 
     public Sprite getPlayerSprite() {
@@ -809,3 +843,5 @@ public class Player {
         ammo=0;
     }
 }
+
+

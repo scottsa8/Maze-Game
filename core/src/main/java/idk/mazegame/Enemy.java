@@ -25,7 +25,6 @@ public class Enemy {
     private int timer = 0;
     private final int MAX_FRAMES = 3;
     private final int FRAME_SPEED = 3;
-    private int number;
     private boolean dead = false;
     private int Health =100;
 
@@ -34,8 +33,6 @@ public class Enemy {
         textureAtlas = new TextureAtlas(enemyAtlas);
         enemySprite = new Sprite(textureAtlas.findRegion(name+"Right",0));
         enemySprite.setPosition(Gdx.graphics.getWidth()/2 - enemySprite.getWidth()/2, Gdx.graphics.getHeight()/2 - enemySprite.getHeight()/2);
-      //  enemySprite.setScale(0.4f);
-        number = index;
         this.body = createBody(world,x,y);
         this.body.setUserData("enemy"+","+index);        
     }

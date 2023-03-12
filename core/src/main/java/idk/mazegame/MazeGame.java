@@ -1,16 +1,9 @@
 package idk.mazegame;
 
-import java.nio.file.SecureDirectoryStream;
 import java.util.ArrayList;
-import java.util.EnumMap;
-
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.ai.pfa.GraphPath;
-import com.badlogic.gdx.ai.steer.*;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
-import com.badlogic.gdx.ai.steer.behaviors.Seek;
-import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,10 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
@@ -30,19 +20,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.ArrayMap.Entries;
-import java.util.Iterator;
 import com.badlogic.gdx.utils.viewport.*;
-
-import idk.mazegame.EnemyAI.PathFinding.Node;
-//import idk.mazegame.screens.PlayScreen;
-import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
-import idk.mazegame.EnemyAI.PathFinding.graphPath;
-import idk.mazegame.EnemyAI.Constants;
 import idk.mazegame.EnemyAI.CreateMapBounds;
 import idk.mazegame.EnemyAI.Steering;
+import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
+
+import static java.lang.Math.sqrt;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -67,6 +50,7 @@ public class MazeGame extends Game {
 	public SpriteBatch batch;
 	private BitmapFont font;
 	private String myText, myRightText;
+	private String healthText, staminaText, coinText;
 	private GlyphLayout layout;
 	private Sound sound;
 	private Music song1,song2;
@@ -77,6 +61,7 @@ public class MazeGame extends Game {
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private ArrayList<Steering> enemiesAI = new ArrayList<>();
 	public static ArrayList<Projectile> entities = new ArrayList<>();
+
 	private Player player, player2;
 	private Steering target;
 	private TiledMap map;
@@ -104,9 +89,9 @@ public class MazeGame extends Game {
 	private ShapeRenderer shaper;
 	private PathFindingSystem test;
 	private String[] attacking = new String[2];
-
 	@Override
 	public void create() {
+		//setScreen(new PlayScreen());
 		test = new PathFindingSystem();
 		map =  new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
 		test.generateGraph(map);
@@ -115,8 +100,8 @@ public class MazeGame extends Game {
 		floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
 		overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
 		tile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("tiledmaps/tileSprites.png")),32,32,16,16));
-		collsion();		
-		
+		collsion();	
+
 		floorLayer.getCell(23, 7).setTile(tile);
 		floorLayer.getCell(24, 8).setTile(tile);
 
@@ -141,6 +126,10 @@ public class MazeGame extends Game {
 		myRightText = "no of rooms: " + roomCount;
 		layout = new GlyphLayout();
 		layout.setText(font, myText);
+
+		healthText = "health: ";
+		staminaText = "stamina: ";
+		coinText = "coins: ";
 
 		sound = Gdx.audio.newSound(Gdx.files.internal("sound/firered_0001_mono.wav"));
 		song1 = Gdx.audio.newMusic(Gdx.files.internal("sound/JRPG_town_loop.ogg"));
@@ -181,6 +170,7 @@ public class MazeGame extends Game {
 		//song1.play();
 		song1.setVolume(0.5f);
 
+		
 		shaper = new ShapeRenderer();
 		//debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 		
@@ -219,7 +209,7 @@ public class MazeGame extends Game {
 //		sound.setPan(id, -1f, 1f);
 
 		//Gdx.input.setInputProcessor(this);
-	
+
 	}
 
 	@Override
@@ -232,12 +222,44 @@ public class MazeGame extends Game {
 	public void render() {
 		world.step(1/10f, 6, 2);
 
-
-
 		if (inputDelay == 0) {
 			player.update(floorLayer, entityLayer);
 			player2.update(floorLayer, entityLayer);
 			inputDelay = MAX_INPUT_DELAY;
+		}
+	
+		if(enemies != null)
+		{
+			boolean awayFromAll = true;
+			for (Enemy enemy : enemies) {
+				double x1 = enemy.getEnemySprite().getX();
+				double x2 = player.getPlayerSprite().getX();
+				double y1 = enemy.getEnemySprite().getY();
+				double y2 = player.getPlayerSprite().getY();
+
+				double distance = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+				if (distance < 10)
+					awayFromAll = false;
+			}
+			if (awayFromAll)
+				player.setStamina(player.getStamina() + 0.05);
+		}
+
+		if(enemies != null)
+		{
+			boolean awayFromAll = true;
+			for (Enemy enemy : enemies) {
+				double x1 = enemy.getEnemySprite().getX();
+				double x2 = player2.getPlayerSprite().getX();
+				double y1 = enemy.getEnemySprite().getY();
+				double y2 = player2.getPlayerSprite().getY();
+
+				double distance = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+				if (distance < 10)
+					awayFromAll = false;
+			}
+			if (awayFromAll)
+				player2.setStamina(player2.getStamina() + 0.05);
 		}
 		for(int count =0;count<enemies.size();count++)
 		{
@@ -281,7 +303,7 @@ public class MazeGame extends Game {
 		}
 		if(Gdx.input.isKeyJustPressed(Keys.L))
 		{
-			for(int i=0;i<enemies.size();i++)
+			for(int i=0;i<amount;i++)
 			{
 				world.destroyBody(enemiesAI.get(i).getBody());
 			}
@@ -301,7 +323,6 @@ public class MazeGame extends Game {
 				debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 				debugger = true;
 				pressed = true;
-			
 			}
 			
 		
@@ -364,6 +385,21 @@ public class MazeGame extends Game {
 
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
+
+		// player stat display
+
+		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -100.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -120.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), staminaText + (int)player.getStamina(), 107.5f, -130.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), coinText + player.getCoin(), 107.5f, -140.5f, screenWidth, Align.topLeft, false);
+
+		// player stat display
+
+		font.draw(renderer.getBatch(), "Player 2: ", 437.5f, -100.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), healthText + player2.getHealth(), 437.5f, -120.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), staminaText + (int)player2.getStamina(), 437.5f, -130.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), coinText + player2.getCoin(), 437.5f, -140.5f, screenWidth, Align.topLeft, false);
+
 		if(debugger!=false)
 		{
 			font.draw(renderer.getBatch(),"Player1 enemies:"+p1enemies  , 107.5f, 55.5f, screenWidth, Align.topLeft, false );
@@ -424,7 +460,6 @@ public class MazeGame extends Game {
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(4));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
-
 			for(int i=0;i<enemies.size();i++)
 			{
 				if(enemies.get(i)!=null)
@@ -612,10 +647,10 @@ public class MazeGame extends Game {
 			@Override
 			public void beginContact(Contact contact) {
 				try{
-					if(contact.getFixtureB().getBody().getUserData().toString().contains("enemy")&&
-					contact.getFixtureA().getBody().getUserData()=="player1")
+					if(contact.getFixtureA().getBody().getUserData().toString().contains("enemy")&&
+					contact.getFixtureB().getBody().getUserData()=="player1")
 					{
-						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
+						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
 						enemies.get(y).attack(player);
 						colliding=true;
@@ -631,6 +666,7 @@ public class MazeGame extends Game {
 					if(contact.getFixtureB().getBody().getUserData().toString().contains("enemy")&&
 					(contact.getFixtureA().getBody().getUserData().toString().equals("Fist")))
 					{		
+						
 						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
 			
 						int y = Integer.parseInt(x[1]);
@@ -642,6 +678,7 @@ public class MazeGame extends Game {
 					else if(contact.getFixtureA().getBody().getUserData().toString().contains("enemy")&&
 					(contact.getFixtureB().getBody().getUserData().toString().equals("Fist")))
 					{
+					
 						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
 						System.out.println(enemies.get(y));
