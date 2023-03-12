@@ -63,11 +63,8 @@ public class Projectile
         position.x-=velocity;
         position.y-=velocity;
       
-
-      //  System.out.println(direction.x +":"+direction.y);
       body.setTransform(position.x, position.y, 0);
       velocity=1;
-        //System.out.println(position.x+":"+position.y);
     }
     public Body getBody()
     {
@@ -80,5 +77,9 @@ public class Projectile
     public boolean isHit()
     {
         return hit;
+    }
+    public void updateUserData(int index)
+    {
+        this.body.setUserData("proj"+","+index);        
     }
 }

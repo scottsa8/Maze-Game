@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.CompletableFuture.AsynchronousCompletionTask;
 
+import javax.swing.MenuElement;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ai.btree.Task;
@@ -355,11 +357,16 @@ public class Player {
         //item usage
         if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
-           if(ammo <7)
+       //    if(ammo <7)
+         //   {
+           //     rangeAttack(1);
+           // }
+            if(attackCircle ==null)
             {
-                rangeAttack(1);
+                String x = slots[1].name;
+                meleeAttack(x);
             }
-
+            
             slotsCheck();
         }
         if (Gdx.input.isKeyJustPressed(useSlot2)) {
@@ -680,7 +687,7 @@ public class Player {
     public Body getBody() {
         return body;
     }
-    public void meleeAttack()
+    public void meleeAttack(String name)
     {
         Vector2 pos = new Vector2();
         if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
@@ -701,7 +708,7 @@ public class Player {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
                
         attackCircle = ShapeMaker.createCircle(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
-        attackCircle.setUserData("attack");
+        attackCircle.setUserData(name.toString());
        
         Timer timer=new Timer();
                 timer.scheduleTask(new Timer.Task() {
@@ -713,7 +720,7 @@ public class Player {
                         }
                       catch(Exception e){};
                     }
-                },0.01f);  
+                },0.1f);  
     }
     public void rangeAttack(int range)
     {

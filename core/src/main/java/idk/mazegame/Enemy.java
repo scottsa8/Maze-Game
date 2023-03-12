@@ -27,6 +27,7 @@ public class Enemy {
     private final int FRAME_SPEED = 3;
     private int number;
     private boolean dead = false;
+    private int Health =100;
 
     public Enemy(World world,float x, float y, int type, int index) {
         String enemyAtlas = getAtlas(type);
@@ -178,6 +179,19 @@ public class Enemy {
         textureAtlas.dispose();
         e.enemySprite.getTexture().dispose();
         this.dead=true;
+    }
+    public void takeDamage(int damage)
+    {
+        Health = Health-damage;
+        System.out.println("Health:"+Health);
+        if(Health == 0)
+        {
+            die(this);
+        }
+    }
+    public int getHealth()
+    {
+        return Health;
     }
     public boolean isDead()
     {
