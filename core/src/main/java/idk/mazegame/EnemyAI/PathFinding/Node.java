@@ -17,12 +17,13 @@ public class Node{
         this.pos = pos;
         this.tilePos = tilePos;
         this.index = index;
+        //this.pos = new Vector2(pos.y, -pos.x);
         p = new Polygon(new float[]{
-            pos.x + 4, pos.y,
-            pos.x, pos.y + 2,
-            pos.x +4, pos.y +4,
-            pos.x+8,pos.y+2 
+                (pos.x + 8)*5.1f, (pos.y)*5.1f,
+                (pos.x)*5.1f, (pos.y + 4)*5.1f,
+                (pos.x +8)*5.1f, (pos.y +8)*5.1f,
+                (pos.x+16)*5.1f,(pos.y+4)*5.1f
+
         });
     }
 }
-
