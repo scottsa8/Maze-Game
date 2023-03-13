@@ -285,11 +285,10 @@ public class MazeGame extends Game {
 			if(entities.get(i).isHit() == true)
 			{	
 				world.destroyBody(entities.get(i).getBody());
-				entities.remove(i);
-				for(int update=0;update<entities.size();update++)
-				{
-					entities.get(update).updateUserData(update);  // this is beyond buggy, no idea why. Can't delete the bodies in more than one place or crashes 
-				}
+					entities.clear();
+					player.resetAmmo();
+					player2.resetAmmo();
+			
 			}			
 		}
 		if(Gdx.input.isKeyJustPressed(Keys.L))
@@ -346,7 +345,10 @@ public class MazeGame extends Game {
 		{
 			for(int counter =0; counter<entities.size();counter++)
 			{
-				entities.get(counter).update();
+				if(entities.get(counter).isHit() !=true)
+				{
+					entities.get(counter).update();
+				}
 			}
 		}
 		if(enemiesAI != null) //if there is enemies to render, render them if not skip
@@ -747,13 +749,15 @@ public class MazeGame extends Game {
 					{
 						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
+						System.out.println(y);
 						entities.get(y).setHit(true);
 					}
 					else if(contact.getFixtureA().getBody().getUserData().toString().contains("proj") &&
 					contact.getFixtureB().getBody().getUserData()=="dest")
 					{
-						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
+						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
+						System.out.println(y);
 						entities.get(y).setHit(true);
 					}
 				}	

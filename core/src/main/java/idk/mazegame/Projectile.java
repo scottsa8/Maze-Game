@@ -18,7 +18,7 @@ public class Projectile
     public Vector2 direction;
     private  Body body;
     private boolean hit;
-    public Projectile(World world, Vector2 pos,Vector2 direction,int index)
+    public Projectile(World world, Vector2 pos,Vector2 direction,int index, int damage)
     {
         position = new Vector2(pos);
         velocity=1;
@@ -33,7 +33,7 @@ public class Projectile
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
         Fixture fixture = body.createFixture(fixtureDef);
-        body.setUserData("proj,"+index);
+        body.setUserData("proj,"+index+","+damage);
         shape.dispose();
 
       
@@ -48,21 +48,7 @@ public class Projectile
         position.y += velocity;
         if(direction.y ==2 && direction.x ==0)
         position.y -=velocity;
-        if(direction.x ==1 && direction.y == 1)
-        position.x+=velocity;
-        position.y+=velocity;
-        if(direction.x ==1 && direction.y ==2)
-        position.x+=velocity;
-        position.y-=velocity;
  
-        if(direction.x ==2 && direction.y ==1)
-        position.x-=velocity;
-        position.y+=velocity;
- 
-        if(direction.x ==2 && direction.y ==2)
-        position.x-=velocity;
-        position.y-=velocity;
-      
       body.setTransform(position.x, position.y, 0);
       velocity=1;
     }
