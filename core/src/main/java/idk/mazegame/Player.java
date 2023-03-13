@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Timer;
 import idk.mazegame.EnemyAI.Constants;
 
 public class Player {
+    private int playerNum;
     private TextureAtlas textureAtlas;
     private Sprite playerSprite;
     private Vector3 coordinates, tmpCoords = new Vector3(0,0,0);
@@ -41,8 +42,8 @@ public class Player {
     private World world;
     private Body attackCircle;
     private int ammo =0; // temp for now, not sure how max ammo will work 
-    public Player(FileHandle atlasfile, ItemAttributes gameAttrs) {
-
+    public Player(FileHandle atlasfile, ItemAttributes gameAttrs, int num) {
+        playerNum = num;
         setDefaultValues();
         textureAtlas = new TextureAtlas(atlasfile);
         playerSprite = new Sprite(textureAtlas.findRegion("playerDown",0));
