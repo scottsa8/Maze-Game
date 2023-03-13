@@ -18,9 +18,9 @@ public class Player {
     private int playerNum;
     private TextureAtlas textureAtlas;
     private Sprite playerSprite;
-    private Vector3 coordinates, tmpCoords = new Vector3(0,0,0);
+    private Vector3 coordinates, tmpCoords = new Vector3(0, 0, 0);
 
-    private int currentFrame = 0,  frameCounter = 0;
+    private int currentFrame = 0, frameCounter = 0;
     private int timer = 0;
     private int lastKeyedDirection = 0;
     private int secondlastKeyedDirection = 0;
@@ -41,14 +41,15 @@ public class Player {
     private Leveling level = new Leveling();
     private World world;
     private Body attackCircle;
-    private int ammo =0; // temp for now, not sure how max ammo will work 
+    private int ammo = 0; // temp for now, not sure how max ammo will work
+
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs, int num) {
         playerNum = num;
         setDefaultValues();
         textureAtlas = new TextureAtlas(atlasfile);
-        playerSprite = new Sprite(textureAtlas.findRegion("playerDown",0));
-        playerSprite.setPosition(Gdx.graphics.getWidth()/2 - playerSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - playerSprite.getHeight()/2);
-        coordinates = new Vector3(0,0, 0);
+        playerSprite = new Sprite(textureAtlas.findRegion("playerDown", 0));
+        playerSprite.setPosition(Gdx.graphics.getWidth() / 2 - playerSprite.getWidth() / 2, Gdx.graphics.getHeight() / 2 - playerSprite.getHeight() / 2);
+        coordinates = new Vector3(0, 0, 0);
         //playerSprite.setScale(4f);
 
         //Attributes only generated once.
@@ -58,6 +59,7 @@ public class Player {
         slots[1] = new Item(itemAttrs);
         slots[2] = new Item(itemAttrs);
     }
+
     // PLAYER STATS
     private int maxHealth;
     private int health;
@@ -65,21 +67,19 @@ public class Player {
     private int coin;
 
 
-    public void setHealth(int health)
-    {
+    public void setHealth(int health) {
         this.health = health;
     }
-    public int getHealth()
-    {
+
+    public int getHealth() {
         return health;
     }
 
-    public void setCoin(int coin)
-    {
+    public void setCoin(int coin) {
         this.coin = coin;
     }
-    public int getCoin()
-    {
+
+    public int getCoin() {
         return coin;
     }
 
@@ -91,19 +91,17 @@ public class Player {
         }
     }
 
-    public void setStamina(double stamina)
-    {
+    public void setStamina(double stamina) {
         if (stamina <= 100)
             this.stamina = stamina;
     }
 
-    public double getStamina()
-    {
+    public double getStamina() {
         return stamina;
     }
 
 
-    public void setDefaultValues(){
+    public void setDefaultValues() {
 
         maxHealth = 100;
         health = 100;
@@ -119,7 +117,7 @@ public class Player {
         bodyDef.position.set(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f);
         b = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM);
+        shape.setAsBox(getPlayerSprite().getWidth() / 2 / Constants.PPM, getPlayerSprite().getHeight() / 2 / Constants.PPM);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
@@ -128,16 +126,17 @@ public class Player {
         body = b;
         return body;
     }
-    public void increaseXP(int amount){
+
+    public void increaseXP(int amount) {
         level.increaseXP(amount);
     }
 
-    public int displayXP(){
+    public int displayXP() {
         int xp = level.getXP();
         return xp;
     }
-    public int getLevel()
-    {
+
+    public int getLevel() {
         return level.getLevel();
     }
 
@@ -162,9 +161,9 @@ public class Player {
 //            playerSprite.translate(+(PLAYER_SPEED*DIAG_MOD), +(PLAYER_SPEED*DIAG_MOD)/2);
 //            coordinates.y += 1f;
 
-            moveAmountX = PLAYER_SPEED*DIAG_MOD;
-            moveAmountY = (PLAYER_SPEED*DIAG_MOD)/2;
-            tmpCoords.set(0,1,0);
+            moveAmountX = PLAYER_SPEED * DIAG_MOD;
+            moveAmountY = (PLAYER_SPEED * DIAG_MOD) / 2;
+            tmpCoords.set(0, 1, 0);
 
             isMoving = true;
 
@@ -178,9 +177,9 @@ public class Player {
 //            playerSprite.translate(-(PLAYER_SPEED*DIAG_MOD), +(PLAYER_SPEED*DIAG_MOD)/2);
 //            coordinates.x -= 1f;
 
-            moveAmountX = -PLAYER_SPEED*DIAG_MOD;
-            moveAmountY = (PLAYER_SPEED*DIAG_MOD)/2;
-            tmpCoords.set(-1,0,0);
+            moveAmountX = -PLAYER_SPEED * DIAG_MOD;
+            moveAmountY = (PLAYER_SPEED * DIAG_MOD) / 2;
+            tmpCoords.set(-1, 0, 0);
 
             isMoving = true;
 
@@ -194,9 +193,9 @@ public class Player {
 //            playerSprite.translate(+(PLAYER_SPEED*DIAG_MOD), -(PLAYER_SPEED*DIAG_MOD)/2);
 //            coordinates.x += 1f;
 
-            moveAmountX = PLAYER_SPEED*DIAG_MOD;
-            moveAmountY = (-PLAYER_SPEED*DIAG_MOD)/2;
-            tmpCoords.set(1,0,0);
+            moveAmountX = PLAYER_SPEED * DIAG_MOD;
+            moveAmountY = (-PLAYER_SPEED * DIAG_MOD) / 2;
+            tmpCoords.set(1, 0, 0);
 
             isMoving = true;
 
@@ -210,9 +209,9 @@ public class Player {
 //            playerSprite.translate(-(PLAYER_SPEED*DIAG_MOD), -(PLAYER_SPEED*DIAG_MOD)/2);
 //            coordinates.y -= 1f;
 
-            moveAmountX = -PLAYER_SPEED*DIAG_MOD;
-            moveAmountY = (-PLAYER_SPEED*DIAG_MOD)/2;
-            tmpCoords.set(0,-1,0);
+            moveAmountX = -PLAYER_SPEED * DIAG_MOD;
+            moveAmountY = (-PLAYER_SPEED * DIAG_MOD) / 2;
+            tmpCoords.set(0, -1, 0);
 
             isMoving = true;
 
@@ -228,9 +227,9 @@ public class Player {
 //                coordinates.x -= 1f;
 //                coordinates.y -= 1f;
 
-                moveAmountX = -PLAYER_SPEED*2;
+                moveAmountX = -PLAYER_SPEED * 2;
                 moveAmountY = 0;
-                tmpCoords.set(-1,-1,0);
+                tmpCoords.set(-1, -1, 0);
 
                 isMoving = true;
             }
@@ -247,9 +246,9 @@ public class Player {
 //                coordinates.x += 1f;
 //                coordinates.y += 1f;
 
-                moveAmountX = PLAYER_SPEED*2;
+                moveAmountX = PLAYER_SPEED * 2;
                 moveAmountY = 0;
-                tmpCoords.set(1,1,0);
+                tmpCoords.set(1, 1, 0);
 
                 isMoving = true;
             }
@@ -268,7 +267,7 @@ public class Player {
 
                 moveAmountX = 0;
                 moveAmountY = -PLAYER_SPEED;
-                tmpCoords.set(+1,-1,0);
+                tmpCoords.set(+1, -1, 0);
 
                 isMoving = true;
             }
@@ -287,7 +286,7 @@ public class Player {
 
                 moveAmountX = 0;
                 moveAmountY = PLAYER_SPEED;
-                tmpCoords.set(-1,1,0);
+                tmpCoords.set(-1, 1, 0);
 
                 isMoving = true;
             }
@@ -326,7 +325,7 @@ public class Player {
     }
 
     public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
-    //    System.out.println(slots);
+        //    System.out.println(slots);
 
         if (slots[1].type < 0) {
             slot1Remove();
@@ -391,8 +390,8 @@ public class Player {
     }
 
     public void update(TiledMapTileLayer floorLayer, TiledMapTileLayer entityLayer) {
-        getBody().setTransform(getBody().getPosition().set(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),0);
-        
+        getBody().setTransform(getBody().getPosition().set(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f), 0);
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) { //TESTING - Adds a sword to the inventory
             inv.inventoryAdd(new Item(itemAttrs, 0, 1), 0);
             slotsCheck();
@@ -405,21 +404,35 @@ public class Player {
         //item usage
         if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
-           //if(ammo <7)
-            //{
-           //     rangeAttack(1);
-          //  }
-            if(attackCircle ==null)
-           {
-                String x = slots[1].name;
-                meleeAttack(x,100);
+            if (slots[1].type == 1) {
+                if (attackCircle == null) {
+                    String x = slots[1].name;
+                    meleeAttack(x, 100);
+                }
+            } else if (slots[1].type == 2) {
+                rangeAttack(1);
+            } else if (slots[1].type == 3) {
+                rangeAttack(0);
             }
-            
+
             slotsCheck();
         }
+
+
         if (Gdx.input.isKeyJustPressed(useSlot2)) {
             slots[2].useItem();
-            System.out.println("Item 2 used");
+            if (slots[2].type == 1) {
+                if(attackCircle ==null)
+                {
+                    String x = slots[2].name;
+                    meleeAttack(x,100);
+                }
+            } else if (slots[2].type == 2) {
+                rangeAttack(1);
+            } else if (slots[2].type == 3) {
+                rangeAttack(0);
+            }
+
             slotsCheck();
         }
 
