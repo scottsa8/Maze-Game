@@ -674,25 +674,51 @@ public class MazeGame extends Game {
 						colliding=true;
 					}
 					if(contact.getFixtureB().getBody().getUserData().toString().contains("enemy")&&
-					(contact.getFixtureA().getBody().getUserData().toString().equals("Fist")))
+					(contact.getFixtureA().getBody().getUserData().toString().contains("attack")))
 					{		
 						
 						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
-			
+						String[] p = contact.getFixtureA().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
-						enemies.get(y).takeDamage(10);
+						String weapon = p[1];
+						System.out.println(weapon);
+						int play = Integer.parseInt(p[2]);
+						int damage = Integer.parseInt(p[3]);
+						if(play == 1)
+						{
+							player.increaseXP(1);
+						}
+						else if(play ==2)
+						{
+							player2.increaseXP(1);
+						}
+						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
 						attacking[1] = Integer.toString(enemies.get(y).getHealth());
 						hitting= true;
 					}
 					else if(contact.getFixtureA().getBody().getUserData().toString().contains("enemy")&&
-					(contact.getFixtureB().getBody().getUserData().toString().equals("Fist")))
+					(contact.getFixtureB().getBody().getUserData().toString().contains("attack")))
 					{
 					
 						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
+						String[] p = contact.getFixtureB().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
-						System.out.println(enemies.get(y));
-						enemies.get(y).takeDamage(10);
+						String weapon = p[1];
+						System.out.println(weapon);
+						int play = Integer.parseInt(p[2]);
+						int damage = Integer.parseInt(p[3]);
+						if(play == 1)
+						{
+							player.increaseXP(1);
+						}
+						else if(play ==2)
+						{
+							player2.increaseXP(1);
+						}
+						System.out.println("Player1 xp: "+player.displayXP());
+						System.out.println("Player2 xp: "+player2.displayXP());
+						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
 						attacking[1] = Integer.toString(enemies.get(y).getHealth());
 						hitting= true;

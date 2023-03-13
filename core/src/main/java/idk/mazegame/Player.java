@@ -412,7 +412,7 @@ public class Player {
             if(attackCircle ==null)
            {
                 String x = slots[1].name;
-                meleeAttack(x);
+                meleeAttack(x,100);
             }
             
             slotsCheck();
@@ -734,7 +734,7 @@ public class Player {
     public Body getBody() {
         return body;
     }
-    public void meleeAttack(String name)
+    public void meleeAttack(String name,int damage)
     {
         Vector2 pos = new Vector2();
         if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
@@ -755,7 +755,7 @@ public class Player {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
                
         attackCircle = ShapeMaker.createCircle(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
-        attackCircle.setUserData(name.toString());
+        attackCircle.setUserData("attack"+","+name.toString()+","+playerNum+","+damage);
        
         Timer timer=new Timer();
                 timer.scheduleTask(new Timer.Task() {
