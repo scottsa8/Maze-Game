@@ -194,7 +194,7 @@ public class Enemy {
     {
         Health = Health-damage;
         System.out.println("Health:"+Health);
-        if(Health == 0)
+        if(Health <= 0)
         {
             die(this);
         }

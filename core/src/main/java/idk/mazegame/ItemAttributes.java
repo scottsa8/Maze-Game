@@ -21,7 +21,7 @@ public class ItemAttributes {
         FileHandle handle = Gdx.files.internal("items/attributes.csv");
         String text = handle.readString();
         String[] itemAttributes = text.split("\n");
-        String[][] items = new String[itemAttributes.length][9];
+        String[][] items = new String[itemAttributes.length][10];
 
         for (int i = 0; i < itemAttributes.length; i++) {
             items[i] = itemAttributes[i].split(",");
