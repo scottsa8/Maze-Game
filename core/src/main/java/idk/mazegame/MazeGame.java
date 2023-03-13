@@ -48,7 +48,7 @@ public class MazeGame extends Game {
 	public SpriteBatch batch;
 	private BitmapFont font;
 	private String myText, myRightText;
-	private String healthText, staminaText, coinText;
+	private String healthText, staminaText, coinText, slot1Text, slot2Text;
 	private GlyphLayout layout;
 	private Sound sound;
 	private Music song1,song2;
@@ -125,6 +125,8 @@ public class MazeGame extends Game {
 		healthText = "health: ";
 		staminaText = "stamina: ";
 		coinText = "coins: ";
+		slot1Text = "slot 1:";
+		slot2Text = "slot 2:";
 
 		sound = Gdx.audio.newSound(Gdx.files.internal("sound/firered_0001_mono.wav"));
 		song1 = Gdx.audio.newMusic(Gdx.files.internal("sound/JRPG_town_loop.ogg"));
@@ -381,17 +383,21 @@ public class MazeGame extends Game {
 
 		// player stat display
 
-		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -100.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -120.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), staminaText + (int)player.getStamina(), 107.5f, -130.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), coinText + player.getCoin(), 107.5f, -140.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -90.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -100.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), staminaText + (int)player.getStamina(), 107.5f, -110.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), coinText + player.getCoin(), 107.5f, -120.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot1Text + player.getSlotName(1), 107.5f, -130.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot2Text + player.getSlotName(2), 107.5f, -140.5f, screenWidth, Align.topLeft, false);
 
 		// player stat display
 
-		font.draw(renderer.getBatch(), "Player 2: ", 437.5f, -100.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), healthText + player2.getHealth(), 437.5f, -120.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), staminaText + (int)player2.getStamina(), 437.5f, -130.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), coinText + player2.getCoin(), 437.5f, -140.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), "Player 2: ", 410.5f, -90.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), healthText + player2.getHealth(), 400.5f, -100.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), staminaText + (int)player2.getStamina(), 400.5f, -110.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), coinText + player2.getCoin(), 400.5f, -120.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot1Text + player2.getSlotName(1), 400.5f, -130.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot2Text + player2.getSlotName(2), 400.5f, -140.5f, screenWidth, Align.topLeft, false);
 
 		if(debugger!=false)
 		{

@@ -82,6 +82,14 @@ public class Player {
         return coin;
     }
 
+    public String getSlotName(int slot) {
+        if (slot == 1) {
+            return slots[1].name;
+        } else {
+            return slots[2].name;
+        }
+    }
+
     public void setStamina(double stamina)
     {
         if (stamina <= 100)
