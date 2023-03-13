@@ -135,6 +135,10 @@ public class Player {
         int xp = level.getXP();
         return xp;
     }
+    public int getLevel()
+    {
+        return level.getLevel();
+    }
 
     public void walk(int direction) {
 //        Gdx.app.log("player X", String.valueOf(getPlayerSprite().getX()));
@@ -400,15 +404,15 @@ public class Player {
         //item usage
         if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
-       //    if(ammo <7)
-         //   {
-           //     rangeAttack(1);
-           // }
-            if(attackCircle ==null)
+           if(ammo <7)
             {
-                String x = slots[1].name;
-                meleeAttack(x);
+                rangeAttack(1);
             }
+            //if(attackCircle ==null)
+           // {
+              //  String x = slots[1].name;
+             //   meleeAttack(x);
+           // }
             
             slotsCheck();
         }

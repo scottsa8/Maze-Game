@@ -10,12 +10,10 @@ public class Chest {
     private TextureAtlas textureAtlas;
     private Sprite chestSprite;
     private Body body;
-    private String name = "";
 
-    public Chest(World world, float x, float y, int type) {
-        String chestAtlas = getAtlas(type);
-        textureAtlas = new TextureAtlas(chestAtlas);
-        chestSprite = new Sprite(textureAtlas.findRegion(name+"Right",0));
+    public Chest(World world, float x, float y) {
+        textureAtlas = new TextureAtlas("enemy/zombieSprites.atlas");
+        chestSprite = new Sprite(textureAtlas.findRegion("zombieDown",1));
         chestSprite.setPosition(Gdx.graphics.getWidth()/2 - chestSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - chestSprite.getHeight()/2);
         this.body = createBody(world,x,y);
     }
@@ -28,7 +26,7 @@ public class Chest {
         bodyDef.position.set((x + chestSprite.getWidth()/2), (y- chestSprite.getHeight()/2));
         b = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(chestSprite.getWidth()/2 / Constants.PPM, chestSprite.getHeight()/2 / Constants.PPM + 1);
+        shape.setAsBox(chestSprite.getWidth()/2 / Constants.PPM +1, chestSprite.getHeight()/2 / Constants.PPM);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
@@ -36,38 +34,11 @@ public class Chest {
         shape.dispose();
         return b;
     }
-
-    private String getAtlas(int type)
+    public Sprite getChestSprite() {
+        return chestSprite;
+    }
+    public Body getBody()
     {
-        String atlas ="";
-
-        int type2=0;
-
-        if(type ==1)
-        {
-            atlas = "zombieSprites.atlas";
-            name="zombie";
-        }
-        if(type==2)
-        {
-            atlas = "";
-            name="skeleton";
-        }
-        if(type ==3)
-        {
-            type2 = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
-            if(type2==1)
-            {
-                atlas ="";
-                name="";
-            }
-            else if(type2 == 2)
-            {
-                atlas ="";
-                name="";
-            }
-        }
-        atlas = "enemy/"+atlas;
-        return atlas;
+        return body;
     }
 }

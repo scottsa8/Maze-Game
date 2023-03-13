@@ -22,9 +22,12 @@ public class Leveling{
         levleTracker += 10;
 
     }
-
     public int getXP(){
         return experience;
+    }
+    public int getLevel()
+    {
+        return level;
     }
 
     

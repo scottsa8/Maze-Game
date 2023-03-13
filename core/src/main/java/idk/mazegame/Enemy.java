@@ -27,8 +27,12 @@ public class Enemy {
     private final int FRAME_SPEED = 3;
     private boolean dead = false;
     private int Health =100;
+    private int p1XP;
+    private int p2XP;
 
-    public Enemy(World world,float x, float y, int type, int index) {
+    public Enemy(World world,float x, float y, int type, int index, int xp1, int xp2) {
+        p1XP =  xp1;
+        p2XP =xp2;
         String enemyAtlas = getAtlas(type);
         textureAtlas = new TextureAtlas(enemyAtlas);
         enemySprite = new Sprite(textureAtlas.findRegion(name+"Right",0));
@@ -126,24 +130,31 @@ public class Enemy {
 		}
 		if(type==2)
 		{
-			atlas = "";
-			name="skeleton";
+			atlas = "demon.atlas";
+			name="demon";
 		}
 		if(type ==3)
 		{
-			//make sure player xp > 10
-			//decide to make imp/phantom (random number)
-			type2 = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
-			if(type2==1)
-			{
-				atlas ="";
-				name="";
-			}
-			else if(type2 == 2)
-			{
-				atlas ="";
-				name="";
-			}
+            if(p1XP > 10 || p2XP>10)
+            {
+                type2 = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
+                if(type2==1)
+                {
+                    atlas ="";
+                    name="";
+                }
+                else if(type2 == 2)
+                {
+                    atlas ="";
+                    name="";
+                }
+            }
+            else
+            {
+                atlas = "zombieSprites.atlas";
+			    name="zombie";
+            }
+		
 		}
 		atlas = "enemy/"+atlas;
         return atlas;

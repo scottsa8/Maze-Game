@@ -369,6 +369,12 @@ public class MazeGame extends Game {
 				}
 			}
 		}
+		if(chest!=null)
+		{
+			chest.getChestSprite().setPosition(chest.getBody().getPosition().x -7 , chest.getBody().getPosition().y - 7);
+
+			chest.getChestSprite().draw(renderer.getBatch());
+		}
 
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
@@ -406,10 +412,10 @@ public class MazeGame extends Game {
 			font.draw(renderer.getBatch(),"Player1 enemies:"+p1enemies  , 107.5f, 55.5f, screenWidth, Align.topLeft, false );
 			font.draw(renderer.getBatch(),"Player2 enemies:"+p2enemies  , 107.5f, 45.5f, screenWidth, Align.topLeft, false );
 
-			xp = player.displayXP();
-			xp2 = player2.displayXP();
-			font.draw(renderer.getBatch(),"Player1 experience:"+xp, 107.5f, 35.5f, screenWidth, Align.topLeft, false );
-			font.draw(renderer.getBatch(),"Player2 experience:"+xp2, 107.5f, 25.5f, screenWidth, Align.topLeft, false );
+			xp = player.getLevel();
+			xp2 = player2.getLevel();
+			font.draw(renderer.getBatch(),"Player1 Level:"+xp, 107.5f, 35.5f, screenWidth, Align.topLeft, false );
+			font.draw(renderer.getBatch(),"Player2 Level:"+xp2, 107.5f, 25.5f, screenWidth, Align.topLeft, false );
 			font.draw(renderer.getBatch(),"Attacking: "+attacking[0] +" "+attacking[1]+"hp", 107.5f, 15.5f, screenWidth, Align.topLeft, false );
 		}
 	
@@ -445,7 +451,7 @@ public class MazeGame extends Game {
 
 			}
 			player2.getPlayerSprite().draw(renderer.getBatch());
-
+			chest.getChestSprite().draw(renderer.getBatch());
 			renderer.getBatch().end();
 		}
 		if (entityLayer.getCell((int) (player.getCoordinates().x - 1), (int) (player.getCoordinates().y)) != null) {
@@ -469,7 +475,7 @@ public class MazeGame extends Game {
 				}
 			}
 			player2.getPlayerSprite().draw(renderer.getBatch());
-
+			chest.getChestSprite().draw(renderer.getBatch());
 			renderer.getBatch().end();
 
 		}
@@ -495,7 +501,7 @@ public class MazeGame extends Game {
 				}
 			}
 			player2.getPlayerSprite().draw(renderer.getBatch());
-
+			chest.getChestSprite().draw(renderer.getBatch());
 			renderer.getBatch().end();
 
 		}
@@ -524,7 +530,6 @@ public class MazeGame extends Game {
 			{
 				world.destroyBody(enemiesAI.get(i).getBody());
 			}
-
 			createChest();
 			createEnemies();
 			player.increaseXP(10);
@@ -550,7 +555,6 @@ public class MazeGame extends Game {
 			{
 				world.destroyBody(enemiesAI.get(i).getBody());
 			}
-
 			createChest();
 			createEnemies();
 			player.increaseXP(10);
@@ -576,7 +580,6 @@ public class MazeGame extends Game {
 			{
 				world.destroyBody(enemiesAI.get(i).getBody());
 			}
-
 			createChest();
 			createEnemies();
 			player.increaseXP(10);
@@ -597,7 +600,6 @@ public class MazeGame extends Game {
 		player2.dispose();
 		song1.dispose();
 	}
-
 	public void createChest() {
 		chest = null;
 		int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
@@ -606,7 +608,7 @@ public class MazeGame extends Game {
 		int gridY = y;
 		float realX = 298 + (gridX - gridY) * (9.5f);
 		float realY = 166 - (gridX + gridY) * (4.75f);
-		new Chest(world, realX, realY, 1);
+		chest = new Chest(world, realX, realY);
 	}
 
 	public void createEnemies()
@@ -615,7 +617,7 @@ public class MazeGame extends Game {
 		enemiesAI.clear();
 		p1enemies =0;
 		p2enemies =0;
-		int type = 1;//(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
+		int type =(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
 		for(int i=0;i<amount;i++)
 		{
@@ -625,7 +627,7 @@ public class MazeGame extends Game {
 			int gridY = y;
 			float realX = 298 + (gridX - gridY) * (9.5f);
 			float realY = 166 - (gridX + gridY) * (4.75f);
-			enemies.add(new Enemy(world, realX, realY, type,i));
+			enemies.add(new Enemy(world, realX, realY, type,i,player.getLevel(),player2.getLevel()));
 			enemiesAI.add(enemies.get(i).addAI(enemies.get(i)));
 			int t = enemies.get(i).getTarget();
 			if(t==1)
