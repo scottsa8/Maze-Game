@@ -409,16 +409,16 @@ public class Player {
             /**if (slots[1].type == 0) {
                 if (attackCircle == null) {
                     String x = slots[1].name;
-                    meleeAttack(x, 100);
+                    meleeAttack(x, (int)slots[1].getDamage());
                 }
             } else if (slots[1].type == 1) {
-                rangeAttack(1);
+                rangeAttack(1, (int)slots[1].getDamage());
             } else if (slots[1].type == 2) {
-                rangeAttack(0);
+                rangeAttack(0), (int)slots[1].getDamage();
             }**/
 
             String x = slots[1].name;
-            meleeAttack(x, 100);
+            meleeAttack(x, (int)slots[1].getDamage());
 
             slotsCheck();
         }
@@ -430,15 +430,15 @@ public class Player {
                 if(attackCircle ==null)
                 {
                     String x = slots[2].name;
-                    meleeAttack(x,100);
+                    meleeAttack(x, (int)slots[2].getDamage());
                 }
             } else if (slots[2].type == 1) {
-                rangeAttack(1);
+                rangeAttack(1, (int)slots[2].getDamage());
             } else if (slots[2].type == 2) {
-                rangeAttack(0);
+                rangeAttack(0, (int)slots[2].getDamage());
             }**/
             if(ammo<1){
-                rangeAttack(1,10);
+                rangeAttack(1,(int)slots[2].getDamage());
             }        
 
             slotsCheck();

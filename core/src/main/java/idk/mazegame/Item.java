@@ -100,6 +100,8 @@ public class Item {
         }
     }
 
+    public double getDamage() { return damage; }
+
     public void useItem() { //Performs the action of the item and modifies it accordingly
         //1. Find what action is performed with this item
         //2. Perform that action
