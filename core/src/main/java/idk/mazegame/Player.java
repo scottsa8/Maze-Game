@@ -404,14 +404,14 @@ public class Player {
         //item usage
         if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
-            if (slots[1].type == 1) {
+            if (slots[1].type == 0) {
                 if (attackCircle == null) {
                     String x = slots[1].name;
                     meleeAttack(x, 100);
                 }
-            } else if (slots[1].type == 2) {
+            } else if (slots[1].type == 1) {
                 rangeAttack(1);
-            } else if (slots[1].type == 3) {
+            } else if (slots[1].type == 2) {
                 rangeAttack(0);
             }
 
@@ -421,15 +421,15 @@ public class Player {
 
         if (Gdx.input.isKeyJustPressed(useSlot2)) {
             slots[2].useItem();
-            if (slots[2].type == 1) {
+            if (slots[2].type == 0) {
                 if(attackCircle ==null)
                 {
                     String x = slots[2].name;
                     meleeAttack(x,100);
                 }
-            } else if (slots[2].type == 2) {
+            } else if (slots[2].type == 1) {
                 rangeAttack(1);
-            } else if (slots[2].type == 3) {
+            } else if (slots[2].type == 2) {
                 rangeAttack(0);
             }
 
@@ -843,28 +843,19 @@ public class Player {
             
             MazeGame.entities.add(new Projectile(world,new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),dir,ammo));
             dir= new Vector2(0,0);
-          
+            ammo++;
             Timer timer=new Timer();
             timer.scheduleTask(new Timer.Task() {
                 @Override
                 public void run() {
                     try{
                         world.destroyBody(dest);
-                        ammo++;
                     }
                     catch(Exception e){};
                 }
             },1.2f);  
-            
-        
-        
-
     }
-    public int getAmmo()
-    {
-        return ammo;
-    }
-    public void reload()
+    public void resetAmmo()
     {
         ammo=0;
     }
