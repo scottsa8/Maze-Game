@@ -404,7 +404,7 @@ public class Player {
         //item usage
         if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
-            if (slots[1].type == 0) {
+            /**if (slots[1].type == 0) {
                 if (attackCircle == null) {
                     String x = slots[1].name;
                     meleeAttack(x, 100);
@@ -413,7 +413,10 @@ public class Player {
                 rangeAttack(1);
             } else if (slots[1].type == 2) {
                 rangeAttack(0);
-            }
+            }**/
+
+            String x = slots[1].name;
+            meleeAttack(x, 100);
 
             slotsCheck();
         }
@@ -421,7 +424,7 @@ public class Player {
 
         if (Gdx.input.isKeyJustPressed(useSlot2)) {
             slots[2].useItem();
-            if (slots[2].type == 0) {
+            /**if (slots[2].type == 0) {
                 if(attackCircle ==null)
                 {
                     String x = slots[2].name;
@@ -431,7 +434,9 @@ public class Player {
                 rangeAttack(1);
             } else if (slots[2].type == 2) {
                 rangeAttack(0);
-            }
+            }**/
+
+            rangeAttack(1);
 
             slotsCheck();
         }
