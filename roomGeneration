@@ -1,0 +1,362 @@
+import java.util.Random;
+
+public class roomGeneration
+{
+    static int maxHeight = 32;
+    static int maxWidth = 32;
+    static int maxLayers = 6;
+    static int[][][] room = new int[maxLayers][maxHeight][maxWidth];
+    //Each floor theme corresponds to a tile index
+    static int[] floorID = {94};
+    static int[][] backWallID = {{90, 90, 90, 90, 90, 90}};
+    static int[][] frontWallID = {{0, 0, 0, 0, 0, 0}};
+    static int[] topID = {101};
+    static int[] doorID = {94};
+    static int[] gateID = {1};
+
+    static int[][] createTraps(int[][] layerOld, int roomHeight, int roomWidth)
+    {
+        int layer[][] = layerOld;
+        return layer;
+    }
+
+    static int[][] createNorthPath(int[][] layerOld, int roomHeight, int roomWidth, int pathLocation, Boolean originPath, int layerID)
+    {
+        int[][] layer = layerOld;
+
+        //gets the coordinates of the middle door tile
+        int pathCenterCol = (32 - roomWidth - 1 + pathLocation);
+        int pathCenterRow = (32 - roomHeight - 3);
+
+        //creates 3 door tiles
+        if(layerID == 0)
+        {
+            layer[pathCenterRow][pathCenterCol - 1] = doorID[0];
+            layer[pathCenterRow][pathCenterCol] = doorID[0];
+            layer[pathCenterRow][pathCenterCol + 1] = doorID[0];
+
+            //creates 3 floor tiles before the door tiles
+            layer[pathCenterRow + 1][pathCenterCol - 1] = floorID[0];
+            layer[pathCenterRow + 1][pathCenterCol] = floorID[0];
+            layer[pathCenterRow + 1][pathCenterCol + 1] = floorID[0];
+        }
+
+        //creates 3 floor tiles before the door tiles
+        layer[pathCenterRow + 1][pathCenterCol - 1] = 0;
+        layer[pathCenterRow + 1][pathCenterCol] = 0;
+        layer[pathCenterRow + 1][pathCenterCol + 1] = 0;
+
+        return layer;
+    }
+
+    static int[][] createSouthPath(int[][] layerOld, int roomHeight, int roomWidth, int pathLocation, Boolean originPath, int layerID)
+    {
+        int[][] layer = layerOld;
+
+        //gets the coordinates of the middle door tile
+        int pathCenterCol = (32 - roomWidth - 1 + pathLocation);
+        int pathCenterRow = (32 - 1);
+
+        //creates the door tiles
+        if(layerID == 0)
+        {
+            layer[pathCenterRow][pathCenterCol - 1] = doorID[0];
+            layer[pathCenterRow][pathCenterCol] = doorID[0];
+            layer[pathCenterRow][pathCenterCol + 1] = doorID[0];
+
+            //creates the floor tiles before the door tiles
+            layer[pathCenterRow - 1][pathCenterCol - 1] = floorID[0];
+            layer[pathCenterRow - 1][pathCenterCol] = floorID[0];
+            layer[pathCenterRow - 1][pathCenterCol + 1] = floorID[0];
+        }
+
+        //creates the floor tiles before the door tiles
+        layer[pathCenterRow - 1][pathCenterCol - 1] = 0;
+        layer[pathCenterRow - 1][pathCenterCol] = 0;
+        layer[pathCenterRow - 1][pathCenterCol + 1] = 0;
+
+        return layer;
+    }
+
+    static int[][] createWestPath(int[][] layerOld, int roomHeight, int roomWidth, int pathLocation, Boolean originPath, int layerID)
+    {
+        int[][] layer = layerOld;
+
+        //gets the coordinates of the middle door tile
+        int pathCenterCol = (32 - roomWidth - 3);
+        int pathCenterRow = (32 - roomHeight - 1 + pathLocation);
+
+        //creates the door tiles
+        if(layerID == 0)
+        {
+            layer[pathCenterRow - 1][pathCenterCol] = doorID[0];
+            layer[pathCenterRow][pathCenterCol] = doorID[0];
+            layer[pathCenterRow + 1][pathCenterCol] = doorID[0];
+
+            //creates the floor tiles before the door tiles
+            layer[pathCenterRow - 1][pathCenterCol + 1] = floorID[0];
+            layer[pathCenterRow][pathCenterCol + 1] = floorID[0];
+            layer[pathCenterRow + 1][pathCenterCol + 1] = floorID[0];
+        }
+
+        //creates the empty tiles for the path
+        layer[pathCenterRow - 1][pathCenterCol + 1] = 0;
+        layer[pathCenterRow][pathCenterCol + 1] = 0;
+        layer[pathCenterRow + 1][pathCenterCol + 1] = 0;
+
+        return layer;
+    }
+
+    static int[][] createEastPath(int[][] layerOld, int roomHeight, int roomWidth, int pathLocation, Boolean originPath, int layerID)
+    {
+        int[][] layer = layerOld;
+
+        //gets the coordinates of the middle door tile
+        int pathCenterCol = (32 - 1);
+        int pathCenterRow = (32 - roomHeight - 1 + pathLocation);
+
+        if(layerID == 0)
+        {
+            //creates the door tiles
+            layer[pathCenterRow - 1][pathCenterCol] = doorID[0];
+            layer[pathCenterRow][pathCenterCol] = doorID[0];
+            layer[pathCenterRow + 1][pathCenterCol] = doorID[0];
+
+            //creates the floor tiles before the door tiles
+            layer[pathCenterRow - 1][pathCenterCol - 1] = floorID[0];
+            layer[pathCenterRow][pathCenterCol - 1] = floorID[0];
+            layer[pathCenterRow + 1][pathCenterCol - 1] = floorID[0];
+        }
+        else
+        {
+            //creates empty tiles in the path
+            layer[pathCenterRow - 1][pathCenterCol - 1] = 0;
+            layer[pathCenterRow][pathCenterCol - 1] = 0;
+            layer[pathCenterRow + 1][pathCenterCol - 1] = 0;
+        }
+
+        return layer;
+    }
+
+    //create the top wall of the room
+    static int[][] createNorthHoriWall(int[][] layerOld, int roomHeight, int roomWidth, int layerID)
+    {
+        int[][] layer = layerOld;
+        for(int col = (32 - roomHeight - 2); col < 31; col++)
+        {
+            layer[32 - roomHeight - 1 - layerID][col - layerID] = backWallID[0][layerID];
+        }
+        return layer;
+    }
+
+    //creates bottom wall of the room
+    static int[][] createSouthHoriWall(int[][] layerOld, int roomHeight, int roomWidth, int layerID)
+    {
+        if(frontWallID[0][layerID] != 0)
+        {
+            int[][] layer = layerOld;
+            for(int col = (32 - roomWidth - 2); col < 31; col++)
+            {
+                layer[30 - layerID][col - layerID] = frontWallID[0][layerID];
+            }
+            return layer;
+        }
+        return layerOld;
+    }
+
+    //creates left wall of the room
+    static int[][] createWestVertiWall(int[][] layerOld, int roomHeight, int roomWidth, int layerID)
+    {
+        int[][] layer = layerOld;
+        for(int row = (32 - roomHeight - 2); row < 31; row++)
+        {
+            layer[row - layerID][32 - roomWidth - 1 - layerID] = backWallID[0][layerID];
+        }
+        return layer;
+    }
+
+    //create right wall of the room
+    static int[][] createEastVertiWall(int[][] layerOld, int roomHeight, int roomWidth, int layerID)
+    {
+        if(frontWallID[0][layerID] != 0)
+        {
+            int[][] layer = layerOld;
+            for(int row = (32 - roomHeight - 2); row < 31; row++)
+            {
+                layer[row - layerID][30 - layerID] = frontWallID[0][layerID];
+            }
+            return layer;
+        }
+        return layerOld;
+    }
+
+    //creates a floor of tiles
+    static int[][] createFloor(int[][] layerOld, int roomHeight, int roomWidth)
+    {
+        int[][] layer = layerOld;
+        for(int row = (32 - roomHeight - 2); row < 31; row++)
+        {
+            for(int col = (32 - roomWidth - 2); col < 31; col++)
+            {
+                layer[row][col] = floorID[0];
+            }
+        }
+        return layer;
+    }
+
+    //create a blank layer
+    static int[][] createBlankLayer()
+    {
+        int[][] layer = new int[32][32];
+        for(int col = 0; col < maxHeight; col++)
+        {
+            for(int row = 0; row < maxWidth; row++)
+            {
+                layer[col][row] = 0;
+            }
+        }
+        return layer;
+    }
+
+    //creates the floor layer of the room
+    static int[][] createBaseLayer(int roomHeight, int roomWidth, int[] pathLocations)
+    {
+        int[][] layer = createBlankLayer();
+        
+        //adding the base floor
+        layer = createFloor(layer, roomHeight, roomWidth);
+
+        //adding the room walls
+        layer = createNorthHoriWall(layer, roomHeight, roomWidth, 0);
+        layer = createSouthHoriWall(layer, roomHeight, roomWidth, 0);
+        layer = createWestVertiWall(layer, roomHeight, roomWidth, 0);
+        layer = createEastVertiWall(layer, roomHeight, roomWidth, 0);
+
+        //adding the paths
+        layer = createNorthPath(layer, roomHeight, roomWidth, pathLocations[0], false, 0);
+        layer = createSouthPath(layer, roomHeight, roomWidth, pathLocations[1], false, 0);
+        layer = createWestPath(layer, roomHeight, roomWidth, pathLocations[2], false, 0);
+        layer = createEastPath(layer, roomHeight, roomWidth, pathLocations[3], false, 0);
+
+        //adding any paths(currently unused)
+        layer = createTraps(layer, roomHeight, roomWidth);
+
+        return layer;
+    }
+
+    static int[][] createWallsAndPaths(int[][] layerOld, int roomHeight, int roomWidth, int[] pathLocations, int layerID)
+    {
+        int[][] layer = layerOld;
+        //adding the room walls
+        layer = createNorthHoriWall(layer, roomHeight, roomWidth, layerID);
+        layer = createSouthHoriWall(layer, roomHeight, roomWidth, layerID);
+        layer = createWestVertiWall(layer, roomHeight, roomWidth, layerID);
+        layer = createEastVertiWall(layer, roomHeight, roomWidth, layerID);
+
+        //adding the paths
+        layer = createNorthPath(layer, roomHeight, roomWidth, pathLocations[0], false, layerID);
+        layer = createSouthPath(layer, roomHeight, roomWidth, pathLocations[1], false, layerID);
+        layer = createWestPath(layer, roomHeight, roomWidth, pathLocations[2], false, layerID);
+        layer = createEastPath(layer, roomHeight, roomWidth, pathLocations[3], false, layerID);
+
+        return layer;
+    }
+
+    static int[][] createGate(int[][] layerOld, int roomHeight, int roomWidth, int[] pathLocations, int originPath)
+    {
+        int[][] layer = layerOld;
+        
+        int pathCenterCol, pathCenterRow;
+
+        //origin path 0 = north, 1 = south, 2 = west, 3 = east;
+        switch(originPath)
+        {
+            case 0:
+                //gets the coordinates of the middle door tile
+                pathCenterCol = (32 - roomWidth - 1 + pathLocations[originPath] - 1);
+                pathCenterRow = (32 - roomHeight - 3 - 1);
+
+                layer[pathCenterRow][pathCenterCol - 1] = gateID[0];
+                layer[pathCenterRow][pathCenterCol] = gateID[0];
+                layer[pathCenterRow][pathCenterCol + 1] = gateID[0];
+            break;
+
+            case 1:
+                //gets the coordinates of the middle door tile
+                pathCenterCol = (32 - roomWidth - 1 + pathLocations[originPath] - 1);
+                pathCenterRow = (32 - 1 - 1);
+
+                layer[pathCenterRow][pathCenterCol - 1] = gateID[0];
+                layer[pathCenterRow][pathCenterCol] = gateID[0];
+                layer[pathCenterRow][pathCenterCol + 1] = gateID[0];
+            break;
+
+            case 2:
+                //gets the coordinates of the middle door tile
+                pathCenterCol = (32 - roomWidth - 3 - 1);
+                pathCenterRow = (32 - roomHeight - 1 + pathLocations[originPath] - 1);
+
+                //creates the empty tiles for the path
+                layer[pathCenterRow - 1][pathCenterCol] = gateID[0];
+                layer[pathCenterRow][pathCenterCol] = gateID[0];
+                layer[pathCenterRow + 1][pathCenterCol] = gateID[0];
+            break;
+
+            case 3:
+                //gets the coordinates of the middle door tile
+                pathCenterCol = (32 - 1 - 1);
+                pathCenterRow = (32 - roomHeight - 1 + pathLocations[originPath] - 1);
+
+                //creates the door tiles
+                layer[pathCenterRow - 1][pathCenterCol] = gateID[0];
+                layer[pathCenterRow][pathCenterCol] = gateID[0];
+                layer[pathCenterRow + 1][pathCenterCol] = gateID[0];
+            break;
+        }
+
+
+        return layer;
+    }
+
+    //creates a new room
+    static int[][][] createRoom(int roomHeight, int roomWidth, int originPath)
+    {
+        Random rand = new Random();
+
+        int[][][] room = new int[6][maxHeight][maxWidth];
+
+        //north, south, west, east path locations
+        int[] paths = {rand.nextInt(roomHeight - 2) + 1, rand.nextInt(roomHeight - 2) + 1, rand.nextInt(roomWidth - 2) + 1, rand.nextInt(roomWidth - 2) + 1};
+
+        room[0] = createBaseLayer(roomHeight, roomWidth, paths);
+        for(int i = 1; i < 6; i++)
+        {
+            room[i] = createWallsAndPaths(createBlankLayer(), roomHeight, roomWidth, paths, i);
+        }
+        room[1] = createGate(room[1], roomHeight, roomWidth, paths, originPath);
+
+
+        return room;
+    }
+
+    static void printRoom(int[][][] room)
+    {
+        for(int i = 0; i < room.length; i++)
+        {
+            for(int j = 0; j < room[0].length; j++)
+            {
+                for(int k = 0; k < room[0][0].length; k++)
+                {
+                    System.out.print(room[i][j][k] + ",");
+                }
+                System.out.println("");
+            }
+            System.out.println("");
+        }
+    }
+
+
+    public static void main(String[] args) {
+        printRoom(createRoom(13, 13, 0));
+    }
+}
