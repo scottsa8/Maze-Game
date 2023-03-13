@@ -56,6 +56,7 @@ public class MazeGame extends Game {
 	private Viewport viewport;
 
 	private int max=8,min=4;
+	private  Chest chest;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private ArrayList<Steering> enemiesAI = new ArrayList<>();
 	public static ArrayList<Projectile> entities = new ArrayList<>();
@@ -161,6 +162,7 @@ public class MazeGame extends Game {
 		p1.setUserData("player1");
 		p2.setUserData("player2");
 		createEnemies();
+		createChest();
 		CreateMapBounds x = new CreateMapBounds(map,world);
 
 		song1.setLooping(true);
@@ -523,6 +525,7 @@ public class MazeGame extends Game {
 				world.destroyBody(enemiesAI.get(i).getBody());
 			}
 
+			createChest();
 			createEnemies();
 			player.increaseXP(10);
 			player2.increaseXP(10);
@@ -548,6 +551,7 @@ public class MazeGame extends Game {
 				world.destroyBody(enemiesAI.get(i).getBody());
 			}
 
+			createChest();
 			createEnemies();
 			player.increaseXP(10);
 			player2.increaseXP(10);
@@ -573,6 +577,7 @@ public class MazeGame extends Game {
 				world.destroyBody(enemiesAI.get(i).getBody());
 			}
 
+			createChest();
 			createEnemies();
 			player.increaseXP(10);
 			player2.increaseXP(10);
@@ -591,6 +596,17 @@ public class MazeGame extends Game {
 		player.dispose();
 		player2.dispose();
 		song1.dispose();
+	}
+
+	public void createChest() {
+		chest = null;
+		int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
+		int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
+		int gridX = x;
+		int gridY = y;
+		float realX = 298 + (gridX - gridY) * (9.5f);
+		float realY = 166 - (gridX + gridY) * (4.75f);
+		new Chest(world, realX, realY, 1);
 	}
 
 	public void createEnemies()
