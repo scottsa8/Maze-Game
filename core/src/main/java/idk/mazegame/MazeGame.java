@@ -149,8 +149,8 @@ public class MazeGame extends Game {
 		player2.getPlayerSprite().setPosition(290,-64);
 		//player2.getPlayerSprite().setPosition(184,-69);
 		//player2.getPlayerSprite().setPosition(300,-9);
-		player2.setUseSlot1(Input.Keys.CONTROL_RIGHT);
-		player2.setUseSlot2(Input.Keys.SHIFT_RIGHT);
+		player.setUseSlot1(Input.Keys.CONTROL_RIGHT);
+		player.setUseSlot2(Input.Keys.SHIFT_RIGHT);
 		player2.setUp(Input.Keys.W);
 		player2.setLeft(Input.Keys.A);
 		player2.setDown(Input.Keys.S);
@@ -372,7 +372,6 @@ public class MazeGame extends Game {
 		if(chest!=null)
 		{
 			chest.getChestSprite().setPosition(chest.getBody().getPosition().x -7 , chest.getBody().getPosition().y - 7);
-
 			chest.getChestSprite().draw(renderer.getBatch());
 		}
 

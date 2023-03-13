@@ -404,15 +404,15 @@ public class Player {
         //item usage
         if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
-           if(ammo <7)
-            {
-                rangeAttack(1);
+           //if(ammo <7)
+            //{
+           //     rangeAttack(1);
+          //  }
+            if(attackCircle ==null)
+           {
+                String x = slots[1].name;
+                meleeAttack(x);
             }
-            //if(attackCircle ==null)
-           // {
-              //  String x = slots[1].name;
-             //   meleeAttack(x);
-           // }
             
             slotsCheck();
         }
