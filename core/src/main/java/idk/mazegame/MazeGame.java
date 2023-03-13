@@ -292,12 +292,6 @@ public class MazeGame extends Game {
 				}
 			}			
 		}
-		if(player.getAmmo()==7 || player2.getAmmo()==7)
-		{
-			entities.clear();
-			player.reload();
-			player2.reload();
-		}
 		if(Gdx.input.isKeyJustPressed(Keys.L))
 		{
 			for(int i=0;i<amount;i++)
@@ -753,16 +747,14 @@ public class MazeGame extends Game {
 					{
 						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
-						System.out.println(y);
-						enemies.get(y).takeDamage(10);
+						entities.get(y).setHit(true);
 					}
 					else if(contact.getFixtureA().getBody().getUserData().toString().contains("proj") &&
 					contact.getFixtureB().getBody().getUserData()=="dest")
 					{
-						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
+						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
-						System.out.println(y);
-						enemies.get(y).takeDamage(10);
+						entities.get(y).setHit(true);
 					}
 				}	
 				catch(Exception e)
