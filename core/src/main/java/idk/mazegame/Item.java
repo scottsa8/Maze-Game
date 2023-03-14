@@ -26,15 +26,20 @@ public class Item {
 
     public Item(ItemAttributes itemAttrs) { //Create generic item
         attributes = itemAttrs;
-        generateItem(0, 0);
+        generateItem(0, 0, 0);
     }
 
     public Item(ItemAttributes itemAttrs, int t, int i) { //Create an item using the given type and index
         attributes = itemAttrs;
-        generateItem(t, i);
+        generateItem(t, i, 0);
     }
 
-    private void generateItem(int thisType, int thisTypeIndex) { //used for creating an item
+    public Item(ItemAttributes itemAttrs, int level) { //Create generic item
+        attributes = itemAttrs;
+        generateItem(0, 0, level);
+    }
+
+    private void generateItem(int thisType, int thisTypeIndex, int level) { //used for creating an item
         //1. Find the item using the type and type index
         String[] itemAttrs = attributes.getAttributes(thisType, thisTypeIndex);
 
@@ -55,7 +60,12 @@ public class Item {
             System.out.println("ITEM - Error: Fist cannot have rarity. Ignore this.");
         } else {
             //3. Create the items rarity
-            int randomNum = new Random().nextInt(101);
+            int levelNum = 46;
+            if (level >= 50) levelNum = 101; //Checking player level to see what rarities that can obtain
+            else if (level >= 40) levelNum = 96;
+            else if (level >= 30) levelNum = 86;
+            else if (level >= 20) levelNum = 71;
+            int randomNum = new Random().nextInt(levelNum);
 
             if (randomNum <= 45) rarity = 1;
             else if (randomNum <= 70) rarity = 2;
