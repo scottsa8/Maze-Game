@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.*;
 import idk.mazegame.EnemyAI.CreateMapBounds;
 import idk.mazegame.EnemyAI.Steering;
 import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
+import idk.mazegame.EnemyAI.PathFinding.graphPath;
 
 import static java.lang.Math.sqrt;
 
@@ -609,6 +610,7 @@ public class MazeGame extends Game {
 		enemiesAI.clear();
 		p1enemies =0;
 		p2enemies =0;
+		Vector2 playerNode = new Vector2();
 		int type = 1;//(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
 		for(int i=0;i<amount;i++)
@@ -620,27 +622,21 @@ public class MazeGame extends Game {
 			float realX = 298 + (gridX - gridY) * (9.5f);
 			float realY = 166 - (gridX + gridY) * (4.75f);
 			enemies.add(new Enemy(world, realX, realY, type,i));
-			enemiesAI.add(enemies.get(i).addAI(enemies.get(i)));
 			int t = enemies.get(i).getTarget();
 			if(t==1)
 			{
 				p1enemies++;
-				target = new Steering(p1, 0);
+				//position of player
+				playerNode = new Vector2(player.getCoordinates().x,player.getCoordinates().y);
 			}
 			else if(t==2)
 			{
 				p2enemies++;
-				target = new Steering(p2, 0);
+				playerNode = new Vector2(player2.getCoordinates().x,player2.getCoordinates().y);
 			}
-			//Seek<Vector2> seek = new Seek<Vector2>(enemiesAI[i],target);
-			//enemiesAI[i].setBehaviour(seek);
-			 
-			Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI.get(i),target)
-			.setTimeToTarget(1f)
-			.setArrivalTolerance(1f)
-			.setDecelerationRadius(5);
-			enemiesAI.get(i).setBehaviour(arriveSB);
-			
+			//set path, with the enemy at i, and the player position.
+		
+			System.out.println(	graphPath.getPath(enemies.get(i).getCoordinates(), playerNode));
 			 
 		}
 	}

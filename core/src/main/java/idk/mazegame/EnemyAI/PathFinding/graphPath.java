@@ -25,7 +25,7 @@ public class graphPath{
                 end = node;
             }
         }
-       System.out.println(entityPos + " , " + start.pos + " || " + targetPos + " , " + end.pos);
+      // System.out.println(entityPos + " , " + start.pos + " || " + targetPos + " , " + end.pos);
     
         GraphPath<Node> path =  new DefaultGraphPath<Node>();
         new IndexedAStarPathFinder<>(graph).searchNodePath(start, end, dh, path);

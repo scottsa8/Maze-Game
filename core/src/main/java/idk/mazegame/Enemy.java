@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -18,6 +19,7 @@ import idk.mazegame.EnemyAI.Steering;
 public class Enemy {
     private TextureAtlas textureAtlas;
     private Sprite enemySprite;
+    private Vector2 coords;
     private Body body;
     private String name="";
     private int target=-1;
@@ -35,6 +37,10 @@ public class Enemy {
         enemySprite.setPosition(Gdx.graphics.getWidth()/2 - enemySprite.getWidth()/2, Gdx.graphics.getHeight()/2 - enemySprite.getHeight()/2);
         this.body = createBody(world,x,y);
         this.body.setUserData("enemy"+","+index);        
+    }
+    public Vector2 getCoordinates()
+    {
+        return coords;
     }
     public void updateUserData(int index)
     {
