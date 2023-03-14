@@ -11,6 +11,7 @@ public class PathFindingSystem
     public static DistanceHeuristic dh;
     private TiledMapTileLayer floorLayer;
     private TiledMapTileLayer blockLayer;
+    private static Array<Node> nodes = new Array<>();
 
     public PathFindingSystem()
     {
@@ -18,7 +19,6 @@ public class PathFindingSystem
     }
     public void generateGraph(TiledMap map)
     {
-        Array<Node> nodes = new Array<>();
         int count =0;
         floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
         blockLayer = (TiledMapTileLayer) map.getLayers().get(1);
@@ -31,7 +31,6 @@ public class PathFindingSystem
                 if(floorLayer.getCell(row, col) != null)
                     if(blockLayer.getCell(row-1, col+1) == null)
                     {
-                        System.out.println(row + "," + col );
                         nodes.add(new Node(new Vector2(x,y),new Vector2(row,col),count));
                         count++;
                     }
@@ -59,7 +58,17 @@ public class PathFindingSystem
         graph = new Graph(nodes);
 
     }
-
+    static public Node VectorToNode(Vector2 position)
+    {
+        for(int i=0;i<nodes.size;i++)
+        {
+            if(nodes.get(i).tilePos.equals(position))
+            {
+                return nodes.get(i);
+            }
+        }
+        return null;
+    }
 }
 
 
