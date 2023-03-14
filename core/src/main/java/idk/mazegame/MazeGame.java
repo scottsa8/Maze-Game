@@ -509,6 +509,7 @@ public class MazeGame extends Game {
 			map.dispose();
 			renderer.dispose();
 			map = new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
+			test.generateGraph(map);
 			myText = "saferoom";
 			roomCount++;
 			myRightText = "no of rooms: " + roomCount;
@@ -534,6 +535,7 @@ public class MazeGame extends Game {
 			map.dispose();
 			renderer.dispose();
 			map = new TmxMapLoader().load("tiledmaps/testRoom.tmx");
+			test.generateGraph(map);
 			myText = "testroom";
 			roomCount++;
 			myRightText = "no of rooms: " + roomCount;
@@ -559,6 +561,7 @@ public class MazeGame extends Game {
 			map.dispose();
 			renderer.dispose();
 			map = new TmxMapLoader().load("tiledmaps/forestRoom.tmx");
+			test.generateGraph(map);
 			myText = "forestroom";
 			roomCount++;
 			myRightText = "no of rooms: " + roomCount;
