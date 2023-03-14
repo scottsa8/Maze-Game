@@ -45,8 +45,8 @@ public class Item {
         typeIndex = Integer.valueOf(itemAttrs[1]);
         name = itemAttrs[2];
         description = itemAttrs[3];
-        damage = Double.valueOf(itemAttrs[4]);
-        defence = Double.valueOf(itemAttrs[5]);
+        damage = Double.valueOf(itemAttrs[4])*10;
+        defence = Double.valueOf(itemAttrs[5])*10;
         range = Double.valueOf(itemAttrs[6]);
         durability = Double.valueOf(itemAttrs[7]);
         weight = Double.valueOf(itemAttrs[8]);
