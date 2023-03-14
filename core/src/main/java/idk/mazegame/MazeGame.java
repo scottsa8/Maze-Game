@@ -725,26 +725,50 @@ public class MazeGame extends Game {
 						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
 						String[] p = contact.getFixtureA().getBody().getUserData().toString().split(",");
-						int t = Integer.parseInt(p[1]);
-						System.out.println(t);
-						enemies.get(y).takeDamage(10);
+						entities.get(0).setHit(true);		
+						String weapon = p[2];
+						System.out.println(weapon);
+						int play = Integer.parseInt(p[3]);
+						int damage = Integer.parseInt(p[4]);
+						if(play == 1)
+						{
+							player.increaseXP(1);
+						}
+						else if(play ==2)
+						{
+							player2.increaseXP(1);
+						}
+						enemies.get(y).takeDamage(damage);
+						attacking[0] = x[0]+y;
+						attacking[1] = Integer.toString(enemies.get(y).getHealth());		
 						hitting= true;
-						entities.get(t).setHit(true);				
 					}
 					else if(contact.getFixtureB().getBody().getUserData().toString().contains("proj") &&
 					contact.getFixtureA().getBody().getUserData().toString().contains("enemy"))
 					{		
 						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
-				
 						String[] p = contact.getFixtureB().getBody().getUserData().toString().split(",");
-						int t = Integer.parseInt(p[1]);
-						System.out.println(t);
-						enemies.get(y).takeDamage(10);
-						hitting= true;
-						entities.get(t).setHit(true);				
+						entities.get(0).setHit(true);		
+						String weapon = p[2];
+						System.out.println(weapon);
+						int play = Integer.parseInt(p[3]);
+						int damage = Integer.parseInt(p[4]);
+						if(play == 1)
+						{
+							player.increaseXP(1);
+						}
+						else if(play ==2)
+						{
+							player2.increaseXP(1);
+						}
+						enemies.get(y).takeDamage(damage);
+						attacking[0] = x[0]+y;
+						attacking[1] = Integer.toString(enemies.get(y).getHealth());		
+						hitting= true;		
+
 					}
-					else if(contact.getFixtureB().getBody().getUserData().toString().contains("proj") &&
+					if(contact.getFixtureB().getBody().getUserData().toString().contains("proj") &&
 					contact.getFixtureA().getBody().getUserData()=="dest")
 					{
 						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");

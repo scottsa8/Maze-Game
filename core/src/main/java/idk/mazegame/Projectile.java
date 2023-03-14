@@ -18,10 +18,10 @@ public class Projectile
     public Vector2 direction;
     private  Body body;
     private boolean hit;
-    public Projectile(World world, Vector2 pos,Vector2 direction,int index, int damage)
+    public Projectile(World world, Vector2 pos,Vector2 direction,int index, String name, int playerNum, int damage, int speed)
     {
         position = new Vector2(pos);
-        velocity=1;
+        velocity=speed;
         this.direction = direction;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -33,7 +33,7 @@ public class Projectile
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
         Fixture fixture = body.createFixture(fixtureDef);
-        body.setUserData("proj,"+index+","+damage);
+        body.setUserData("proj"+","+index+","+name.toString()+","+playerNum+","+damage);
         shape.dispose();
 
       
@@ -50,7 +50,6 @@ public class Projectile
         position.y -=velocity;
  
       body.setTransform(position.x, position.y, 0);
-      velocity=1;
     }
     public Body getBody()
     {

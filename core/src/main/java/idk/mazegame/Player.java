@@ -438,7 +438,7 @@ public class Player {
                 rangeAttack(0, (int)slots[2].getDamage());
             }**/
             if(ammo<1){
-                rangeAttack(1,(int)slots[2].getDamage());
+                rangeAttack(slots[2].name,0,(int)slots[2].getDamage());
             }        
 
             slotsCheck();
@@ -790,17 +790,23 @@ public class Player {
                     }
                 },0.1f);  
     }
-    public void rangeAttack(int range, int damage)
+    public void rangeAttack(String name,int range, int damage)
     {
         Body dest;
         int offset =0;
+        int speed=0;
+        float timeout=1f;
         if(range==0) //short range
         {
             offset =0;
+            speed=2;
+            timeout=0.7f;
         }
         else if(range ==1)//long range
         {
             offset=30;
+            speed=1;
+            timeout=1.2f;
         }
         Vector2 pos = new Vector2();
         Vector2 dir = new Vector2();
@@ -849,8 +855,9 @@ public class Player {
             pos, true, world);
             dest.setUserData("dest");
             
-            MazeGame.entities.add(new Projectile(world,new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),dir,ammo,damage));
-
+            MazeGame.entities.add(new Projectile(world,new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),dir,ammo,
+            name.toString(),playerNum,damage,speed));
+          
             dir= new Vector2(0,0);
             ammo++;
             Timer timer=new Timer();
@@ -862,7 +869,7 @@ public class Player {
                     }
                     catch(Exception e){};
                 }
-            },1.2f);  
+            },timeout);  
             Timer timer1=new Timer();
             timer1.scheduleTask(new Timer.Task() {
                 @Override

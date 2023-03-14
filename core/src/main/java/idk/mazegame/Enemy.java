@@ -193,7 +193,7 @@ public class Enemy {
     public void takeDamage(int damage)
     {
         Health = Health-damage;
-        System.out.println("Health:"+Health);
+        //System.out.println("Health:"+Health);
         if(Health <= 0)
         {
             die(this);
