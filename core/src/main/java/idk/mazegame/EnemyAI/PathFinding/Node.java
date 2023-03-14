@@ -11,12 +11,14 @@ public class Node{
     public int index;
     public Array<Connection<Node>> connections = new Array<>();
     public Polygon p;
+    public boolean isOccupied;
     
     public Node(Vector2 pos, Vector2 tilePos, int index)
     {
         this.pos = pos;
         this.tilePos = tilePos;
         this.index = index;
+        isOccupied=false;
         //this.pos = new Vector2(pos.y, -pos.x);
         p = new Polygon(new float[]{
                 (pos.x + 8)*5.1f, (pos.y)*5.1f,
@@ -25,5 +27,9 @@ public class Node{
                 (pos.x+16)*5.1f,(pos.y+4)*5.1f
 
         });
+    }
+    public void setOccupied(boolean t)
+    {
+        isOccupied = t;
     }
 }
