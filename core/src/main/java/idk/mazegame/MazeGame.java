@@ -157,6 +157,8 @@ public class MazeGame extends Game {
 		player2.setRight(Input.Keys.D);
 		player.setCoordinates(new Vector3(24,8,0));
 		player2.setCoordinates(new Vector3(23,7,0));
+		player.setDefaultValues();
+		player2.setDefaultValues();
 		p1 = player.createBody(world);
 		p2 = player2.createBody(world);
 		p1.setUserData("player1");
@@ -653,12 +655,12 @@ public class MazeGame extends Game {
 			@Override
 			public void beginContact(Contact contact) {
 				try{
-					if(contact.getFixtureA().getBody().getUserData().toString().contains("enemy")&&
-					contact.getFixtureB().getBody().getUserData()=="player1")
+					if(contact.getFixtureB().getBody().getUserData().toString().contains("enemy")&&
+					contact.getFixtureA().getBody().getUserData()=="player1")
 					{
-						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
+						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
-						enemies.get(y).attack(player);
+						enemies.get(y).attack(player2);
 						colliding=true;
 					}
 					if(contact.getFixtureB().getBody().getUserData().toString().contains("enemy")&&

@@ -29,6 +29,7 @@ public class Enemy {
     private int Health =100;
     private int p1XP;
     private int p2XP;
+    private int damage;
 
     public Enemy(World world,float x, float y, int type, int index, int xp1, int xp2) {
         p1XP =  xp1;
@@ -127,11 +128,13 @@ public class Enemy {
 		{
 			atlas = "zombieSprites.atlas";
 			name="zombie";
+            damage=5;
 		}
 		if(type==2)
 		{
 			atlas = "demon.atlas";
 			name="demon";
+            damage=10;
 		}
 		if(type ==3)
 		{
@@ -142,11 +145,13 @@ public class Enemy {
                 {
                     atlas ="";
                     name="";
+                    damage=20;
                 }
                 else if(type2 == 2)
                 {
                     atlas ="";
                     name="";
+                    damage=35;
                 }
             }
             else
@@ -182,7 +187,7 @@ public class Enemy {
     }
     public void attack(Player p)
     {
-        //player take damage.
+       p.setHealth(p.getHealth()-damage);
     }
     public void die(Enemy e)
     {
