@@ -41,7 +41,6 @@ public class Enemy {
         this.body = createBody(world,x,y);
         
         this.body.setUserData("enemy"+","+index);   
-        System.out.println(this.body.getUserData())  ;   
     }
     public void updateUserData(int index)
     {
