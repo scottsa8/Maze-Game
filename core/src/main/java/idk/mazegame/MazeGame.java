@@ -9,6 +9,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -125,6 +126,7 @@ public class MazeGame extends Game {
 		myRightText = "no of rooms: " + roomCount;
 		layout = new GlyphLayout();
 		layout.setText(font, myText);
+		chestText ="";
 		levelText = "Level: ";
 		healthText = "health: ";
 		staminaText = "stamina: ";
@@ -283,7 +285,6 @@ public class MazeGame extends Game {
 				}
 			}
 		}
-	
 		for(int i=0;i<entities.size();i++)
 		{
 			if(entities.get(i).isHit() == true)
@@ -295,6 +296,7 @@ public class MazeGame extends Game {
 			
 			}			
 		}
+		
 		if(Gdx.input.isKeyJustPressed(Keys.L))
 		{
 			for(int i=0;i<amount;i++)
@@ -369,35 +371,38 @@ public class MazeGame extends Game {
 				}
 			}
 		}
-
+		renderer.getBatch().end();
+		if(chestText != "")
+		{
+			renderer.getBatch().begin();
+			font.draw(renderer.getBatch(), chestText, 250.5f, 63.5f, screenWidth, Align.topLeft, false);	
+			Timer timer=new Timer();
+			timer.scheduleTask(new Timer.Task() 
+			{
+				@Override
+				public void run() 
+				{
+					chestText= "";
+				}
+			},1f); 
+			renderer.getBatch().end();
+		}
+		renderer.getBatch().begin();
+			
 		if(chest!=null)
 		{
 			if(chest.isOpened() == true)
 			{
-				
-				font.draw(renderer.getBatch(), chest.getText(), 250.5f, 63.5f, screenWidth, Align.topLeft, false);
-				Timer timer=new Timer();
-                timer.scheduleTask(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        try{
-							world.destroyBody(chest.getBody());
-							chestText="";
-							chest=null;
-                        }
-                      catch(Exception e){};
-                    }
-                },3f);
-				
-			}
+				world.destroyBody(chest.getBody());
+				chest= null;
+			}	
 			else
 			{
 				chest.getChestSprite().setPosition(chest.getBody().getPosition().x -7 , chest.getBody().getPosition().y - 7);
 				chest.getChestSprite().draw(renderer.getBatch());
 			}
-			
 		}
-		
+
 
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
@@ -624,7 +629,7 @@ public class MazeGame extends Game {
 		if(debug !=null)
 		{
 			debug.render(world,camera.combined);
-		}
+		}	
 	}
 
 	@Override
@@ -636,9 +641,12 @@ public class MazeGame extends Game {
 		song1.dispose();
 	}
 	public void createChest() {
-		if(chest!=null)
+		if(chest !=null)
 		{
-			chest.getBody().setUserData("");
+			if(chest.getBody()!=null)
+			{
+				world.destroyBody(chest.getBody());
+			}
 			chest = null;
 		}
 		int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
@@ -648,9 +656,7 @@ public class MazeGame extends Game {
 		float realX = 298 + (gridX - gridY) * (9.5f);
 		float realY = 166 - (gridX + gridY) * (4.75f);
 		chest = new Chest(world, realX, realY);
-		System.out.println(chest.getBody().getUserData());
 	}
-
 	public void createEnemies()
 	{
 		enemies.clear();
@@ -717,19 +723,15 @@ public class MazeGame extends Game {
 					if(contact.getFixtureB().getBody().getUserData()=="chest"&&
 						contact.getFixtureA().getBody().getUserData()=="player1")
 					{
-						chestText="chest opened by player 1";
 						chest.open(player);
-						//System.out.println("chest opened by player 1");
-						
+						chestText="Chest opened by player 1";
 						colliding=true;
 					}
 					if(contact.getFixtureB().getBody().getUserData()=="chest"&&
 						contact.getFixtureA().getBody().getUserData()=="player2")
 					{
-						chestText="chest opened by player 2";
 						chest.open(player2);
-						//System.out.println("chest opened by player 2");
-					
+						chestText="Chest opened by player 2";
 						colliding=true;
 					}
 					if(contact.getFixtureB().getBody().getUserData().toString().contains("enemy")&&

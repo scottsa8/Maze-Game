@@ -10,15 +10,13 @@ public class Chest {
     private TextureAtlas textureAtlas;
     private Sprite chestSprite;
     private Body body;
-    private boolean opened;
-    private String text;
+    private boolean opened = false;
     public Chest(World world, float x, float y) {
         textureAtlas = new TextureAtlas("items/chest.atlas");
         chestSprite = new Sprite(textureAtlas.findRegion("chest",-1));
         chestSprite.setPosition(Gdx.graphics.getWidth()/2 - chestSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - chestSprite.getHeight()/2);
         this.body = createBody(world,x,y);
         this.body.setUserData("chest");
-        opened =false;
     }
 
     private Body createBody(World world,float x, float y)
@@ -47,16 +45,10 @@ public class Chest {
     public void open(Player p)
     {
         opened= true;
-        text="Chest opened by player "+p.getPlayerNum();
         //create item add to to the player
-        System.out.println("opened");
     }
     public boolean isOpened()
     {
         return opened;
-    }
-    public String getText()
-    {
-        return text;
     }
 }
