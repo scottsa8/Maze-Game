@@ -55,7 +55,7 @@ public class MazeGame extends Game {
 	public SpriteBatch batch;
 	private BitmapFont font;
 	private String myText, myRightText;
-	private String healthText, staminaText, coinText, slot1Text, slot2Text,chestText;
+	private String healthText, staminaText, coinText, slot1Text, slot2Text,chestText,xpText;
 	private GlyphLayout layout;
 	private Sound sound;
 	private Music song1,song2;
@@ -90,7 +90,8 @@ public class MazeGame extends Game {
 	private ItemAttributes itemAttrs;
 	private int xp;
 	private int xp2;
-	private boolean colliding,hitting,hit=false;
+	private int gained;
+	private boolean colliding,hitting,hit,xp1Increased,xp2Increased=false;
 	private int amount;
 	private String[] attacking = new String[2];
 	private int level1;
@@ -288,6 +289,14 @@ public class MazeGame extends Game {
 		{
 			if(enemies.get(count).isDead() == true)
 			{	
+				if(enemies.get(count).getTarget() ==1)
+				{
+					increaseXP(player, enemies.get(count).getXpValue());
+				}
+				else
+				{
+					increaseXP(player2, enemies.get(count).getXpValue());
+				}
 				world.destroyBody(enemies.get(count).getBody());
 				if (enemies.size() == 1)
 				{	
@@ -327,7 +336,8 @@ public class MazeGame extends Game {
 		}
 		if(Gdx.input.isKeyPressed(Keys.J))
 		{
-			player.increaseXP(10000000);
+			increaseXP(player, 100);
+			increaseXP(player2, 100);
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.K))
@@ -415,8 +425,48 @@ public class MazeGame extends Game {
 			},1f); 
 			renderer.getBatch().end();
 		}
+		if(xp1Increased || xp2Increased)
+		{
+			renderer.getBatch().begin();
+			if(xp1Increased && xp2Increased)
+			{
+				xpText ="both players" + " gained "+gained+"xp";
+				font.setColor(Color.CHARTREUSE);
+				font.draw(renderer.getBatch(), xpText, 107.5f, 30.5f,screenWidth, Align.topLeft, false);	
+			}
+			else
+			{
+				if(xp1Increased)
+				{
+					xpText ="player 1" + " gained "+gained+"xp";
+					font.setColor(Color.YELLOW);
+					font.draw(renderer.getBatch(), xpText, 107.5f, 30.5f,screenWidth, Align.topLeft, false);	
+				}
+				else if(xp2Increased)
+				{
+					xpText ="player 2" + " gained "+gained+"xp";
+					font.setColor(Color.WHITE);
+					font.draw(renderer.getBatch(), xpText, 107.5f, 30.5f,screenWidth, Align.topLeft, false);	
+				}
+			}
+			font.setColor(Color.WHITE);
+			Timer timer=new Timer();
+			timer.scheduleTask(new Timer.Task() 
+			{
+				@Override
+				public void run() 
+				{
+					xpText= "";
+					gained=0;
+					xp1Increased=false;
+					xp2Increased=false;
+				}
+			},0.5f);
+			renderer.getBatch().end(); 
+		}
 		renderer.getBatch().begin();
-			
+		
+
 		if(chest!=null)
 		{
 			if(chest.isOpened() == true)
@@ -616,8 +666,8 @@ public class MazeGame extends Game {
 			}
 			createChest();
 			createEnemies();
-			player.increaseXP(10);
-			player2.increaseXP(10);
+			increaseXP(player, 10);
+			increaseXP(player2,10); 
 		}
 
 		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) {
@@ -641,8 +691,8 @@ public class MazeGame extends Game {
 			}
 			createChest();
 			createEnemies();
-			player.increaseXP(10);
-			player2.increaseXP(10);
+			increaseXP(player, 10);
+			increaseXP(player2, 10);
 		}
 
 		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) {
@@ -666,8 +716,8 @@ public class MazeGame extends Game {
 			}
 			createChest();
 			createEnemies();
-			player.increaseXP(10);
-			player2.increaseXP(10);
+			increaseXP(player, 10);
+			increaseXP(player2, 10);
 		}
 		
 		if(debug !=null)
@@ -717,6 +767,18 @@ public class MazeGame extends Game {
 		enemies.get(index).getEnemySprite().getHeight()+4);
 		font.setColor(Color.WHITE);
 		font.getData().setScale(0.4f);
+	}
+	public void increaseXP(Player p,int amount)
+	{
+		int x= p.getPlayerNum();
+		if(x==1)
+		{
+			xp1Increased =true;
+		}
+		else
+		xp2Increased=true;
+		gained =amount;
+		p.increaseXP(amount);
 	}
 	public void createEnemies()
 	{
@@ -796,7 +858,7 @@ public class MazeGame extends Game {
 						contact.getFixtureA().getBody().getUserData()=="player1")
 					{
 						chest.open(player);
-						player.increaseXP(20);
+						increaseXP(player, 20);
 						chestText="Chest opened by player 1";
 						colliding=true;
 					}
@@ -804,7 +866,7 @@ public class MazeGame extends Game {
 						contact.getFixtureA().getBody().getUserData()=="player2")
 					{
 						chest.open(player2);
-						player2.increaseXP(20);
+						increaseXP(player2, 20);
 						chestText="Chest opened by player 2";
 						colliding=true;
 					}
@@ -818,14 +880,6 @@ public class MazeGame extends Game {
 						String weapon = p[1];
 						int play = Integer.parseInt(p[2]);
 						int damage = Integer.parseInt(p[3]);
-						if(play == 1)
-						{
-							player.increaseXP(enemies.get(y).getXpValue());
-						}
-						else if(play ==2)
-						{
-							player2.increaseXP(enemies.get(y).getXpValue());
-						}
 						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
 						attacking[1] = Integer.toString(enemies.get(y).getHealth());
@@ -841,14 +895,6 @@ public class MazeGame extends Game {
 						String weapon = p[1];
 						int play = Integer.parseInt(p[2]);
 						int damage = Integer.parseInt(p[3]);
-						if(play == 1)
-						{
-							player.increaseXP(enemies.get(y).getXpValue());
-						}
-						else if(play ==2)
-						{
-							player2.increaseXP(enemies.get(y).getXpValue());
-						}
 						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
 						attacking[1] = Integer.toString(enemies.get(y).getHealth());
@@ -864,14 +910,6 @@ public class MazeGame extends Game {
 						String weapon = p[2];
 						int play = Integer.parseInt(p[3]);
 						int damage = Integer.parseInt(p[4]);
-						if(play == 1)
-						{
-							player.increaseXP(enemies.get(y).getXpValue());
-						}
-						else if(play ==2)
-						{
-							player2.increaseXP(enemies.get(y).getXpValue());
-						}
 						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
 						attacking[1] = Integer.toString(enemies.get(y).getHealth());		
@@ -887,14 +925,6 @@ public class MazeGame extends Game {
 						String weapon = p[2];
 						int play = Integer.parseInt(p[3]);
 						int damage = Integer.parseInt(p[4]);
-						if(play == 1)
-						{
-							player.increaseXP(enemies.get(y).getXpValue());
-						}
-						else if(play ==2)
-						{
-							player2.increaseXP(enemies.get(y).getXpValue());
-						}
 						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
 						attacking[1] = Integer.toString(enemies.get(y).getHealth());		

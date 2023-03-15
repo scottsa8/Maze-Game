@@ -189,7 +189,7 @@ public class Enemy {
     {
         target = p;
     }
-    public void dispose(Enemy e)
+    public void dispose()
     {
         textureAtlas.dispose();
         enemySprite.getTexture().dispose();
@@ -211,8 +211,7 @@ public class Enemy {
     }
     public void die(Enemy e)
     {
-        textureAtlas.dispose();
-        e.enemySprite.getTexture().dispose();
+        this.dispose();
         this.dead=true;
     }
     public void takeDamage(int damage)
