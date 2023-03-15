@@ -5,6 +5,7 @@ public class Leveling{
     private int level;
     private int experience;
     private int levleTracker;
+    private Stage stage;
 
     
 
@@ -16,20 +17,20 @@ public class Leveling{
         }
 
     }
+
     private void I_Level(){
         level +=1; 
-        levleTracker += 10;
+        levleTracker += (experience * 0.5);
 
     }
+
     public int getXP(){
-        return experience;
+        return levleTracker;
     }
-    public int getLevel()
-    {
+
+    public int getLevel(){
         return level;
     }
 
-    
-    
 
 }

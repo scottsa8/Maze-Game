@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,6 +21,8 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
@@ -52,7 +55,7 @@ public class MazeGame extends Game {
 	public SpriteBatch batch;
 	private BitmapFont font;
 	private String myText, myRightText;
-	private String levelText,healthText, staminaText, coinText, slot1Text, slot2Text,chestText;
+	private String healthText, staminaText, coinText, slot1Text, slot2Text,chestText;
 	private GlyphLayout layout;
 	private Sound sound;
 	private Music song1,song2;
@@ -90,6 +93,11 @@ public class MazeGame extends Game {
 	private boolean colliding,hitting,hit=false;
 	private int amount;
 	private String[] attacking = new String[2];
+	private int level1;
+	private int level2;
+	private Label LevelLable1;
+	private Label LevelLable2;
+	private Stage hudStage;
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
@@ -127,7 +135,6 @@ public class MazeGame extends Game {
 		layout = new GlyphLayout();
 		layout.setText(font, myText);
 		chestText ="";
-		levelText = "Level: ";
 		healthText = "health: ";
 		staminaText = "stamina: ";
 		coinText = "coins: ";
@@ -212,8 +219,21 @@ public class MazeGame extends Game {
 //		sound.setPan(id, -1f, 1f);
 
 		//Gdx.input.setInputProcessor(this);
+		//creating the HUD for the player level and other stats 
+		hudStage = new Stage();
 
+		LevelLable1 = new Label("PLayer 1 Level: 1", new Label.LabelStyle(font,Color.GOLD));
+		LevelLable1.setFontScale(1.5f);
+		LevelLable2 = new Label("PLayer 2 Level: 1", new Label.LabelStyle(font,Color.WHITE));
+		LevelLable2.setFontScale(1.5f);
+
+		hudStage.addActor(LevelLable1);
+		hudStage.addActor(LevelLable2);
+
+		LevelLable1.setPosition(20, 60);
+		LevelLable2.setPosition(20, 30);
 	}
+	
 
 	@Override
 	public void resize(int width, int height) {
@@ -375,7 +395,9 @@ public class MazeGame extends Game {
 		if(chestText != "")
 		{
 			renderer.getBatch().begin();
-			font.draw(renderer.getBatch(), chestText, 250.5f, 63.5f, screenWidth, Align.topLeft, false);	
+			font.setColor(Color.CYAN);
+			font.draw(renderer.getBatch(), chestText, 250.5f, -150, screenWidth, Align.topLeft, false);	
+			font.setColor(Color.WHITE);
 			Timer timer=new Timer();
 			timer.scheduleTask(new Timer.Task() 
 			{
@@ -417,25 +439,26 @@ public class MazeGame extends Game {
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
 		
-		// player stat display
-
+		// player stat display#
+		font.setColor(Color.YELLOW);
 		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -90.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), levelText + player.getLevel(), 107.5f, -100.5f, screenWidth, Align.topLeft, false);
+		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -110.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), staminaText + (int)player.getStamina(), 107.5f, -120.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), coinText + player.getCoin(), 107.5f, -130.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), slot1Text + player.getSlotName(1), 107.5f, -140.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), slot2Text + player.getSlotName(2), 107.5f, -150.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot1Text + player.getSlotName(1), 107.5f, -120.5f, screenWidth, Align.topLeft, true);
+		font.draw(renderer.getBatch(), slot2Text + player.getSlotName(2), 107.5f, -130.5f, screenWidth, Align.topLeft, true);
+		font.draw(renderer.getBatch(), staminaText + (int)player.getStamina(), 107.5f, -140.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), coinText + player.getCoin(), 107.5f, -150.5f, screenWidth, Align.topLeft, false);
+
 
 		// player stat display
 
-		font.draw(renderer.getBatch(), "Player 2: ", 425.5f, -90.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), levelText + player2.getLevel(), 425.5f, -100.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), healthText + player2.getHealth(), 425.5f, -110.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), staminaText + (int)player2.getStamina(), 425.5f, -120.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), coinText + player2.getCoin(), 425.5f, -130.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), slot1Text + player2.getSlotName(1), 425.5f, -140.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), slot2Text + player2.getSlotName(2), 425.5f, -150.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), "Player 2: ", 450.5f, -90.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), healthText + player2.getHealth(), 450.5f, -110.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot1Text + player2.getSlotName(1), 425.5f, -120.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot2Text + player2.getSlotName(2), 425.5f, -130.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), staminaText + (int)player2.getStamina(), 450.5f, -140.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), coinText + player2.getCoin(), 450.5f, -150.5f, screenWidth, Align.topLeft, false);
+	
 		
 		if(debugger!=false)
 		{
@@ -630,6 +653,14 @@ public class MazeGame extends Game {
 		{
 			debug.render(world,camera.combined);
 		}	
+
+		level1 = player.getLevel();
+		LevelLable1.setText("Player 1 Level: " + level1);
+		level2 = player2.getLevel();
+		LevelLable2.setText("Player 2 Level: " + level2);
+		hudStage.getRoot().setPosition(650, 815);
+		hudStage.act(Gdx.graphics.getDeltaTime());
+		hudStage.draw();
 	}
 
 	@Override
