@@ -2,7 +2,7 @@ package idk.mazegame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.Gdx;
 
 import java.io.File;
@@ -131,5 +131,37 @@ public class Item {
         name = "Destroyed item.";
         description = "This item has been destroyed.";
         System.out.println("destroyed");
+    }
+    public Color getItemColor(Item i)
+    {
+        if(i.rarity ==1)
+        {
+            return Color.GRAY;
+        }
+        else if(i.rarity ==2)
+        {
+            return Color.GREEN;
+        }
+        else if(i.rarity ==3)
+        {
+            return Color.BLUE;
+        }
+        else if(i.rarity ==4)
+        {
+            return Color.PURPLE;
+        }
+        else if(i.rarity ==5)
+        {
+            return Color.RED;
+        }
+        else if(i.rarity ==6)
+        {
+            return Color.ORANGE;
+        }
+        else
+        {
+            return Color.WHITE;
+        }
+        
     }
 }

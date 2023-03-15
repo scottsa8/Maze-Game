@@ -441,23 +441,35 @@ public class MazeGame extends Game {
 		
 		// player stat display#
 		font.setColor(Color.YELLOW);
-		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -90.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -80.5f, screenWidth, Align.topLeft, false);
 		font.setColor(Color.WHITE);
-		font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -110.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), slot1Text + player.getSlotName(1), 107.5f, -120.5f, screenWidth, Align.topLeft, true);
-		font.draw(renderer.getBatch(), slot2Text + player.getSlotName(2), 107.5f, -130.5f, screenWidth, Align.topLeft, true);
+		font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -90.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot1Text, 107.5f, -100.5f, screenWidth, Align.topLeft, true);
+		font.setColor(player.getItemColor(1));
+		font.draw(renderer.getBatch(), " "+player.getSlotName(1), 107.5f, -110.5f, screenWidth, Align.topLeft, true);
+		font.setColor(Color.WHITE);
+		font.draw(renderer.getBatch(), slot2Text, 107.5f, -120.5f, screenWidth, Align.topLeft, true);
+		font.setColor(player.getItemColor(2));
+		font.draw(renderer.getBatch(), " "+player.getSlotName(2), 107.5f, -130.5f, screenWidth, Align.topLeft, true);
+		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), staminaText + (int)player.getStamina(), 107.5f, -140.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), coinText + player.getCoin(), 107.5f, -150.5f, screenWidth, Align.topLeft, false);
 
 
 		// player stat display
 
-		font.draw(renderer.getBatch(), "Player 2: ", 450.5f, -90.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), healthText + player2.getHealth(), 450.5f, -110.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), slot1Text + player2.getSlotName(1), 425.5f, -120.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), slot2Text + player2.getSlotName(2), 425.5f, -130.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), staminaText + (int)player2.getStamina(), 450.5f, -140.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), coinText + player2.getCoin(), 450.5f, -150.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), "Player 2: ", 457.5f, -80.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), healthText + player2.getHealth(), 457.5f, -90.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot1Text, 460.5f, -100.5f, screenWidth, Align.topLeft, false);
+		font.setColor(player2.getItemColor(1));
+		font.draw(renderer.getBatch(), player2.getSlotName(1), (460.5f - (player2.getSlotName(1).length()*2)), -110.5f, screenWidth, Align.topLeft, true);
+		font.setColor(Color.WHITE);
+		font.draw(renderer.getBatch(), slot2Text, 460.5f, -120.5f, screenWidth, Align.topLeft, false);
+		font.setColor(player2.getItemColor(2));
+		font.draw(renderer.getBatch(), player2.getSlotName(2), (460.5f - (player2.getSlotName(2).length() *2)), -130.5f, screenWidth, Align.topLeft, true);
+		font.setColor(Color.WHITE);
+		font.draw(renderer.getBatch(), staminaText + (int)player2.getStamina(), 455.5f, -140.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), coinText + player2.getCoin(), 455.5f, -150.5f, screenWidth, Align.topLeft, false);
 	
 		
 		if(debugger!=false)

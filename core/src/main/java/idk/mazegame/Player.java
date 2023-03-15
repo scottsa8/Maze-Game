@@ -5,6 +5,7 @@ import javax.swing.text.html.parser.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -94,6 +95,15 @@ public class Player {
         } else {
             return slots[2].name;
         }
+    }
+    public Color getItemColor(int slot){
+        if(slot ==1){
+            return slots[1].getItemColor(slots[1]);
+        } else {
+            return slots[2].getItemColor(slots[2]);
+        }
+
+      
     }
 
     public void setStamina(double stamina) {
