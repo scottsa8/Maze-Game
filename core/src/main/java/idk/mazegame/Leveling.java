@@ -10,7 +10,6 @@ public class Leveling{
             amount = amount/4;
         }
         experience += amount;
-        System.out.println(experience);
         if (experience > levleTracker){
             I_Level();
         }

@@ -99,6 +99,7 @@ public class MazeGame extends Game {
 	private Label LevelLable1;
 	private Label LevelLable2;
 	private Stage hudStage;
+	private int bossCount;
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
@@ -362,6 +363,10 @@ public class MazeGame extends Game {
 					world.destroyBody(enemiesAI.get(i).getBody());
 				}
 				enemies.clear();
+			}
+			if(Gdx.input.isKeyPressed(Keys.Y))
+			{
+				roomCount+=5;
 			}
 		}
 		try{
@@ -834,6 +839,7 @@ public class MazeGame extends Game {
 		font.getData().setScale(0.2f);
 		font.draw(renderer.getBatch(), "HP: "+Integer.toString(enemies.get(index).getHealth()),enemies.get(index).getBody().getPosition().x -7 , (enemies.get(index).getBody().getPosition().y - 7) +
 		enemies.get(index).getEnemySprite().getHeight()+4);
+	
 		font.setColor(Color.WHITE);
 		font.getData().setScale(0.4f);
 	}
@@ -857,17 +863,38 @@ public class MazeGame extends Game {
 		p2enemies =0;
 		int type;
 		int type2;
+		int bossType=-1;
 		if(player.getLevel() > 10 || player2.getLevel()>10)
 		{
-			type=(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
+			type=(int)Math.floor(Math.random() *(4 - 1 + 1) + 1);
 			type2 = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
+			if(roomCount>10)
+			{
+				bossCount++;
+				System.out.println("bossCount:"+bossCount);
+				if(bossCount == 5)
+				{
+					type =-1;
+					type2=3;
+					bossCount=0;
+					bossType =(int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
+					System.out.println("bossCount:"+type2);
+				}
+			}
 		}
 		else
 		{
-			type =(int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
+			type =(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
 			type2=0;
 		}
-		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
+		if(type2 ==3)
+		{
+			amount =1;
+		}
+		else
+		{
+			amount = (int)Math.floor(Math.random() *(max - min + 1) + min);
+		}
 		for(int i=0;i<amount;i++)
 		{
 			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
@@ -876,7 +903,7 @@ public class MazeGame extends Game {
 			int gridY = y;
 			float realX = 298 + (gridX - gridY) * (9.5f);
 			float realY = 166 - (gridX + gridY) * (4.75f);
-			enemies.add(new Enemy(world, realX, realY, type,type2,i));
+			enemies.add(new Enemy(world, realX, realY, type,type2,i,bossType));
 			enemiesAI.add(enemies.get(i).addAI(enemies.get(i)));
 			int randomPlayer=(int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
 			if (randomPlayer == 1) {

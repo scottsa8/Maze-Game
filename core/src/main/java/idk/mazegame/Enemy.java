@@ -29,21 +29,26 @@ public class Enemy {
     private int damage;
     private int xpValue;
     private Color color;
+    private boolean boss;
 
-    public Enemy(World world,float x, float y, int type,int type2, int index) {
-        String enemyAtlas = getAtlas(type,type2);
+    public Enemy(World world,float x, float y, int type,int type2, int index,int bossType) {
+        String enemyAtlas = getAtlas(type,type2,bossType);
         textureAtlas = new TextureAtlas(enemyAtlas);
         enemySprite = new Sprite(textureAtlas.findRegion(name+"Right",0));
         enemySprite.setPosition(Gdx.graphics.getWidth()/2 - enemySprite.getWidth()/2, Gdx.graphics.getHeight()/2 - enemySprite.getHeight()/2);
-        this.body = createBody(world,x,y);
-        
+        boss=false;
+        if(type2 ==3)
+        {
+            enemySprite.setScale(1.2f);
+        }
+        this.body = createBody(world,x,y,type2);
         this.body.setUserData("enemy"+","+index);   
     }
     public void updateUserData(int index)
     {
         this.body.setUserData("enemy"+","+index);        
     }
-    private Body createBody(World world,float x, float y)
+    private Body createBody(World world,float x, float y, int type2)
     {
         Body b;
         BodyDef bodyDef = new BodyDef();
@@ -51,13 +56,24 @@ public class Enemy {
         bodyDef.position.set((x + enemySprite.getWidth()/2), (y- enemySprite.getHeight()/2));
         b = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(enemySprite.getWidth()/2 / Constants.PPM, enemySprite.getHeight()/2 / Constants.PPM + 1);
+        if(type2 ==3)
+        {
+            shape.setAsBox(enemySprite.getWidth()/2 / Constants.PPM + 3, enemySprite.getHeight()/2 / Constants.PPM + 5);
+        }
+        else
+        {
+            shape.setAsBox(enemySprite.getWidth()/2 / Constants.PPM, enemySprite.getHeight()/2 / Constants.PPM + 1);
+        }
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
         Fixture fixture = b.createFixture(fixtureDef);
         shape.dispose();
         return b;
+    }
+    public boolean isBoss()
+    {
+        return boss;
     }
     public Body getBody()
     {
@@ -114,9 +130,31 @@ public class Enemy {
         Steering AI = new Steering(e.getBody(),5);
         return AI;
     }
-    private String getAtlas(int type, int type2)
+    private String getAtlas(int type, int type2,int bossType)
     {
         String atlas ="";
+        if(type ==-1 && type2 ==3)
+        {
+            if(bossType ==1)
+            {
+                atlas = "skeletonKing.atlas";
+                name="skeleton";
+                damage=35;
+                health =250;
+                xpValue =100;
+                color= Color.FIREBRICK;
+            }
+            else if(bossType ==2)
+            {
+                atlas = "impPink.atlas";
+                name="imp";
+                damage=30;
+                health =200;
+                xpValue =80;
+                color= Color.PINK;
+            }
+            boss=true;
+        }
 		if(type ==1)
 		{
 			atlas = "zombieSprites.atlas";
@@ -126,7 +164,7 @@ public class Enemy {
             xpValue =5;
             color= Color.GREEN;
 		}
-		if(type==2)
+		else if(type==2)
 		{
 			atlas = "demon.atlas";
 			name="demon";
@@ -135,7 +173,16 @@ public class Enemy {
             xpValue =10;
             color= Color.RED;
 		}
-		if(type ==3)
+        else if(type ==3)
+        {
+            atlas = "skeleton.atlas";
+			name="skeleton";
+            damage=10;
+            health =100;
+            xpValue =10;
+            color= Color.WHITE;
+        }      
+		else if(type ==4)
 		{
             if(type2==1)
             {
@@ -151,7 +198,7 @@ public class Enemy {
                 atlas ="impGolden.atlas";
                 name="imp";
                 health =120;
-                damage=35;
+                damage=20;
                 xpValue =50;
                 color = Color.GOLD;
             }
