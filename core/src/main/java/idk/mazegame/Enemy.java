@@ -19,22 +19,19 @@ public class Enemy {
     private Sprite enemySprite;
     private Body body;
     private String name="";
-    private int target=-1;
+    private Player target;
     private int currentFrame = 0;
     private int timer = 0;
     private final int MAX_FRAMES = 3;
     private final int FRAME_SPEED = 3;
     private boolean dead = false;
-    private int Health =100;
-    private int p1XP;
-    private int p2XP;
+    private int health;
     private int damage;
+    private int xpValue;
     private Color color;
 
-    public Enemy(World world,float x, float y, int type, int index, int xp1, int xp2) {
-        p1XP =  xp1;
-        p2XP =xp2;
-        String enemyAtlas = getAtlas(type);
+    public Enemy(World world,float x, float y, int type,int type2, int index) {
+        String enemyAtlas = getAtlas(type,type2);
         textureAtlas = new TextureAtlas(enemyAtlas);
         enemySprite = new Sprite(textureAtlas.findRegion(name+"Right",0));
         enemySprite.setPosition(Gdx.graphics.getWidth()/2 - enemySprite.getWidth()/2, Gdx.graphics.getHeight()/2 - enemySprite.getHeight()/2);
@@ -117,17 +114,16 @@ public class Enemy {
         Steering AI = new Steering(e.getBody(),5);
         return AI;
     }
-    private String getAtlas(int type)
+    private String getAtlas(int type, int type2)
     {
         String atlas ="";
-		
-		int type2=0;
-		
 		if(type ==1)
 		{
 			atlas = "zombieSprites.atlas";
 			name="zombie";
             damage=5;
+            health =100;
+            xpValue =5;
             color= Color.GREEN;
 		}
 		if(type==2)
@@ -135,51 +131,63 @@ public class Enemy {
 			atlas = "demon.atlas";
 			name="demon";
             damage=10;
+            health =100;
+            xpValue =10;
             color= Color.RED;
 		}
 		if(type ==3)
 		{
-            if(p1XP > 10 || p2XP>10)
+            if(type2==1)
             {
-                type2 = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
-                if(type2==1)
-                {
-                    atlas ="";
-                    name="";
-                    damage=20;
-                }
-                else if(type2 == 2)
-                {
-                    atlas ="";
-                    name="";
-                    damage=35;
-                }
+                atlas ="ghost.atlas";
+                name="ghost";
+                damage=20;
+                health =120;
+                xpValue =15;
+                color= Color.BLACK;
             }
-            else
+            else if(type2 == 2)
             {
-                atlas = "zombieSprites.atlas";
-			    name="zombie";
+                atlas ="impGolden.atlas";
+                name="imp";
+                health =120;
+                damage=35;
+                xpValue =50;
+                color = Color.GOLD;
             }
+        else
+        {
+            System.out.println("FUCK IM IN THE ELSE");
+            atlas = "zombieSprites.atlas";
+            name="zombie";
+            damage=20;
+            health =100;
+            xpValue =5;
+            color= Color.GREEN;
+        }
 		
 		}
 		atlas = "enemy/"+atlas;
         return atlas;
     }
+    public int getXpValue()
+    {
+        return xpValue;
+    }
     public int getTarget()
     {
-        if(target==-1)
+        if(target.getPlayerNum() == 1)
         {
-            setTarget();
-            return target;
+            return 1;
         }
         else
         {
-            return target;
+            return 2;
         }
     }
-    private void setTarget()
+    public void setTarget(Player p)
     {
-        target = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
+        target = p;
     }
     public void dispose(Enemy e)
     {
@@ -209,16 +217,15 @@ public class Enemy {
     }
     public void takeDamage(int damage)
     {
-        Health = Health-damage;
-        //System.out.println("Health:"+Health);
-        if(Health <= 0)
+        health = health-damage;
+        if(health <= 0)
         {
             die(this);
         }
     }
     public int getHealth()
     {
-        return Health;
+        return health;
     }
     public boolean isDead()
     {

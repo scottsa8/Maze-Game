@@ -1,17 +1,16 @@
 package idk.mazegame;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-
 public class Leveling{
     private int level;
     private int experience;
     private int levleTracker;
-    private Stage stage;
-
     
-
     public void increaseXP(int amount){
+        if(level <=10)
+        {
+            amount = amount/4;
+        }
         experience += amount;
-
+        System.out.println(experience);
         if (experience > levleTracker){
             I_Level();
         }

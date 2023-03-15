@@ -325,6 +325,10 @@ public class MazeGame extends Game {
 			}
 			createEnemies();
 		}
+		if(Gdx.input.isKeyPressed(Keys.J))
+		{
+			player.increaseXP(10000000);
+		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.K))
 		{
@@ -712,6 +716,7 @@ public class MazeGame extends Game {
 		font.draw(renderer.getBatch(), "HP: "+Integer.toString(enemies.get(index).getHealth()),enemies.get(index).getBody().getPosition().x -7 , (enemies.get(index).getBody().getPosition().y - 7) +
 		enemies.get(index).getEnemySprite().getHeight()+4);
 		font.setColor(Color.WHITE);
+		font.getData().setScale(0.4f);
 	}
 	public void createEnemies()
 	{
@@ -719,7 +724,18 @@ public class MazeGame extends Game {
 		enemiesAI.clear();
 		p1enemies =0;
 		p2enemies =0;
-		int type =(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
+		int type;
+		int type2;
+		if(player.getLevel() > 10 || player2.getLevel()>10)
+		{
+			type=(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
+			type2 = (int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
+		}
+		else
+		{
+			type =(int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
+			type2=0;
+		}
 		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
 		for(int i=0;i<amount;i++)
 		{
@@ -729,16 +745,16 @@ public class MazeGame extends Game {
 			int gridY = y;
 			float realX = 298 + (gridX - gridY) * (9.5f);
 			float realY = 166 - (gridX + gridY) * (4.75f);
-			enemies.add(new Enemy(world, realX, realY, type,i,player.getLevel(),player2.getLevel()));
+			enemies.add(new Enemy(world, realX, realY, type,type2,i));
 			enemiesAI.add(enemies.get(i).addAI(enemies.get(i)));
-			int t = enemies.get(i).getTarget();
-			if(t==1)
-			{
+			int randomPlayer=(int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
+			if (randomPlayer == 1) {
+				enemies.get(i).setTarget(player);
 				p1enemies++;
 				target = new Steering(p1, 0);
 			}
-			else if(t==2)
-			{
+			else if (randomPlayer == 2) {
+				enemies.get(i).setTarget(player2);
 				p2enemies++;
 				target = new Steering(p2, 0);
 			}
@@ -780,6 +796,7 @@ public class MazeGame extends Game {
 						contact.getFixtureA().getBody().getUserData()=="player1")
 					{
 						chest.open(player);
+						player.increaseXP(20);
 						chestText="Chest opened by player 1";
 						colliding=true;
 					}
@@ -787,6 +804,7 @@ public class MazeGame extends Game {
 						contact.getFixtureA().getBody().getUserData()=="player2")
 					{
 						chest.open(player2);
+						player2.increaseXP(20);
 						chestText="Chest opened by player 2";
 						colliding=true;
 					}
@@ -802,11 +820,11 @@ public class MazeGame extends Game {
 						int damage = Integer.parseInt(p[3]);
 						if(play == 1)
 						{
-							player.increaseXP(1);
+							player.increaseXP(enemies.get(y).getXpValue());
 						}
 						else if(play ==2)
 						{
-							player2.increaseXP(1);
+							player2.increaseXP(enemies.get(y).getXpValue());
 						}
 						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
@@ -825,11 +843,11 @@ public class MazeGame extends Game {
 						int damage = Integer.parseInt(p[3]);
 						if(play == 1)
 						{
-							player.increaseXP(1);
+							player.increaseXP(enemies.get(y).getXpValue());
 						}
 						else if(play ==2)
 						{
-							player2.increaseXP(1);
+							player2.increaseXP(enemies.get(y).getXpValue());
 						}
 						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
@@ -848,11 +866,11 @@ public class MazeGame extends Game {
 						int damage = Integer.parseInt(p[4]);
 						if(play == 1)
 						{
-							player.increaseXP(1);
+							player.increaseXP(enemies.get(y).getXpValue());
 						}
 						else if(play ==2)
 						{
-							player2.increaseXP(1);
+							player2.increaseXP(enemies.get(y).getXpValue());
 						}
 						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
@@ -871,11 +889,11 @@ public class MazeGame extends Game {
 						int damage = Integer.parseInt(p[4]);
 						if(play == 1)
 						{
-							player.increaseXP(1);
+							player.increaseXP(enemies.get(y).getXpValue());
 						}
 						else if(play ==2)
 						{
-							player2.increaseXP(1);
+							player2.increaseXP(enemies.get(y).getXpValue());
 						}
 						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
