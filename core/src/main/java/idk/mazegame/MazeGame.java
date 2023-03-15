@@ -385,13 +385,15 @@ public class MazeGame extends Game {
 				{
 					enemiesAI.get(i).update(Gdx.graphics.getDeltaTime(),enemies.get(i));
 					//enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
-					enemies.get(i).getEnemySprite().setPosition(enemies.get(i).getBody().getPosition().x -7 , enemies.get(i).getBody().getPosition().y - 7);
 
+					enemies.get(i).getEnemySprite().setPosition(enemies.get(i).getBody().getPosition().x -7 , enemies.get(i).getBody().getPosition().y - 7);
+					drawHP(i);
 					enemies.get(i).getEnemySprite().draw(renderer.getBatch());
 				}
 			}
 		}
-		renderer.getBatch().end();
+	renderer.getBatch().end();
+	
 		if(chestText != "")
 		{
 			renderer.getBatch().begin();
@@ -435,7 +437,7 @@ public class MazeGame extends Game {
 //		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(3));
 //		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(4));
 //		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
-
+		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
 		
@@ -512,8 +514,9 @@ public class MazeGame extends Game {
 
 			for(int i=0;i<enemies.size();i++)
 			{
+				
 				enemies.get(i).getEnemySprite().draw(renderer.getBatch());
-
+				drawHP(i);
 			}
 			player2.getPlayerSprite().draw(renderer.getBatch());
 			if(chest!=null)
@@ -540,6 +543,7 @@ public class MazeGame extends Game {
 				if(enemies.get(i)!=null)
 				{
 					enemies.get(i).getEnemySprite().draw(renderer.getBatch());
+					drawHP(i);
 				}
 			}
 			player2.getPlayerSprite().draw(renderer.getBatch());
@@ -570,6 +574,7 @@ public class MazeGame extends Game {
 				if(enemies.get(i)!=null)
 				{
 					enemies.get(i).getEnemySprite().draw(renderer.getBatch());
+					drawHP(i);
 				}
 			}
 			player2.getPlayerSprite().draw(renderer.getBatch());
@@ -700,6 +705,14 @@ public class MazeGame extends Game {
 		float realY = 166 - (gridX + gridY) * (4.75f);
 		chest = new Chest(world, realX, realY);
 	}
+	public void drawHP(int index)
+	{
+		font.setColor(enemies.get(index).getHpColor());
+		font.getData().setScale(0.2f);
+		font.draw(renderer.getBatch(), "HP: "+Integer.toString(enemies.get(index).getHealth()),enemies.get(index).getBody().getPosition().x -7 , (enemies.get(index).getBody().getPosition().y - 7) +
+		enemies.get(index).getEnemySprite().getHeight()+4);
+		font.setColor(Color.WHITE);
+	}
 	public void createEnemies()
 	{
 		enemies.clear();
@@ -785,7 +798,6 @@ public class MazeGame extends Game {
 						String[] p = contact.getFixtureA().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
 						String weapon = p[1];
-						System.out.println(weapon);
 						int play = Integer.parseInt(p[2]);
 						int damage = Integer.parseInt(p[3]);
 						if(play == 1)
@@ -809,7 +821,6 @@ public class MazeGame extends Game {
 						String[] p = contact.getFixtureB().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
 						String weapon = p[1];
-						System.out.println(weapon);
 						int play = Integer.parseInt(p[2]);
 						int damage = Integer.parseInt(p[3]);
 						if(play == 1)
@@ -820,8 +831,6 @@ public class MazeGame extends Game {
 						{
 							player2.increaseXP(1);
 						}
-						System.out.println("Player1 xp: "+player.displayXP());
-						System.out.println("Player2 xp: "+player2.displayXP());
 						enemies.get(y).takeDamage(damage);
 						attacking[0] = x[0]+y;
 						attacking[1] = Integer.toString(enemies.get(y).getHealth());
@@ -835,7 +844,6 @@ public class MazeGame extends Game {
 						String[] p = contact.getFixtureA().getBody().getUserData().toString().split(",");
 						entities.get(0).setHit(true);		
 						String weapon = p[2];
-						System.out.println(weapon);
 						int play = Integer.parseInt(p[3]);
 						int damage = Integer.parseInt(p[4]);
 						if(play == 1)
@@ -859,7 +867,6 @@ public class MazeGame extends Game {
 						String[] p = contact.getFixtureB().getBody().getUserData().toString().split(",");
 						entities.get(0).setHit(true);		
 						String weapon = p[2];
-						System.out.println(weapon);
 						int play = Integer.parseInt(p[3]);
 						int damage = Integer.parseInt(p[4]);
 						if(play == 1)
@@ -881,7 +888,6 @@ public class MazeGame extends Game {
 					{
 						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
-						System.out.println(y);
 						entities.get(y).setHit(true);
 					}
 					else if(contact.getFixtureA().getBody().getUserData().toString().contains("proj") &&
@@ -889,7 +895,6 @@ public class MazeGame extends Game {
 					{
 						String[] x =contact.getFixtureA().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
-						System.out.println(y);
 						entities.get(y).setHit(true);
 					}
 				}	

@@ -1,6 +1,7 @@
 package idk.mazegame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -10,8 +11,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.BooleanArray;
-
 import idk.mazegame.EnemyAI.Constants;
 import idk.mazegame.EnemyAI.Steering;
 
@@ -30,6 +29,7 @@ public class Enemy {
     private int p1XP;
     private int p2XP;
     private int damage;
+    private Color color;
 
     public Enemy(World world,float x, float y, int type, int index, int xp1, int xp2) {
         p1XP =  xp1;
@@ -128,12 +128,14 @@ public class Enemy {
 			atlas = "zombieSprites.atlas";
 			name="zombie";
             damage=5;
+            color= Color.GREEN;
 		}
 		if(type==2)
 		{
 			atlas = "demon.atlas";
 			name="demon";
             damage=10;
+            color= Color.RED;
 		}
 		if(type ==3)
 		{
@@ -181,8 +183,19 @@ public class Enemy {
     }
     public void dispose(Enemy e)
     {
-     
-        
+        textureAtlas.dispose();
+        enemySprite.getTexture().dispose();
+    }
+    public Color getHpColor()
+    {
+        if(color == null)
+        {
+            return Color.WHITE;
+        }
+        else
+        {
+            return color;
+        }
     }
     public void attack(Player p)
     {
