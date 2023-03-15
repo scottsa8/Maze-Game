@@ -16,7 +16,6 @@ public class Leveling{
         }
 
     }
-
     private void I_Level(){
         level +=1; 
         levleTracker += 10;

@@ -164,7 +164,6 @@ public class MazeGame extends Game {
 		p1.setUserData("player1");
 		p2.setUserData("player2");
 		createEnemies();
-		createChest();
 		CreateMapBounds x = new CreateMapBounds(map,world);
 
 		song1.setLooping(true);
@@ -319,7 +318,7 @@ public class MazeGame extends Game {
 			
 		
 		}
-
+		
 		try{
 			floorLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tile);
 		}
@@ -369,9 +368,19 @@ public class MazeGame extends Game {
 		}
 		if(chest!=null)
 		{
-			chest.getChestSprite().setPosition(chest.getBody().getPosition().x -7 , chest.getBody().getPosition().y - 7);
-			chest.getChestSprite().draw(renderer.getBatch());
+			if(chest.isOpened() == true)
+			{
+				world.destroyBody(chest.getBody());
+				chest=null;
+			}
+			else
+			{
+				chest.getChestSprite().setPosition(chest.getBody().getPosition().x -7 , chest.getBody().getPosition().y - 7);
+				chest.getChestSprite().draw(renderer.getBatch());
+			}
+			
 		}
+		
 
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
@@ -450,7 +459,10 @@ public class MazeGame extends Game {
 
 			}
 			player2.getPlayerSprite().draw(renderer.getBatch());
-			chest.getChestSprite().draw(renderer.getBatch());
+			if(chest!=null)
+			{
+				chest.getChestSprite().draw(renderer.getBatch());
+			}
 			renderer.getBatch().end();
 		}
 		if (entityLayer.getCell((int) (player.getCoordinates().x - 1), (int) (player.getCoordinates().y)) != null) {
@@ -474,7 +486,11 @@ public class MazeGame extends Game {
 				}
 			}
 			player2.getPlayerSprite().draw(renderer.getBatch());
-			chest.getChestSprite().draw(renderer.getBatch());
+			if(chest!=null)
+			{
+				chest.getChestSprite().draw(renderer.getBatch());
+			}
+		
 			renderer.getBatch().end();
 
 		}
@@ -500,7 +516,10 @@ public class MazeGame extends Game {
 				}
 			}
 			player2.getPlayerSprite().draw(renderer.getBatch());
-			chest.getChestSprite().draw(renderer.getBatch());
+			if(chest!=null)
+			{
+				chest.getChestSprite().draw(renderer.getBatch());
+			}
 			renderer.getBatch().end();
 
 		}
@@ -600,7 +619,11 @@ public class MazeGame extends Game {
 		song1.dispose();
 	}
 	public void createChest() {
-		chest = null;
+		if(chest!=null)
+		{
+			chest.getBody().setUserData("");
+			chest = null;
+		}
 		int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
 		int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
 		int gridX = x;
@@ -608,6 +631,7 @@ public class MazeGame extends Game {
 		float realX = 298 + (gridX - gridY) * (9.5f);
 		float realY = 166 - (gridX + gridY) * (4.75f);
 		chest = new Chest(world, realX, realY);
+		System.out.println(chest.getBody().getUserData());
 	}
 
 	public void createEnemies()
@@ -617,7 +641,7 @@ public class MazeGame extends Game {
 		p1enemies =0;
 		p2enemies =0;
 		int type =(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
-		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
+		amount = 0;//(int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
 		for(int i=0;i<amount;i++)
 		{
 			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
@@ -671,6 +695,20 @@ public class MazeGame extends Game {
 						String[] x =contact.getFixtureB().getBody().getUserData().toString().split(",");
 						int y = Integer.parseInt(x[1]);
 						enemies.get(y).attack(player);
+						colliding=true;
+					}
+					if(contact.getFixtureB().getBody().getUserData()=="chest"&&
+						contact.getFixtureA().getBody().getUserData()=="player1")
+					{
+						chest.open(player);
+						System.out.println("chest opened by player 1");
+						colliding=true;
+					}
+					if(contact.getFixtureB().getBody().getUserData()=="chest"&&
+						contact.getFixtureA().getBody().getUserData()=="player2")
+					{
+						System.out.println("chest opened by player 2");
+						chest.open(player2);
 						colliding=true;
 					}
 					if(contact.getFixtureB().getBody().getUserData().toString().contains("enemy")&&

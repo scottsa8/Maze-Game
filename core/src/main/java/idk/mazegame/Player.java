@@ -438,7 +438,7 @@ public class Player {
                 rangeAttack(0, (int)slots[2].getDamage());
             }**/
             if(ammo<1){
-                rangeAttack(slots[2].name,0,(int)slots[2].getDamage());
+                rangeAttack(slots[2].name,1,(int)slots[2].getDamage());
             }        
 
             slotsCheck();
@@ -799,14 +799,14 @@ public class Player {
         if(range==0) //short range
         {
             offset =0;
-            speed=2;
-            timeout=0.7f;
+            speed=1;
+            timeout=1.2f;
         }
         else if(range ==1)//long range
         {
             offset=30;
-            speed=1;
-            timeout=1.2f;
+            speed=2;
+            timeout=0.7f;
         }
         Vector2 pos = new Vector2();
         Vector2 dir = new Vector2();
