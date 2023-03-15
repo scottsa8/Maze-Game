@@ -69,9 +69,11 @@ public class Enemy {
     }
     public void updatePath(Player p,Vector2 currentPos)
     {
+        if (isMoving) return;
+
         Node playerNode;
         Node node;
-        playerNode =PathFindingSystem.VectorToNode(p.getVect2Coordinates());
+        playerNode = PathFindingSystem.VectorToNode(p.getVect2Coordinates());
         node = PathFindingSystem.VectorToNode(currentPos);
 		path = graphPath.getPath(node, playerNode);
 	    for(int c=0;c<path.getCount();c++)
@@ -113,9 +115,92 @@ public class Enemy {
     }
     public void updateBody()
     {
-//        if (isMoving) {
-//            ;
-//        }
+        if (isMoving) {
+            //if (lastKeyedDirection == 6 || lastKeyedDirection == 4) playerSprite.translateX(-0.125f*moveAmountX);
+            if (timer == 0) {
+                body.setTransform(body.getPosition().set(body.getPosition().x + (0.0675f * moveAmountX), body.getPosition().y + (0.0675f * moveAmountY)), 0);
+                currentFrame++;
+                timer = 1;
+            }
+
+            if (currentFrame == 16) {
+                isMoving = false;
+                currentNode++;
+                this.setCoords(path.get(currentNode).tilePos);
+                path.get(currentNode-1).setOccupied(false);
+                path.get(currentNode).setOccupied(true);
+                curPos = null;
+                nextPos = null;
+                currentFrame = 0;
+                return;
+            }
+
+            timer--;
+            return;
+
+//                if (targetX != moveAmountX)
+//                    if (lastKeyedDirection == 6 || lastKeyedDirection == 4) targetX -= 0.125f*moveAmountX;
+//                    targetX += 0.25f*moveAmountX;
+//                if (targetY != moveAmountY)
+//                    targetY += 0.25f*moveAmountY;
+//
+//                //animation
+//                if(frameCounter == 5) {
+//                    currentFrame++;
+//                    if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
+//                        playerSprite.setRegion(textureAtlas.findRegion("playerUp", currentFrame));
+//
+//                    if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
+//                        playerSprite.setRegion(textureAtlas.findRegion("playerDown", currentFrame));
+//
+//                    if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
+//                        playerSprite.setRegion(textureAtlas.findRegion("playerLeft", currentFrame));
+//
+//                    if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
+//                        playerSprite.setRegion(textureAtlas.findRegion("playerRight", currentFrame));
+//
+//                    if (lastKeyedDirection == 9)
+//                        //if (lastKeyedDirection == 9 || secondlastKeyedDirection == 9)
+//                        playerSprite.setRegion(textureAtlas.findRegion("playerRUp", currentFrame));
+//
+//                    if (lastKeyedDirection == 7)
+//                        //if (lastKeyedDirection == 7 || secondlastKeyedDirection == 7)
+//                        playerSprite.setRegion(textureAtlas.findRegion("playerLUp", currentFrame));
+//
+//                    if (lastKeyedDirection == 3)
+//                        //if (lastKeyedDirection == 3 || secondlastKeyedDirection == 3)
+//                        playerSprite.setRegion(textureAtlas.findRegion("playerRDown", currentFrame));
+//
+//                    if (lastKeyedDirection == 1)
+//                        //if (lastKeyedDirection == 1 || secondlastKeyedDirection == 1)
+//                        playerSprite.setRegion(textureAtlas.findRegion("playerLDown", currentFrame));
+//                    frameCounter = 0;
+//                }
+//
+//                frameCounter++;
+//
+//            }
+//
+//            timer++;
+//
+//            //reset animation loop
+//            if (currentFrame == 3) {
+//                currentFrame = 0;
+//            }
+//
+//            if (targetY == moveAmountY && targetX == moveAmountX) {
+//                isMoving = false;
+//
+//                targetX = 0;
+//                targetY = 0;
+//                moveAmountX = 0;
+//                moveAmountY = 0;
+//                frameCounter = 5;
+//
+//            }
+//            return;
+        }
+
         try{
             curPos = path.get(currentNode).tilePos;
         }
@@ -136,6 +221,9 @@ public class Enemy {
                 return;
             }
         }
+        if (path.get(currentNode+1).isOccupied) return;
+        path.get(currentNode+1).setOccupied(true);
+
         System.out.println("COUNTER:" + currentNode);
         System.out.println("currentNode:" + curPos);
         System.out.println("currentNode+1:" + nextPos);
@@ -146,71 +234,56 @@ public class Enemy {
             System.out.println("third index out of bounds: " + pathCoords);
             return;
         }
-//        float realX = 307 + (gridX - gridY) * (9.5f);
-//        float realY = 180 - (gridX + gridY) * (4.75f);
+
         System.out.println("nextPos:" + pathCoords);
 
         if (pathCoords.equals(new Vector2(0,1))) {
-
             moveAmountX = ENEMY_SPEED*DIAG_MOD;
             moveAmountY = (ENEMY_SPEED*DIAG_MOD)/2;
-
             isMoving = true;
 
         }
         if (pathCoords.equals(new Vector2(-1,0))) {
-
             moveAmountX = -ENEMY_SPEED*DIAG_MOD;
             moveAmountY = (ENEMY_SPEED*DIAG_MOD)/2;
-
             isMoving = true;
         }
         if (pathCoords.equals(new Vector2(1,0))) {
-
             moveAmountX = ENEMY_SPEED*DIAG_MOD;
             moveAmountY = (-ENEMY_SPEED*DIAG_MOD)/2;
-
             isMoving = true;
         }
-
-
         if (pathCoords.equals(new Vector2(0,-1))) {
-
             moveAmountX = -ENEMY_SPEED*DIAG_MOD;
             moveAmountY = (-ENEMY_SPEED*DIAG_MOD)/2;
-
             isMoving = true;
         }
         if (pathCoords.equals(new Vector2(-1,-1))) {
-
-                moveAmountX = -ENEMY_SPEED*2;
-                moveAmountY = 0;
-                isMoving = true;
+            moveAmountX = -ENEMY_SPEED*2;
+            moveAmountY = 0;
+            isMoving = true;
         }
         if (pathCoords.equals(new Vector2(1,1))) {
-
-                moveAmountX = ENEMY_SPEED*2;
-                moveAmountY = 0;
-                isMoving = true;
+            moveAmountX = ENEMY_SPEED*2;
+            moveAmountY = 0;
+            isMoving = true;
             }
         if (pathCoords.equals(new Vector2(1,-1))) {
-
-                moveAmountX = 0;
-                moveAmountY = -ENEMY_SPEED;
-                isMoving = true;
+            moveAmountX = 0;
+            moveAmountY = -ENEMY_SPEED;
+            isMoving = true;
             }
         if (pathCoords.equals(new Vector2(-1,1))) {
-
-                moveAmountX = 0;
-                moveAmountY = ENEMY_SPEED;
-                isMoving = true;
+            moveAmountX = 0;
+            moveAmountY = ENEMY_SPEED;
+            isMoving = true;
         }
 
-        body.setTransform(body.getPosition().set(body.getPosition().x + moveAmountX,body.getPosition().y + moveAmountY),0);
-        currentNode++;
-        this.setCoords(path.get(currentNode).tilePos);
-        curPos = null;
-        nextPos = null;
+//        body.setTransform(body.getPosition().set(body.getPosition().x + moveAmountX,body.getPosition().y + moveAmountY),0);
+//        currentNode++;
+//        this.setCoords(path.get(currentNode).tilePos);
+//        curPos = null;
+//        nextPos = null;
 
 //            //player update position, decrement from move amount, once move amount == finished - set isMoving to false
 //
@@ -222,63 +295,6 @@ public class Enemy {
 ////                }
 ////            }
 ////
-//            if (timer == 2) {
-//                //currentFrame++;
-//                timer = 0;
-//            }
-//
-//            if (timer == 0) {
-//
-//                if (lastKeyedDirection == 6 || lastKeyedDirection == 4) playerSprite.translateX(-0.125f*moveAmountX);
-//                playerSprite.translateX(0.25f*moveAmountX);
-//                playerSprite.translateY(0.25f*moveAmountY);
-//
-//                if (targetX != moveAmountX)
-//                    if (lastKeyedDirection == 6 || lastKeyedDirection == 4) targetX -= 0.125f*moveAmountX;
-//                targetX += 0.25f*moveAmountX;
-//                if (targetY != moveAmountY)
-//                    targetY += 0.25f*moveAmountY;
-//
-//                //animation
-//                if(frameCounter == 5) {
-//                    currentFrame++;
-//
-//                    frameCounter = 0;
-//                }
-//
-//                frameCounter++;
-//
-//            }
-//
-//            timer++;
-//
-//            //reset animation loop
-//            if (currentFrame == 3) {
-//                currentFrame = 0;
-//            }
-//
-//            if (targetY == moveAmountY && targetX == moveAmountX) {
-//                isMoving = false;
-//                coordinates.add(tmpCoords);
-//                tmpCoords.set(0,0,0);
-//
-////                if (nextStep == false) {
-////                    currentFrame = 3;
-////                    nextStep = true;
-////                }
-////                else if (nextStep == true) {
-////                    currentFrame = 1;
-////                    nextStep = false;
-////                }
-//
-//                targetX = 0;
-//                targetY = 0;
-//                moveAmountX = 0;
-//                moveAmountY = 0;
-//                frameCounter = 5;
-//            }
-//            return;
-//        }
     }
     public void setScale(Float x)
     {
