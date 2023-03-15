@@ -505,6 +505,8 @@ public class MazeGame extends Game {
 		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
+		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
+		font.draw(renderer.getBatch(), "Xp Multiplier: "+ Integer.toString(Enemy.xpMulti), 437.5f, 53.5f, screenWidth, Align.topLeft, false );
 		
 		// player stat display#
 		font.setColor(Color.YELLOW);
@@ -903,7 +905,7 @@ public class MazeGame extends Game {
 			int gridY = y;
 			float realX = 298 + (gridX - gridY) * (9.5f);
 			float realY = 166 - (gridX + gridY) * (4.75f);
-			enemies.add(new Enemy(world, realX, realY, type,type2,i,bossType));
+			enemies.add(new Enemy(world, realX, realY, type,type2,i,bossType,roomCount));
 			enemiesAI.add(enemies.get(i).addAI(enemies.get(i)));
 			int randomPlayer=(int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
 			if (randomPlayer == 1) {

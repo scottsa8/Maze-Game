@@ -30,9 +30,10 @@ public class Enemy {
     private int xpValue;
     private Color color;
     private boolean boss;
+    public static int xpMulti;
 
-    public Enemy(World world,float x, float y, int type,int type2, int index,int bossType) {
-        String enemyAtlas = getAtlas(type,type2,bossType);
+    public Enemy(World world,float x, float y, int type,int type2, int index,int bossType,int roomCount) {
+        String enemyAtlas = getAtlas(type,type2,bossType,roomCount);
         textureAtlas = new TextureAtlas(enemyAtlas);
         enemySprite = new Sprite(textureAtlas.findRegion(name+"Right",0));
         enemySprite.setPosition(Gdx.graphics.getWidth()/2 - enemySprite.getWidth()/2, Gdx.graphics.getHeight()/2 - enemySprite.getHeight()/2);
@@ -130,8 +131,15 @@ public class Enemy {
         Steering AI = new Steering(e.getBody(),5);
         return AI;
     }
-    private String getAtlas(int type, int type2,int bossType)
+    private String getAtlas(int type, int type2,int bossType,int roomCount)
     {
+      
+        if(roomCount<=15){
+            xpMulti=0;
+        }else{
+            xpMulti=roomCount/10;
+        }
+        System.out.println("xp multiplier: "+xpMulti);
         String atlas ="";
         if(type ==-1 && type2 ==3)
         {
@@ -161,7 +169,7 @@ public class Enemy {
 			name="zombie";
             damage=5;
             health =100;
-            xpValue =5;
+            xpValue =5 *xpMulti;
             color= Color.GREEN;
 		}
 		else if(type==2)
@@ -170,7 +178,7 @@ public class Enemy {
 			name="demon";
             damage=10;
             health =100;
-            xpValue =10;
+            xpValue =10*xpMulti;
             color= Color.RED;
 		}
         else if(type ==3)
@@ -179,7 +187,7 @@ public class Enemy {
 			name="skeleton";
             damage=10;
             health =100;
-            xpValue =10;
+            xpValue =10*xpMulti;
             color= Color.WHITE;
         }      
 		else if(type ==4)
@@ -190,7 +198,7 @@ public class Enemy {
                 name="ghost";
                 damage=20;
                 health =120;
-                xpValue =15;
+                xpValue =15*xpMulti;
                 color= Color.BLACK;
             }
             else if(type2 == 2)
@@ -199,7 +207,7 @@ public class Enemy {
                 name="imp";
                 health =120;
                 damage=20;
-                xpValue =50;
+                xpValue =50*xpMulti;
                 color = Color.GOLD;
             }
         else
@@ -209,7 +217,7 @@ public class Enemy {
             name="zombie";
             damage=20;
             health =100;
-            xpValue =5;
+            xpValue =5*xpMulti;
             color= Color.GREEN;
         }
 		
