@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
 import idk.mazegame.EnemyAI.CreateMapBounds;
 import idk.mazegame.EnemyAI.Steering;
@@ -368,13 +369,26 @@ public class MazeGame extends Game {
 				}
 			}
 		}
+
 		if(chest!=null)
 		{
 			if(chest.isOpened() == true)
 			{
-				world.destroyBody(chest.getBody());
-				chest=null;
-				chestText="";
+				
+				font.draw(renderer.getBatch(), chest.getText(), 250.5f, 63.5f, screenWidth, Align.topLeft, false);
+				Timer timer=new Timer();
+                timer.scheduleTask(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        try{
+							world.destroyBody(chest.getBody());
+							chestText="";
+							chest=null;
+                        }
+                      catch(Exception e){};
+                    }
+                },3f);
+				
 			}
 			else
 			{
@@ -397,13 +411,7 @@ public class MazeGame extends Game {
 
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
-		System.out.println(chestText);
-		if(chestText !=null)
-		{
-			font.draw(renderer.getBatch(), chest.getText(), 300.5f, 63.5f, screenWidth, Align.topLeft, false);
-		}
-	
-
+		
 		// player stat display
 
 		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -90.5f, screenWidth, Align.topLeft, false);
@@ -650,7 +658,7 @@ public class MazeGame extends Game {
 		p1enemies =0;
 		p2enemies =0;
 		int type =(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
-		amount = 0;//(int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
+		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
 		for(int i=0;i<amount;i++)
 		{
 			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets

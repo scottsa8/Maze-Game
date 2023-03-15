@@ -47,7 +47,7 @@ public class Chest {
     public void open(Player p)
     {
         opened= true;
-        text="opened by "+p.getPlayerNum();
+        text="Chest opened by player "+p.getPlayerNum();
         //create item add to to the player
         System.out.println("opened");
     }
