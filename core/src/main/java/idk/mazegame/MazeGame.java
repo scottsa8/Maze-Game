@@ -325,21 +325,6 @@ public class MazeGame extends Game {
 			
 			}			
 		}
-		
-		if(Gdx.input.isKeyJustPressed(Keys.L))
-		{
-			for(int i=0;i<amount;i++)
-			{
-				world.destroyBody(enemiesAI.get(i).getBody());
-			}
-			createEnemies();
-		}
-		if(Gdx.input.isKeyPressed(Keys.J))
-		{
-			increaseXP(player, 100);
-			increaseXP(player2, 100);
-		}
-		
 		if(Gdx.input.isKeyJustPressed(Keys.K))
 		{
 			if(pressed==true)
@@ -354,10 +339,31 @@ public class MazeGame extends Game {
 				debugger = true;
 				pressed = true;
 			}
-			
-		
 		}
-		
+		if(debugger == true)
+		{
+			if(Gdx.input.isKeyJustPressed(Keys.L))
+			{
+				for(int i=0;i<amount;i++)
+				{
+					world.destroyBody(enemiesAI.get(i).getBody());
+				}
+				createEnemies();
+			}
+			if(Gdx.input.isKeyPressed(Keys.J))
+			{
+				increaseXP(player, 100);
+				increaseXP(player2, 100);
+			}
+			if(Gdx.input.isKeyJustPressed(Keys.U))
+			{
+				for(int i=0;i<amount;i++)
+				{
+					world.destroyBody(enemiesAI.get(i).getBody());
+				}
+				enemies.clear();
+			}
+		}
 		try{
 			floorLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tile);
 		}
