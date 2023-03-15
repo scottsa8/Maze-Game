@@ -62,7 +62,6 @@ public class MazeGame extends Game {
 	private OrthographicCamera camera;
 	private Viewport viewport;
 
-	private int max=8,min=4;
 	private  Chest chest;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private ArrayList<Steering> enemiesAI = new ArrayList<>();
@@ -895,7 +894,15 @@ public class MazeGame extends Game {
 		}
 		else
 		{
-			amount = (int)Math.floor(Math.random() *(max - min + 1) + min);
+			if(roomCount<=20)
+			{
+				amount = (int)Math.floor(Math.random() *(6 - 3 + 1) + 3);
+			}
+			else
+			{
+				amount = (int)Math.floor(Math.random() *(8 - 4 + 1) + 4);
+			}
+			
 		}
 		for(int i=0;i<amount;i++)
 		{

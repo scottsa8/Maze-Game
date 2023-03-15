@@ -139,7 +139,6 @@ public class Enemy {
         }else{
             xpMulti=roomCount/10;
         }
-        System.out.println("xp multiplier: "+xpMulti);
         String atlas ="";
         if(type ==-1 && type2 ==3)
         {
