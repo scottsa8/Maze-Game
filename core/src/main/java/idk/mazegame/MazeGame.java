@@ -55,7 +55,7 @@ public class MazeGame extends Game {
 	public SpriteBatch batch;
 	private BitmapFont font;
 	private String myText, myRightText;
-	private String healthText, staminaText, coinText, slot1Text, slot2Text,chestText,xpText;
+	private String healthText, staminaText, coinText, slot1Text, slot2Text,chestText,xpText,nextRoomText;
 	private GlyphLayout layout;
 	private Sound sound;
 	private Music song1,song2;
@@ -642,82 +642,145 @@ public class MazeGame extends Game {
 
 		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 0) {
 
-//			for (int i = 0; i < 304; i++){
-//				camera.translate(1,0);
-//				camera.update();
-//			}
-			camera.position.set(304, -48,0);
-			map.dispose();
-			renderer.dispose();
-			map = new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
-			myText = "saferoom";
-			roomCount++;
-			myRightText = "no of rooms: " + roomCount;
-			renderer = new IsometricTiledMapRenderer(map, 1.2f);
-			entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
-			floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-			overlapLayer =  (TiledMapTileLayer) map.getLayers().get(2);
-			player.getPlayerSprite().setPosition(366f,-35.5f);
-			player.getCoordinates().set(24,14,0);
-
-			for(int i=0;i<enemies.size();i++)
+			if((player.getLevel() >=15 && enemies.size()!=0) ||
+				(player2.getLevel()>= 15 && enemies.size()!=0))
 			{
-				world.destroyBody(enemiesAI.get(i).getBody());
+				renderer.getBatch().begin();
+				nextRoomText="you're level 15, kill all enemies to move on";
+				font.setColor(Color.RED);
+				font.draw(renderer.getBatch(), nextRoomText, 220.5f, -150,screenWidth, Align.topLeft, false);	
+				Timer timer=new Timer();
+				timer.scheduleTask(new Timer.Task() 
+				{
+					@Override
+					public void run() 
+					{
+						nextRoomText= "";
+					}
+				},3f); 
+				renderer.getBatch().end();
 			}
-			createChest();
-			createEnemies();
-			increaseXP(player, 10);
-			increaseXP(player2,10); 
+			else
+			{
+				camera.position.set(304, -48,0);
+				map.dispose();
+				renderer.dispose();
+				map = new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
+				myText = "saferoom";
+				roomCount++;
+				myRightText = "no of rooms: " + roomCount;
+				renderer = new IsometricTiledMapRenderer(map, 1.2f);
+				entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
+				floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
+				overlapLayer =  (TiledMapTileLayer) map.getLayers().get(2);
+				player.getPlayerSprite().setPosition(366f,-35.5f);
+				player.getCoordinates().set(24,14,0);
+	
+				for(int i=0;i<enemies.size();i++)
+				{
+					world.destroyBody(enemiesAI.get(i).getBody());
+				}
+				createChest();
+				createEnemies();
+				increaseXP(player, 10);
+				increaseXP(player2,10);
+			}
+			 
 		}
 
 		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) {
-			camera.position.set(304, -48,0);
-			map.dispose();
-			renderer.dispose();
-			map = new TmxMapLoader().load("tiledmaps/testRoom.tmx");
-			myText = "testroom";
-			roomCount++;
-			myRightText = "no of rooms: " + roomCount;
-			renderer = new IsometricTiledMapRenderer(map, 1.2f);
-			entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
-			floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-			overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
-			player.getPlayerSprite().setPosition(242.5f,-97f);
-			player.getCoordinates().set(24,1,0);
-
-			for(int i=0;i<enemies.size();i++)
+			if((player.getLevel() >=15 && enemies.size()!=0) ||
+			(player2.getLevel()>= 15 && enemies.size()!=0))
 			{
-				world.destroyBody(enemiesAI.get(i).getBody());
+				renderer.getBatch().begin();
+				nextRoomText="you're level 15, kill all enemies to move on";
+				font.setColor(Color.RED);
+				font.draw(renderer.getBatch(), nextRoomText, 220.5f, -150,screenWidth, Align.topLeft, false);	
+				Timer timer=new Timer();
+				timer.scheduleTask(new Timer.Task() 
+				{
+					@Override
+					public void run() 
+					{
+						nextRoomText= "";
+					}
+				},3f); 
+				renderer.getBatch().end();
 			}
-			createChest();
-			createEnemies();
-			increaseXP(player, 10);
-			increaseXP(player2, 10);
+			else
+			{
+				camera.position.set(304, -48,0);
+				map.dispose();
+				renderer.dispose();
+				map = new TmxMapLoader().load("tiledmaps/testRoom.tmx");
+				myText = "testroom";
+				roomCount++;
+				myRightText = "no of rooms: " + roomCount;
+				renderer = new IsometricTiledMapRenderer(map, 1.2f);
+				entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
+				floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
+				overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
+				player.getPlayerSprite().setPosition(242.5f,-97f);
+				player.getCoordinates().set(24,1,0);
+	
+				for(int i=0;i<enemies.size();i++)
+				{
+					world.destroyBody(enemiesAI.get(i).getBody());
+				}
+				createChest();
+				createEnemies();
+				increaseXP(player, 10);
+				increaseXP(player2, 10);
+			}
+		
 		}
 
 		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) {
-			camera.position.set(304, -48,0);
-			map.dispose();
-			renderer.dispose();
-			map = new TmxMapLoader().load("tiledmaps/forestRoom.tmx");
-			myText = "forestroom";
-			roomCount++;
-			myRightText = "no of rooms: " + roomCount;
-			renderer = new IsometricTiledMapRenderer(map, 1.2f);
-			entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
-			floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-			overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
-			player.getPlayerSprite().setPosition(357.5f,-97.25f);
-			player.getCoordinates().set(30,7,0);
-
-			for(int i=0;i<enemies.size();i++)
+			if((player.getLevel() >=15 && enemies.size()!=0) ||
+			(player2.getLevel()>= 15 && enemies.size()!=0))
 			{
-				world.destroyBody(enemiesAI.get(i).getBody());
+				renderer.getBatch().begin();
+				nextRoomText="you're level 15, kill all enemies to move on";
+				font.setColor(Color.RED);
+				font.draw(renderer.getBatch(), nextRoomText, 220.5f, -150,screenWidth, Align.topLeft, false);	
+				Timer timer=new Timer();
+				timer.scheduleTask(new Timer.Task() 
+				{
+					@Override
+					public void run() 
+					{
+						nextRoomText= "";
+					}
+				},3f); 
+				renderer.getBatch().end();
 			}
-			createChest();
-			createEnemies();
-			increaseXP(player, 10);
-			increaseXP(player2, 10);
+			else
+			{
+				camera.position.set(304, -48,0);
+				map.dispose();
+				renderer.dispose();
+				map = new TmxMapLoader().load("tiledmaps/forestRoom.tmx");
+				myText = "forestroom";
+				roomCount++;
+				myRightText = "no of rooms: " + roomCount;
+				renderer = new IsometricTiledMapRenderer(map, 1.2f);
+				entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
+				floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
+				overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
+				player.getPlayerSprite().setPosition(357.5f,-97.25f);
+				player.getCoordinates().set(30,7,0);
+	
+				for(int i=0;i<enemies.size();i++)
+				{
+					world.destroyBody(enemiesAI.get(i).getBody());
+				}
+				createChest();
+				createEnemies();
+				increaseXP(player, 10);
+				increaseXP(player2, 10);
+			}
+
+		
 		}
 		
 		if(debug !=null)
