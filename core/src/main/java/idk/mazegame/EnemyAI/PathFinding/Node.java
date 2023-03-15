@@ -32,4 +32,8 @@ public class Node{
     {
         isOccupied = t;
     }
+
+    public boolean isOccupied() {
+        return isOccupied;
+    }
 }
