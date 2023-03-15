@@ -68,7 +68,10 @@ public class Player {
     private double stamina;
     private int coin;
 
-
+    public int getPlayerNum()
+    {
+        return playerNum;
+    }
     public void setHealth(int health) {
         this.health = health;
     }

@@ -11,6 +11,7 @@ public class Chest {
     private Sprite chestSprite;
     private Body body;
     private boolean opened;
+    private String text;
     public Chest(World world, float x, float y) {
         textureAtlas = new TextureAtlas("items/chest.atlas");
         chestSprite = new Sprite(textureAtlas.findRegion("chest",-1));
@@ -46,11 +47,16 @@ public class Chest {
     public void open(Player p)
     {
         opened= true;
+        text="opened by "+p.getPlayerNum();
         //create item add to to the player
         System.out.println("opened");
     }
     public boolean isOpened()
     {
         return opened;
+    }
+    public String getText()
+    {
+        return text;
     }
 }

@@ -25,6 +25,8 @@ import idk.mazegame.EnemyAI.CreateMapBounds;
 import idk.mazegame.EnemyAI.Steering;
 import static java.lang.Math.sqrt;
 
+import java.lang.ProcessBuilder.Redirect;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
 /**
@@ -48,7 +50,7 @@ public class MazeGame extends Game {
 	public SpriteBatch batch;
 	private BitmapFont font;
 	private String myText, myRightText;
-	private String levelText,healthText, staminaText, coinText, slot1Text, slot2Text;
+	private String levelText,healthText, staminaText, coinText, slot1Text, slot2Text,chestText;
 	private GlyphLayout layout;
 	private Sound sound;
 	private Music song1,song2;
@@ -372,6 +374,7 @@ public class MazeGame extends Game {
 			{
 				world.destroyBody(chest.getBody());
 				chest=null;
+				chestText="";
 			}
 			else
 			{
@@ -394,6 +397,12 @@ public class MazeGame extends Game {
 
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
+		System.out.println(chestText);
+		if(chestText !=null)
+		{
+			font.draw(renderer.getBatch(), chest.getText(), 300.5f, 63.5f, screenWidth, Align.topLeft, false);
+		}
+	
 
 		// player stat display
 
@@ -414,7 +423,7 @@ public class MazeGame extends Game {
 		font.draw(renderer.getBatch(), coinText + player2.getCoin(), 425.5f, -130.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), slot1Text + player2.getSlotName(1), 425.5f, -140.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), slot2Text + player2.getSlotName(2), 425.5f, -150.5f, screenWidth, Align.topLeft, false);
-
+		
 		if(debugger!=false)
 		{
 			font.draw(renderer.getBatch(),"Player1 enemies:"+p1enemies  , 107.5f, 55.5f, screenWidth, Align.topLeft, false );
@@ -700,15 +709,19 @@ public class MazeGame extends Game {
 					if(contact.getFixtureB().getBody().getUserData()=="chest"&&
 						contact.getFixtureA().getBody().getUserData()=="player1")
 					{
+						chestText="chest opened by player 1";
 						chest.open(player);
-						System.out.println("chest opened by player 1");
+						//System.out.println("chest opened by player 1");
+						
 						colliding=true;
 					}
 					if(contact.getFixtureB().getBody().getUserData()=="chest"&&
 						contact.getFixtureA().getBody().getUserData()=="player2")
 					{
-						System.out.println("chest opened by player 2");
+						chestText="chest opened by player 2";
 						chest.open(player2);
+						//System.out.println("chest opened by player 2");
+					
 						colliding=true;
 					}
 					if(contact.getFixtureB().getBody().getUserData().toString().contains("enemy")&&
