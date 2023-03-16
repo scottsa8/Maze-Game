@@ -3,14 +3,12 @@ package idk.mazegame;
 import java.util.ArrayList;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -26,14 +24,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
-import idk.mazegame.EnemyAI.CreateMapBounds;
-import idk.mazegame.EnemyAI.Steering;
 import idk.mazegame.EnemyAI.PathFinding.Node;
 import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
-
 import static java.lang.Math.sqrt;
-
-import java.lang.ProcessBuilder.Redirect;
 
 // {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. 
 
@@ -483,6 +476,7 @@ public class MazeGame extends Game {
 
 		if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}else{}
 		if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
+
 		if(player.getAttackSprite()!=null && player.getAttackBody() != null)
 		{	
 			player.getAttackSprite().setPosition(player.getAttackBody().getPosition().x - player.getAttackSprite().getWidth()/2, 
@@ -493,7 +487,7 @@ public class MazeGame extends Game {
 		{
 			player2.getAttackSprite().draw(renderer.getBatch());
 		}
-
+		renderer.getBatch().begin();
 		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
