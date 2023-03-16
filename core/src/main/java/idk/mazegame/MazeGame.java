@@ -488,7 +488,6 @@ public class MazeGame extends Game {
 		{
 			player2.getAttackSprite().draw(renderer.getBatch());
 		}
-		renderer.getBatch().begin();
 		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
