@@ -95,7 +95,9 @@ public class Player {
     }
 
     public String getSlotName(int slot) {
-        if (slot == 1) {
+        if(slot == 0){  
+            return slots[0].name;     
+        }else if (slot == 1) {
             return slots[1].name;
         } else {
             return slots[2].name;
@@ -395,7 +397,7 @@ public class Player {
             }
         }
 
-        if (slots[0].name.equals("Empty Slot")) {
+        if (slots[0].name.equals("Empty")) {
             Item foundItem = inv.getFirstSingle();
             if (foundItem != null) {
                 //2. Add item found to slot 3
