@@ -1,10 +1,12 @@
 package idk.mazegame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -12,11 +14,16 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import idk.mazegame.EnemyAI.Constants;
+import idk.mazegame.EnemyAI.PathFinding.Node;
+import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
+import idk.mazegame.EnemyAI.PathFinding.graphPath;
 import idk.mazegame.EnemyAI.Steering;
 
 public class Enemy {
     private TextureAtlas textureAtlas;
     private Sprite enemySprite;
+    private Vector2 coords;
+    private Vector2 pathCoords = new Vector2();
     private Body body;
     private String name="";
     private Player target;
@@ -24,13 +31,20 @@ public class Enemy {
     private int timer = 0;
     private final int MAX_FRAMES = 3;
     private final int FRAME_SPEED = 3;
-    private boolean dead = false;
+    private boolean dead = false,isMoving = false;
     private int health;
     private int damage;
     private int xpValue;
     private Color color;
     private boolean boss;
     public static int xpMulti;
+    private GraphPath<Node> path;
+    private int currentNode=0;
+    private final float DIAG_MOD = 1f; //0.707 for normalization
+    private final float ENEMY_SPEED = 9.5f;
+    private float moveAmountX = 0f, moveAmountY = 0f;
+    private Vector2 curPos = new Vector2();
+    private Vector2 nextPos = new Vector2();
 
     public Enemy(World world,float x, float y, int type,int type2, int index,int bossType,int roomCount) {
         String enemyAtlas = getAtlas(type,type2,bossType,roomCount);
@@ -48,6 +62,45 @@ public class Enemy {
     public void updateUserData(int index)
     {
         this.body.setUserData("enemy"+","+index);        
+    }
+    public GraphPath<Node> getPath()
+    {
+        return path;
+    }
+    public void setPath(Player p,Node currentPos)
+    {
+        Node playerNode;
+        currentNode=0;
+        playerNode =PathFindingSystem.VectorToNode(p.getVect2Coordinates());
+		path = graphPath.getPath(currentPos, playerNode);
+    }
+    public void resetPath()
+    {
+        path.clear();
+        currentNode=0;
+        pathCoords= new Vector2();
+    }
+    public void updatePath(Player p,Vector2 currentPos)
+    {
+        if (isMoving) return;
+
+        Node playerNode;
+        Node node;
+        playerNode = PathFindingSystem.VectorToNode(p.getVect2Coordinates());
+        node = PathFindingSystem.VectorToNode(currentPos);
+		path = graphPath.getPath(node, playerNode);
+	    for(int c=0;c<path.getCount();c++)
+			{
+				System.out.println(path.get(c).tilePos);
+			}
+        currentNode = 0;
+    }
+    public Vector2 getCoordinates()
+    {
+        return coords;
+    }
+    public void setCoords(Vector2 coords) {
+        this.coords = coords;
     }
     private Body createBody(World world,float x, float y, int type2)
     {
@@ -80,34 +133,104 @@ public class Enemy {
     {
         return body;
     }
-    public void updateBody(float angle, Enemy e)
+    public void updateBody()
     {
-        angle = (float) ((angle*180) / 3.14);
-      //  System.out.println(angle);
-        
-        if (timer > FRAME_SPEED) {
-            currentFrame++;
-            timer = 0;
+        if (isMoving) {
+            if (timer == 0) {
+                body.setTransform(body.getPosition().set(body.getPosition().x + (0.0675f * moveAmountX), body.getPosition().y + (0.0675f * moveAmountY)), 0);
+                currentFrame++;
+                timer = 1;
+            }
+            if (currentFrame == 16) {
+                isMoving = false;
+                currentNode++;
+                this.setCoords(path.get(currentNode).tilePos);
+                path.get(currentNode-1).setOccupied(false);
+                path.get(currentNode).setOccupied(true);
+                curPos = null;
+                nextPos = null;
+                currentFrame = 0;
+                return;
+            }
+            timer--;
+            return;
+        }
+        try{
+            curPos = path.get(currentNode).tilePos;
+        }
+        catch(Exception e)
+        {
+            System.out.println("first index out of bounds: " + curPos);
+        }
+        if(path.getCount() == currentNode+2)
+        {
+            //attack player (target)
+            return;
+        }
+        else {
+            try {
+                nextPos = path.get(currentNode + 1).tilePos; //check if at the end
+            } catch (Exception e) {
+                System.out.println("second index out of bounds: " + nextPos);
+                return;
+            }
+        }
+        if (path.get(currentNode+1).isOccupied) return;
+        path.get(currentNode+1).setOccupied(true);
+
+        System.out.println("COUNTER:" + currentNode);
+        System.out.println("currentNode:" + curPos);
+        System.out.println("currentNode+1:" + nextPos);
+        try {
+            pathCoords.x = nextPos.x - curPos.x;
+            pathCoords.y = nextPos.y - curPos.y;
+        } catch (Exception e) {
+            System.out.println("third index out of bounds: " + pathCoords);
+            return;
         }
 
-        if (currentFrame >= MAX_FRAMES)
-            currentFrame = 0;
-        if(angle > 0 && angle < 90)
-        {
-            e.getEnemySprite().setRegion(textureAtlas.findRegion(name+"Up",currentFrame));
-          //  System.out.println(textureAtlas.findRegion(name+"Right",currentFrame));
+        System.out.println("nextPos:" + pathCoords);
+
+        if (pathCoords.equals(new Vector2(0,1))) {
+            moveAmountX = ENEMY_SPEED*DIAG_MOD;
+            moveAmountY = (ENEMY_SPEED*DIAG_MOD)/2;
+            isMoving = true;
+
         }
-        else if(angle>90 && angle <= 180)
-        {
-            e.getEnemySprite().setRegion(textureAtlas.findRegion(name+"Right",currentFrame));
-          //  System.out.println(textureAtlas.findRegion(name+"Right",currentFrame));
-            currentFrame++;
+        if (pathCoords.equals(new Vector2(-1,0))) {
+            moveAmountX = -ENEMY_SPEED*DIAG_MOD;
+            moveAmountY = (ENEMY_SPEED*DIAG_MOD)/2;
+            isMoving = true;
         }
-        else if(angle >180)
-        {
-            e.getEnemySprite().setRegion(textureAtlas.findRegion(name+"Down",currentFrame));
-            //System.out.println(textureAtlas.findRegion(name+"Down",currentFrame));
-            currentFrame++;
+        if (pathCoords.equals(new Vector2(1,0))) {
+            moveAmountX = ENEMY_SPEED*DIAG_MOD;
+            moveAmountY = (-ENEMY_SPEED*DIAG_MOD)/2;
+            isMoving = true;
+        }
+        if (pathCoords.equals(new Vector2(0,-1))) {
+            moveAmountX = -ENEMY_SPEED*DIAG_MOD;
+            moveAmountY = (-ENEMY_SPEED*DIAG_MOD)/2;
+            isMoving = true;
+        }
+        if (pathCoords.equals(new Vector2(-1,-1))) {
+            moveAmountX = -ENEMY_SPEED*2;
+            moveAmountY = 0;
+            isMoving = true;
+        }
+        if (pathCoords.equals(new Vector2(1,1))) {
+            moveAmountX = ENEMY_SPEED*2;
+            moveAmountY = 0;
+            isMoving = true;
+            }
+        if (pathCoords.equals(new Vector2(1,-1))) {
+            moveAmountX = 0;
+            moveAmountY = -ENEMY_SPEED;
+            isMoving = true;
+            }
+        if (pathCoords.equals(new Vector2(-1,1))) {
+            moveAmountX = 0;
+            moveAmountY = ENEMY_SPEED;
+            isMoving = true;
         }
     }
     public void setScale(Float x)

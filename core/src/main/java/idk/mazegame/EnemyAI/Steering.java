@@ -46,7 +46,6 @@ public class Steering implements Steerable<Vector2>
         {
             behaviour.calculateSteering(steeringOutput);
             applySteering(delta);
-            e.updateBody(SteeringUtils.vectorToAngle(getLinearVelocity()),e);
         }
     }
     public void applySteering(float delta)
