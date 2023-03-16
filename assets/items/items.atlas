@@ -24,94 +24,115 @@ item
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 7
+  index: 16
 item
   rotate: false
   xy: 2, 74
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 13
+  index: 7
 item
   rotate: false
   xy: 20, 92
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 4
+  index: 13
 item
   rotate: false
   xy: 38, 110
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 9
+  index: 4
 item
   rotate: false
   xy: 2, 56
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 1
+  index: 18
 item
   rotate: false
   xy: 20, 74
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 10
+  index: 9
 item
   rotate: false
   xy: 38, 92
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 15
+  index: 1
 item
   rotate: false
   xy: 2, 38
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 6
+  index: 10
 item
   rotate: false
   xy: 20, 56
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 3
+  index: 15
 item
   rotate: false
   xy: 38, 74
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 12
+  index: 6
 item
   rotate: false
   xy: 2, 20
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 8
+  index: 3
 item
   rotate: false
   xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 0
+  index: 12
 item
   rotate: false
   xy: 20, 38
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 5
+  index: 17
 item
   rotate: false
   xy: 38, 56
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 8
+item
+  rotate: false
+  xy: 20, 20
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+item
+  rotate: false
+  xy: 20, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 5
+item
+  rotate: false
+  xy: 38, 38
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
