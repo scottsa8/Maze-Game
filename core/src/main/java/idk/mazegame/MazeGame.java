@@ -94,12 +94,12 @@ public class MazeGame extends Game {
 	private PathFindingSystem test;
 	private String[] attacking = new String[2];
 	private String nextRoom = "";
-	private String[] roomList = {"safeRoom", "testRoom", "forestRoom", "lake", "cave", "barren"};
+	private String[] roomList = {"saferoom", "testroom", "forestroom", "lake", "cave", "barren"};
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
 		test = new PathFindingSystem();
-		map =  new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
+		map =  new TmxMapLoader().load("tiledmaps/testroom.tmx");
 		test.generateGraph(map);
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
 		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
@@ -132,7 +132,6 @@ public class MazeGame extends Game {
 		myRightText = "no of rooms: " + roomCount;
 		layout = new GlyphLayout();
 		layout.setText(font, myText);
-
 		healthText = "health: ";
 		staminaText = "stamina: ";
 		coinText = "coins: ";
@@ -296,7 +295,9 @@ public class MazeGame extends Game {
 		for(int count =0;count<enemies.size();count++)
 		{
 			if(enemies.get(count).isDead() == true)
-			{	
+			{
+				enemies.get(count).getCurrentNode().setOccupied(false);
+				enemies.get(count).getNextNode().setOccupied(false);
 				world.destroyBody(enemies.get(count).getBody());
 				if (enemies.size() == 1)
 				{	
@@ -337,6 +338,8 @@ public class MazeGame extends Game {
 		{
 			for(int i=0;i<amount;i++)
 			{
+				enemies.get(i).getCurrentNode().setOccupied(false);
+				enemies.get(i).getNextNode().setOccupied(false);
 				world.destroyBody(enemies.get(i).getBody());
 			}
 			createEnemies();
@@ -623,6 +626,8 @@ public class MazeGame extends Game {
 
 			for(int i=0;i<enemies.size();i++)
 			{
+				enemies.get(i).getCurrentNode().setOccupied(false);
+				enemies.get(i).getNextNode().setOccupied(false);
 				world.destroyBody(enemies.get(i).getBody());
 			}
 
@@ -632,94 +637,6 @@ public class MazeGame extends Game {
 			nextRoom = "";
 			return;
 		}
-
-
-//		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 0) {
-//
-////			for (int i = 0; i < 304; i++){
-////				camera.translate(1,0);
-////				camera.update();
-////			}
-//			camera.position.set(304, -48,0);
-//			map.dispose();
-//			renderer.dispose();
-//			PathFindingSystem.graph.getNodes().clear();
-//			map = new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
-//			test.generateGraph(map);
-//			myText = "saferoom";
-//			roomCount++;
-//			myRightText = "no of rooms: " + roomCount;
-//			renderer = new IsometricTiledMapRenderer(map, 1.2f);
-//			entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
-//			floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-//			overlapLayer =  (TiledMapTileLayer) map.getLayers().get(2);
-//			player.getPlayerSprite().setPosition(366f,-35.5f);
-//			player.getCoordinates().set(24,14,0);
-//
-//			for(int i=0;i<enemies.size();i++)
-//			{
-//				world.destroyBody(enemies.get(i).getBody());
-//			}
-//
-//			createEnemies();
-//			player.increaseXP(10);
-//			player2.increaseXP(10);
-//		}
-//
-//		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) {
-//			camera.position.set(304, -48,0);
-//			map.dispose();
-//			renderer.dispose();
-//			PathFindingSystem.graph.getNodes().clear();
-//			map = new TmxMapLoader().load("tiledmaps/testRoom.tmx");
-//			test.generateGraph(map);
-//			myText = "testroom";
-//			roomCount++;
-//			myRightText = "no of rooms: " + roomCount;
-//			renderer = new IsometricTiledMapRenderer(map, 1.2f);
-//			entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
-//			floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-//			overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
-//			player.getPlayerSprite().setPosition(242.5f,-97f);
-//			player.getCoordinates().set(24,1,0);
-//
-//			for(int i=0;i<enemies.size();i++)
-//			{
-//				world.destroyBody(enemies.get(i).getBody());
-//			}
-//
-//			createEnemies();
-//			player.increaseXP(10);
-//			player2.increaseXP(10);
-//		}
-//
-//		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) {
-//			camera.position.set(304, -48,0);
-//			map.dispose();
-//			renderer.dispose();
-//			PathFindingSystem.graph.getNodes().clear();
-//			map = new TmxMapLoader().load("tiledmaps/forestRoom.tmx");
-//			test.generateGraph(map);
-//			myText = "forestroom";
-//			roomCount++;
-//			myRightText = "no of rooms: " + roomCount;
-//			renderer = new IsometricTiledMapRenderer(map, 1.2f);
-//			entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
-//			floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-//			overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
-//			player.getPlayerSprite().setPosition(357.5f,-97.25f);
-//			player.getCoordinates().set(30,7,0);
-//
-//			for(int i=0;i<enemies.size();i++)
-//			{
-//				world.destroyBody(enemies.get(i).getBody());
-//
-//			}
-//
-//			createEnemies();
-//			player.increaseXP(10);
-//			player2.increaseXP(10);
-//		}
 		
 		if(debug !=null)
 		{
@@ -759,6 +676,8 @@ public class MazeGame extends Game {
 //			int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
 			int randomNode = (int) (Math.random() * PathFindingSystem.graph.getNodeCount());
 			Node spawnPos = PathFindingSystem.graph.getNodes().get(randomNode);
+			//if spawning where players are, spawn somewhere else - (has a chance of spawning on the other player)
+			if (spawnPos.tilePos.equals(player.getVect2Coordinates()) || spawnPos.tilePos.equals(player2.getVect2Coordinates())) PathFindingSystem.graph.getNodes().get((int) (Math.random() * (PathFindingSystem.graph.getNodeCount() - randomNode)));
 			int gridX = (int) spawnPos.tilePos.x;
 			int gridY = (int) (32 - spawnPos.tilePos.y);
 			float realX = 307 + (gridX - gridY) * (9.5f);
