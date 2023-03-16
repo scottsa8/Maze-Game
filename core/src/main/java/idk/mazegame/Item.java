@@ -93,27 +93,22 @@ public class Item {
             name = "Uncommon: " + name;
             damage *= 1.25;
             defence *= 1.25;
-            durability *= 1.25;
         } else if (rarity == 3) {
             name = "Rare: " + name;
             damage *= 1.5;
             defence *= 1.5;
-            durability *= 1.5;
         } else if (rarity == 4) {
             name = "Epic: " + name;
             damage *= 2;
             defence *= 2;
-            durability *= 2;
         } else if (rarity == 5) {
             name = "Ultra: " + name;
             damage *= 3;
             defence *= 3;
-            durability *= 3;
         } else if (rarity == 6) {
             name = "Legendary: " + name;
             damage *= 5;
             defence *= 5;
-            durability *= 5;
         }
     }
 

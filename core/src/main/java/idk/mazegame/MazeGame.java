@@ -508,9 +508,10 @@ public class MazeGame extends Game {
 			}
 		}
 
-
-		player2.getPlayerSprite().draw(renderer.getBatch());
-		player.getPlayerSprite().draw(renderer.getBatch());
+		if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}
+		if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}
+	
+		
 
 		//font.draw(renderer.getBatch(), myText, 10f, screenHeight - 10f, screenWidth, Align.topLeft, false );
 

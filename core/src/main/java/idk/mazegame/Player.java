@@ -48,7 +48,7 @@ public class Player {
     private World world;
     private Body attackCircle;
     private int ammo = 0;
-    private Boolean dead;
+    private Boolean dead =false;
 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs, int num) {
         playerNum = num;
@@ -75,9 +75,9 @@ public class Player {
     private int coin;
     public void checkForDeath()
     {
-        if(health<maxHealth)
+        if(health == 0)
         {
-            dead=true;
+            dead = true;
         }
     }
     public boolean isDead()
@@ -104,6 +104,7 @@ public class Player {
         {
             health-=damage;
         }
+        checkForDeath();
     }
     public int getPlayerNum()
     {
