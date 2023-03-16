@@ -97,7 +97,12 @@ public class MazeGame extends Game {
 	private int level2;
 	private Label LevelLable1;
 	private Label LevelLable2;
+	private int HP1;
+	private int HP2;
+	private Label player1HP;
+	private Label player2HP;
 	private Stage hudStage;
+	private Stage Healt;
 	private int bossCount;
 	@Override
 	public void create() {
@@ -222,17 +227,27 @@ public class MazeGame extends Game {
 		//Gdx.input.setInputProcessor(this);
 		//creating the HUD for the player level and other stats 
 		hudStage = new Stage();
+		Healt = new Stage();
 
 		LevelLable1 = new Label("PLayer 1 Level: 1", new Label.LabelStyle(font,Color.GOLD));
 		LevelLable1.setFontScale(1.5f);
 		LevelLable2 = new Label("PLayer 2 Level: 1", new Label.LabelStyle(font,Color.WHITE));
 		LevelLable2.setFontScale(1.5f);
 
+		player1HP = new Label("Health: ", new Label.LabelStyle(font,Color.GOLD));
+		player1HP.setFontScale(1.5f);
+		player2HP = new Label("Health: ", new Label.LabelStyle(font,Color.WHITE));
+		player2HP.setFontScale(1.5f);
+
 		hudStage.addActor(LevelLable1);
 		hudStage.addActor(LevelLable2);
+		Healt.addActor(player1HP);
+		Healt.addActor(player2HP);
 
 		LevelLable1.setPosition(20, 60);
 		LevelLable2.setPosition(20, 30);
+		player1HP.setPosition(11, 14);
+		player2HP.setPosition(1415, 14);
 	}
 	
 
@@ -511,7 +526,7 @@ public class MazeGame extends Game {
 		font.setColor(Color.YELLOW);
 		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -80.5f, screenWidth, Align.topLeft, false);
 		font.setColor(Color.WHITE);
-		font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -90.5f, screenWidth, Align.topLeft, false);
+		//font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -90.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), slot1Text, 107.5f, -100.5f, screenWidth, Align.topLeft, true);
 		font.setColor(player.getItemColor(1));
 		font.draw(renderer.getBatch(), " "+player.getSlotName(1), 107.5f, -110.5f, screenWidth, Align.topLeft, true);
@@ -527,7 +542,7 @@ public class MazeGame extends Game {
 		// player stat display
 
 		font.draw(renderer.getBatch(), "Player 2: ", 457.5f, -80.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), healthText + player2.getHealth(), 457.5f, -90.5f, screenWidth, Align.topLeft, false);
+		//font.draw(renderer.getBatch(), healthText + player2.getHealth(), 457.5f, -90.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), slot1Text, 460.5f, -100.5f, screenWidth, Align.topLeft, false);
 		font.setColor(player2.getItemColor(1));
 		font.draw(renderer.getBatch(), player2.getSlotName(1), (460.5f - (player2.getSlotName(1).length()*2)), -110.5f, screenWidth, Align.topLeft, true);
@@ -804,9 +819,16 @@ public class MazeGame extends Game {
 		LevelLable1.setText("Player 1 Level: " + level1);
 		level2 = player2.getLevel();
 		LevelLable2.setText("Player 2 Level: " + level2);
+		HP1 = player.getHealth();
+		player1HP.setText("Health: " + HP1);
+		HP2 = player2.getHealth();
+		player2HP.setText("Health: " + HP2);
 		hudStage.getRoot().setPosition(650, 815);
+		Healt.getRoot().setPosition(1, 750);
+		Healt.act(Gdx.graphics.getDeltaTime());
 		hudStage.act(Gdx.graphics.getDeltaTime());
 		hudStage.draw();
+		Healt.draw();
 	}
 
 	@Override
