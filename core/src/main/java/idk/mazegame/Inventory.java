@@ -44,9 +44,13 @@ public class Inventory {
     }
 
     public Item getFirstSingle() {
+        double[] topScore = {0.0, 0.0};
         for (int i = 0; i < inv.size(); i++) {
             if (inv.get(i).type == 4) { //If the item can be equipped
-                return inv.get(i);
+                if (inv.get(i).getDurability() > topScore[0]) {
+                    topScore[0] = inv.get(i).getDurability();
+                    topScore[1] = i;
+                }
             }
         }
 
