@@ -456,6 +456,7 @@ public class MazeGame extends Game {
 				}
 			},0.5f);
 			renderer.getBatch().end(); 
+		}
 		
 		renderer.getBatch().begin();
 		
@@ -756,7 +757,7 @@ public class MazeGame extends Game {
 		hudStage.draw();
 		Healt.draw();
 	}
-}
+		
 	@Override
 	public void dispose() {
 		renderer.getBatch().dispose();
