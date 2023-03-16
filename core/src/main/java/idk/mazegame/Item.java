@@ -63,8 +63,8 @@ public class Item {
         maxDurability = Double.valueOf(itemAttrs[7])*2;
         weight = Double.valueOf(itemAttrs[8]);
 
-        if (name.equals("Fist")) {
-            System.out.println("ITEM - Error: Fist cannot have rarity. Ignore this.");
+        if (name.equals("Fist") || name.equals("Empty Slot")) {
+            System.out.println("ITEM - Error: This cannot have rarity. Ignore this.");
         } else {
             //3. Create the items rarity
             int levelNum = 46;

@@ -169,6 +169,7 @@ public class MazeGame extends Game {
 		//player2.getPlayerSprite().setPosition(300,-9);
 		player.setUseSlot1(Input.Keys.CONTROL_RIGHT);
 		player.setUseSlot2(Input.Keys.SHIFT_RIGHT);
+		player.setUseSlot3(Input.Keys.ENTER);
 		player2.setUp(Input.Keys.W);
 		player2.setLeft(Input.Keys.A);
 		player2.setDown(Input.Keys.S);

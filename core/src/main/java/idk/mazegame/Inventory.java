@@ -36,6 +36,16 @@ public class Inventory {
         return null; //If no item is found, return nothing
     }
 
+    public Item getFirstSingle() {
+        for (int i = 0; i < inv.size(); i++) {
+            if (inv.get(i).type == 4) { //If the item can be equipped
+                return inv.get(i);
+            }
+        }
+
+        return null; //If no item is found, return nothing
+    }
+
     public void printInventory() {
         System.out.print("\n");
         for (int i = 0; i < inv.size(); i++) {

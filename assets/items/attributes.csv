@@ -14,3 +14,5 @@
 2,0,Fire Staff,CAUTION: Flammable,5,0,100,5,1,path/here
 2,1,Fire Scroll,Instructions not included.,5,0,100,1,1,path/here
 3,0,Shield,Blocks incoming attacks for a short period of time.,0,10,3,100,10,path/here
+4,0,Empty Slot,Nothing,0,0,0,100,0,path/here
+4,1,Health Potion,Tastes like sewage but it's good for you,0,100,0,50,50,path/here

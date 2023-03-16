@@ -31,7 +31,7 @@ public class Player {
     private int lastKeyedDirection = 0;
     private int secondlastKeyedDirection = 0;
     private int up = Input.Keys.UP, down = Input.Keys.DOWN, left = Input.Keys.LEFT, right = Input.Keys.RIGHT;
-    private int useSlot1 = Input.Keys.Q, useSlot2 = Input.Keys.E;
+    private int useSlot1 = Input.Keys.Q, useSlot2 = Input.Keys.E, useSlot3 = Input.Keys.F;
     private boolean inputIsLocked = false, isMoving = false, nextStep = false; // to use for certain parts where player input is disabled: tile-based movement, cutscenes, stamina, debuff
     private float moveAmountX = 0f, moveAmountY = 0f, targetX = 0, targetY = 0;
     private final int MAX_FRAMES = 4;
@@ -63,6 +63,7 @@ public class Player {
         itemAttrs = gameAttrs;
         inv = new Inventory(itemAttrs);
 
+        slots[0] = new Item(itemAttrs, 4, 0);
         slots[1] = new Item(itemAttrs);
         slots[2] = new Item(itemAttrs);
     }
@@ -368,6 +369,10 @@ public class Player {
             slot2Remove();
         }
 
+        if (slots[0].type < 0) {
+            slot3Remove();
+        }
+
         if (slots[1].name.equals("Fist")) {
             //1. a. If so, check inventory for item to fill slot
             Item foundItem = inv.getFirstItem();
@@ -385,6 +390,16 @@ public class Player {
             if (foundItem != null) {
                 //2. Add item found to slot 2
                 slots[2] = foundItem;
+                //3. Remove item found from inventory
+                inv.inventoryRemove(foundItem);
+            }
+        }
+
+        if (slots[0].name.equals("Empty Slot")) {
+            Item foundItem = inv.getFirstSingle();
+            if (foundItem != null) {
+                //2. Add item found to slot 3
+                slots[0] = foundItem;
                 //3. Remove item found from inventory
                 inv.inventoryRemove(foundItem);
             }
@@ -422,6 +437,14 @@ public class Player {
         slotsCheck();
     }
 
+    public void slot3Remove() { //Removes the item from the second slot of the player
+        //Remove item from slot 3
+        slots[0] = new Item(itemAttrs, 4, 0);
+
+        //Try to fill slot
+        slotsCheck();
+    }
+
     public void update(TiledMapTileLayer floorLayer, TiledMapTileLayer entityLayer) {
         getBody().setTransform(getBody().getPosition().set(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f), 0);
 
@@ -431,6 +454,8 @@ public class Player {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT)) { //TESTING - Prints out the inventory contents
+            inv.inventoryAdd(new Item(itemAttrs, 4, 1), 0);
+            slotsCheck();
             inv.printInventory();
         }
 
@@ -450,6 +475,8 @@ public class Player {
                 if(ammo<1){
                     rangeAttack(slots[1].name,0,(int)slots[1].getDamage());
                 }
+            } else if (slots[1].type == 3) {
+                //Shield action
             }
 
             slotsCheck();
@@ -472,9 +499,18 @@ public class Player {
                 if(ammo<1){
                     rangeAttack(slots[2].name,0,(int)slots[2].getDamage());
                 }
+            } else if (slots[2].type == 3) {
+                //Shield action
             }
 
             slotsCheck();
+        }
+
+        if ((Gdx.input.isKeyJustPressed(useSlot3))) {
+            int newHealth = health + (int)slots[0].getDurability();
+            if (newHealth > maxHealth) newHealth = maxHealth;
+            setHealth(newHealth);
+            slots[0].useItem();
         }
 
 
@@ -736,6 +772,8 @@ public class Player {
     public void setUseSlot1(int use) { useSlot1 = use; }
 
     public void setUseSlot2(int use) { useSlot2 = use; }
+
+    public void setUseSlot3(int use) { useSlot3 = use; }
 
     public int getUp() {
         return up;
