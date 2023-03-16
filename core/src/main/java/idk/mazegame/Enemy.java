@@ -165,7 +165,7 @@ public class Enemy {
         }
         if(path.getCount() == currentNode+2)
         {
-            //attack player (target)
+            attack(target);
             return;
         }
         else {
