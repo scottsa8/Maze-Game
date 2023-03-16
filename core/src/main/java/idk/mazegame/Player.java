@@ -509,10 +509,16 @@ public class Player {
         }
 
         if ((Gdx.input.isKeyJustPressed(useSlot3))) {
-            int newHealth = health + (int)slots[0].getDurability();
-            if (newHealth > maxHealth) newHealth = maxHealth;
-            setHealth(newHealth);
-            slots[0].useItem();
+            if (slots[0].name.equals("Empty")) {
+                System.out.println("Bag empty!");
+            } else {
+                int newHealth = health + (int)slots[0].getDurability();
+                if (newHealth > maxHealth) newHealth = maxHealth;
+                setHealth(newHealth);
+                slots[0].useItem();
+            }
+
+            slotsCheck();
         }
 
 
