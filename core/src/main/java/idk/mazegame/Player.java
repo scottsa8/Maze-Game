@@ -1,23 +1,16 @@
 package idk.mazegame;
 
-import javax.swing.text.html.parser.Entity;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
-
 import idk.mazegame.EnemyAI.Constants;
 
 public class Player {
@@ -47,6 +40,7 @@ public class Player {
     private Leveling level = new Leveling();
     private World world;
     private Body attackCircle;
+    private Sprite attackSprite;
     private int ammo = 0;
     private Boolean dead =false;
 
@@ -57,8 +51,6 @@ public class Player {
         playerSprite = new Sprite(textureAtlas.findRegion("playerDown", 0));
         playerSprite.setPosition(Gdx.graphics.getWidth() / 2 - playerSprite.getWidth() / 2, Gdx.graphics.getHeight() / 2 - playerSprite.getHeight() / 2);
         coordinates = new Vector3(0, 0, 0);
-        //playerSprite.setScale(4f);
-
         //Attributes only generated once.
         itemAttrs = gameAttrs;
         inv = new Inventory(itemAttrs);
@@ -209,25 +201,17 @@ public class Player {
     }
 
     public void walk(int direction) {
-//        Gdx.app.log("player X", String.valueOf(getPlayerSprite().getX()));
-//        Gdx.app.log("player Y", String.valueOf(getPlayerSprite().getY()));
         secondlastKeyedDirection = lastKeyedDirection;
 
         if (timer > FRAME_SPEED) {
-            //currentFrame++;
             timer = 0;
         }
 
         if (currentFrame >= MAX_FRAMES)
-            //currentFrame = 0;
             ;
 
         if (direction == 9) {
             lastKeyedDirection = 9;
-
-//            playerSprite.setRegion(textureAtlas.findRegion("playerRUp", currentFrame));
-//            playerSprite.translate(+(PLAYER_SPEED*DIAG_MOD), +(PLAYER_SPEED*DIAG_MOD)/2);
-//            coordinates.y += 1f;
 
             moveAmountX = PLAYER_SPEED * DIAG_MOD;
             moveAmountY = (PLAYER_SPEED * DIAG_MOD) / 2;
@@ -241,10 +225,6 @@ public class Player {
         if (direction == 7) {
             lastKeyedDirection = 7;
 
-//            playerSprite.setRegion(textureAtlas.findRegion("playerLUp", currentFrame));
-//            playerSprite.translate(-(PLAYER_SPEED*DIAG_MOD), +(PLAYER_SPEED*DIAG_MOD)/2);
-//            coordinates.x -= 1f;
-
             moveAmountX = -PLAYER_SPEED * DIAG_MOD;
             moveAmountY = (PLAYER_SPEED * DIAG_MOD) / 2;
             tmpCoords.set(-1, 0, 0);
@@ -257,10 +237,6 @@ public class Player {
         if (direction == 3) {
             lastKeyedDirection = 3;
 
-//            playerSprite.setRegion(textureAtlas.findRegion("playerRDown", currentFrame));
-//            playerSprite.translate(+(PLAYER_SPEED*DIAG_MOD), -(PLAYER_SPEED*DIAG_MOD)/2);
-//            coordinates.x += 1f;
-
             moveAmountX = PLAYER_SPEED * DIAG_MOD;
             moveAmountY = (-PLAYER_SPEED * DIAG_MOD) / 2;
             tmpCoords.set(1, 0, 0);
@@ -272,10 +248,6 @@ public class Player {
 
         if (direction == 1) {
             lastKeyedDirection = 1;
-
-//            playerSprite.setRegion(textureAtlas.findRegion("playerLDown", currentFrame));
-//            playerSprite.translate(-(PLAYER_SPEED*DIAG_MOD), -(PLAYER_SPEED*DIAG_MOD)/2);
-//            coordinates.y -= 1f;
 
             moveAmountX = -PLAYER_SPEED * DIAG_MOD;
             moveAmountY = (-PLAYER_SPEED * DIAG_MOD) / 2;
@@ -290,10 +262,6 @@ public class Player {
             lastKeyedDirection = 4;
 
             if (secondlastKeyedDirection == 4) {
-//                playerSprite.setRegion(textureAtlas.findRegion("playerLeft", currentFrame));
-//                playerSprite.translateX(-PLAYER_SPEED*2);
-//                coordinates.x -= 1f;
-//                coordinates.y -= 1f;
 
                 moveAmountX = -PLAYER_SPEED * 2;
                 moveAmountY = 0;
@@ -309,10 +277,6 @@ public class Player {
             lastKeyedDirection = 6;
 
             if (secondlastKeyedDirection == 6) {
-//                playerSprite.setRegion(textureAtlas.findRegion("playerRight", currentFrame));
-//                playerSprite.translateX(+PLAYER_SPEED*2);
-//                coordinates.x += 1f;
-//                coordinates.y += 1f;
 
                 moveAmountX = PLAYER_SPEED * 2;
                 moveAmountY = 0;
@@ -328,10 +292,6 @@ public class Player {
             lastKeyedDirection = 2;
 
             if (secondlastKeyedDirection == 2) {
-//                playerSprite.setRegion(textureAtlas.findRegion("playerDown", currentFrame));
-//                playerSprite.translateY(-PLAYER_SPEED);
-//                coordinates.x += 1f;
-//                coordinates.y -= 1f;
 
                 moveAmountX = 0;
                 moveAmountY = -PLAYER_SPEED;
@@ -347,10 +307,6 @@ public class Player {
             lastKeyedDirection = 8;
 
             if (secondlastKeyedDirection == 8) {
-//                playerSprite.setRegion(textureAtlas.findRegion("playerUp", currentFrame));
-//                playerSprite.translateY(+PLAYER_SPEED);
-//                coordinates.x -= 1f;
-//                coordinates.y += 1f;
 
                 moveAmountX = 0;
                 moveAmountY = PLAYER_SPEED;
@@ -387,14 +343,12 @@ public class Player {
         if (lastKeyedDirection == 1)
             playerSprite.setRegion(textureAtlas.findRegion("playerLDown", 0));
 
-        //currentFrame = 1;
         timer = 0;
 
     }
 
     public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
-        //    System.out.println(slots);
-
+  
         if (slots[1].type < 0) {
             slot1Remove();
         }
@@ -481,18 +435,19 @@ public class Player {
 
     public void update(TiledMapTileLayer floorLayer, TiledMapTileLayer entityLayer) {
         getBody().setTransform(getBody().getPosition().set(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f), 0);
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) { //TESTING - Adds a sword to the inventory
-            inv.inventoryAdd(new Item(itemAttrs, 0, 1), 0);
-            slotsCheck();
+        if(MazeGame.debugger==true)
+        {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) { //TESTING - Adds a sword to the inventory
+                inv.inventoryAdd(new Item(itemAttrs, 0, 1), 0);
+                slotsCheck();
+            }
+    
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT)) { //TESTING - Prints out the inventory contents
+                inv.inventoryAdd(new Item(itemAttrs, 4,3), 0);
+                slotsCheck();
+                inv.printInventory();
+            }
         }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT)) { //TESTING - Prints out the inventory contents
-            inv.inventoryAdd(new Item(itemAttrs, 4,3), 0);
-            slotsCheck();
-            inv.printInventory();
-        }
-
         //item usage
         if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
@@ -512,10 +467,8 @@ public class Player {
             } else if (slots[1].type == 3) {
                 //Shield action
             }
-
             slotsCheck();
         }
-
 
         if (Gdx.input.isKeyJustPressed(useSlot2)) {
             slots[2].useItem();
@@ -536,13 +489,11 @@ public class Player {
             } else if (slots[2].type == 3) {
                 //Shield action
             }
-
             slotsCheck();
         }
 
         if ((Gdx.input.isKeyJustPressed(useSlot3))) {
             if (slots[0].name.equals("Empty")) {
-                System.out.println("Bag empty!");
             } else {
                 if(getSlotName(0).contains("God potion"))
                 {
@@ -567,18 +518,7 @@ public class Player {
         }
 
         if(isMoving == true) {
-            //player update position, decrement from move amount, once move amount == finished - set isMoving to false
-
-//            if(targettile!=null){
-//                yourobject.position.x += 1*delta;
-//                if(yourobject.position.x>=targettile.position.x){
-//                    yourobject.position.x = targettile.position.x;
-//                    targettile = null;
-//                }
-//            }
-//
-            if (timer == 2) {
-                //currentFrame++;
+             if (timer == 2) {
                 timer = 0;
             }
 
@@ -610,29 +550,21 @@ public class Player {
                         playerSprite.setRegion(textureAtlas.findRegion("playerRight", currentFrame));
 
                     if (lastKeyedDirection == 9)
-                        //if (lastKeyedDirection == 9 || secondlastKeyedDirection == 9)
                         playerSprite.setRegion(textureAtlas.findRegion("playerRUp", currentFrame));
 
                     if (lastKeyedDirection == 7)
-                        //if (lastKeyedDirection == 7 || secondlastKeyedDirection == 7)
                         playerSprite.setRegion(textureAtlas.findRegion("playerLUp", currentFrame));
 
                     if (lastKeyedDirection == 3)
-                        //if (lastKeyedDirection == 3 || secondlastKeyedDirection == 3)
                         playerSprite.setRegion(textureAtlas.findRegion("playerRDown", currentFrame));
 
                     if (lastKeyedDirection == 1)
-                        //if (lastKeyedDirection == 1 || secondlastKeyedDirection == 1)
                         playerSprite.setRegion(textureAtlas.findRegion("playerLDown", currentFrame));
                     frameCounter = 0;
                 }
-
                 frameCounter++;
-
             }
-
             timer++;
-
             //reset animation loop
             if (currentFrame == 3) {
                 currentFrame = 0;
@@ -642,26 +574,14 @@ public class Player {
                 isMoving = false;
                 coordinates.add(tmpCoords);
                 tmpCoords.set(0,0,0);
-
-//                if (nextStep == false) {
-//                    currentFrame = 3;
-//                    nextStep = true;
-//                }
-//                else if (nextStep == true) {
-//                    currentFrame = 1;
-//                    nextStep = false;
-//                }
-
                 targetX = 0;
                 targetY = 0;
                 moveAmountX = 0;
                 moveAmountY = 0;
                 frameCounter = 5;
-
             }
             return;
         }
-
         // collision checking
         if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y + 2f)) == null)
@@ -677,8 +597,6 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
-
-
             return;
         }
         if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(right))) {
@@ -695,7 +613,6 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
-
             return;
         }
         if (Gdx.input.isKeyPressed(down) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(left))) {
@@ -712,7 +629,6 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
-
             return;
         }
         if (Gdx.input.isKeyPressed(down) && Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right))) {
@@ -729,7 +645,6 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
-
             return;
         }
         if (Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(down))) {
@@ -746,7 +661,6 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
-
             return;
         }
         if (Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left))) {
@@ -763,7 +677,6 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
-
             return;
         }
         if (Gdx.input.isKeyPressed(down) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(left))) {
@@ -780,7 +693,6 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
-
             return;
         }
         if (Gdx.input.isKeyPressed(up) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(left))) {
@@ -797,7 +709,6 @@ public class Player {
                 secondlastKeyedDirection = lastKeyedDirection;
                 idle();
             }
-
             return;
         }
         //if no input pressed for a few ticks -> idle(), reset frame counter
@@ -808,15 +719,12 @@ public class Player {
         textureAtlas.dispose();
         playerSprite.getTexture().dispose();
     }
-
     public Sprite getPlayerSprite() {
         return playerSprite;
     }
-
     public void setPlayerSprite(Sprite playerSprite) {
         this.playerSprite = playerSprite;
     }
-
     public void setUseSlot1(int use) { useSlot1 = use; }
 
     public void setUseSlot2(int use) { useSlot2 = use; }
@@ -877,12 +785,16 @@ public class Player {
     public void meleeAttack(String name,int damage)
     {
         Vector2 pos = new Vector2();
+        TextureAtlas t = new TextureAtlas("items/slash.atlas");
+        attackSprite = new Sprite(t.findRegion("slash",5));
+        attackSprite.setScale(0.3f);
+
         if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
-        pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +12);
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +12);
         if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM -12);
         if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -12, getPlayerSprite().getHeight()/2 / Constants.PPM);
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -12, getPlayerSprite().getHeight()/2 / Constants.PPM);   
         if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 12, getPlayerSprite().getHeight()/2 / Constants.PPM);
         if (lastKeyedDirection == 9)
@@ -893,10 +805,10 @@ public class Player {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM +6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
         if (lastKeyedDirection == 1)
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
-               
-        attackCircle = ShapeMaker.createCircle(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
-        attackCircle.setUserData("attack"+","+name.toString()+","+playerNum+","+damage);
-       
+          
+        attackCircle = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
+        attackCircle.setUserData(name.toString());
+
         Timer timer=new Timer();
                 timer.scheduleTask(new Timer.Task() {
                     @Override
@@ -904,10 +816,19 @@ public class Player {
                         try{
                             world.destroyBody(attackCircle);
                             attackCircle=null;
+                            attackSprite=null;
                         }
                       catch(Exception e){};
                     }
                 },0.1f);  
+    }
+    public Sprite getAttackSprite()
+    {
+        return attackSprite;
+    }
+    public Body getAttackBody()
+    {
+        return attackCircle;
     }
     public void rangeAttack(String name,int range, int damage)
     {
@@ -1004,6 +925,7 @@ public class Player {
     {
         ammo=0;
     }
+    public Vector2 getVect2Coordinates() {
+        return new Vector2(coordinates.x, coordinates.y);
+    }
 }
-
-
