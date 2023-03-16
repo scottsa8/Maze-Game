@@ -261,7 +261,7 @@ public class Enemy {
     }
     public void attack(Player p)
     {
-       p.setHealth(p.getHealth()-damage);
+       p.takeDamage(damage);;
     }
     public void die(Enemy e)
     {

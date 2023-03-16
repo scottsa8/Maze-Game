@@ -73,7 +73,28 @@ public class Player {
     private int health;
     private double stamina;
     private int coin;
-
+    
+    public void takeDamage(int damage)
+    {
+        if(slots[1].getDefence() != 0 || slots[2].getDefence()!=0)
+        {
+            double temp = slots[1].getDefence();
+            double temp2 = slots[2].getDefence();
+            if(temp==0 && temp2!=0)
+            {
+                //use the defence item -- durability
+                health =- damage/(int)temp;
+            }
+            else
+            {
+                health =- damage/(int)temp2;
+            }
+        }
+        else
+        {
+            health-=damage;
+        }
+    }
     public int getPlayerNum()
     {
         return playerNum;
