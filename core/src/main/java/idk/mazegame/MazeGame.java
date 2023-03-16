@@ -984,7 +984,7 @@ public class MazeGame extends Game {
 					if(contact.getFixtureB().getBody().getUserData()=="chest"&&
 						contact.getFixtureA().getBody().getUserData()=="player1")
 					{
-						chest.open(player);
+						chest.open(player, itemAttrs);
 						increaseXP(player, 20);
 						chestText="Chest opened by player 1";
 						colliding=true;
@@ -992,7 +992,7 @@ public class MazeGame extends Game {
 					if(contact.getFixtureB().getBody().getUserData()=="chest"&&
 						contact.getFixtureA().getBody().getUserData()=="player2")
 					{
-						chest.open(player2);
+						chest.open(player2, itemAttrs);
 						increaseXP(player2, 20);
 						chestText="Chest opened by player 2";
 						colliding=true;

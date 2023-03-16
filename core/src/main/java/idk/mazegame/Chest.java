@@ -42,11 +42,11 @@ public class Chest {
     {
         return body;
     }
-    public void open(Player p)
+    public void open(Player p, ItemAttributes attrs)
     {
         opened= true;
         //create item add to to the player
-        p.addToInv(new Item());
+        p.addToInv(new Item(attrs, p.getLevel()));
     }
     public boolean isOpened()
     {

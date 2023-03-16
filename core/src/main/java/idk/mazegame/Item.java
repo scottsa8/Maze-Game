@@ -36,7 +36,12 @@ public class Item {
 
     public Item(ItemAttributes itemAttrs, int level) { //Create generic item
         attributes = itemAttrs;
-        generateItem(0, 0, level);
+        int[] types = attributes.getLengths();
+
+        int randomTypes = new Random().nextInt(types.length);
+        int randomTypeIndex = new Random().nextInt(types[randomTypes]);
+
+        generateItem(randomTypes, randomTypeIndex, level);
     }
 
     private void generateItem(int thisType, int thisTypeIndex, int level) { //used for creating an item
