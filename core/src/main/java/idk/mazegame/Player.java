@@ -48,7 +48,7 @@ public class Player {
     private World world;
     private Body attackCircle;
     private int ammo = 0;
-    private String xpText;
+    private Boolean dead;
 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs, int num) {
         playerNum = num;
@@ -73,7 +73,17 @@ public class Player {
     private int health;
     private double stamina;
     private int coin;
-    
+    public void checkForDeath()
+    {
+        if(health<maxHealth)
+        {
+            dead=true;
+        }
+    }
+    public boolean isDead()
+    {
+        return dead;
+    }
     public void takeDamage(int damage)
     {
         if(slots[1].getDefence() != 0 || slots[2].getDefence()!=0)
@@ -477,7 +487,7 @@ public class Player {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT)) { //TESTING - Prints out the inventory contents
-            inv.inventoryAdd(new Item(itemAttrs, 4, 1), 0);
+            inv.inventoryAdd(new Item(itemAttrs, 4,3), 0);
             slotsCheck();
             inv.printInventory();
         }
@@ -533,12 +543,20 @@ public class Player {
             if (slots[0].name.equals("Empty")) {
                 System.out.println("Bag empty!");
             } else {
-                int newHealth = health + (int)slots[0].getDurability();
-                if (newHealth > maxHealth) newHealth = maxHealth;
-                setHealth(newHealth);
-                slots[0].useItem();
+                if(getSlotName(0).contains("God potion"))
+                {
+                    maxHealth = maxHealth+20;
+                    health= maxHealth;
+                    slots[0].useItem();
+                }
+                else
+                {
+                    int newHealth = health + (int)slots[0].getDurability();
+                    if (newHealth > maxHealth) newHealth = maxHealth;
+                    setHealth(newHealth);
+                    slots[0].useItem();
+                }
             }
-
             slotsCheck();
         }
 
