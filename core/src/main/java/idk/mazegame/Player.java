@@ -42,7 +42,7 @@ public class Player {
     private World world;
     private Body attackCircle;
     private Sprite attackSprite;
-    private TextureAtlas attackAtlas = new TextureAtlas("sprites/slash.atlas");
+    private TextureAtlas attackAtlas = new TextureAtlas("items/slash.atlas");
     private int ammo = 0;
     private Boolean dead =false;
 

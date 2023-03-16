@@ -407,5 +407,12 @@ public class Enemy {
     {
         return dead;
     }
-  
+    public Node getCurrentNode() {
+        return path.get(currentNode);
+    }
+
+    public Node getNextNode() {
+        if (currentNode+1 >= path.getCount()) return path.get(currentNode);
+        return path.get(currentNode+1);
+    }
 }

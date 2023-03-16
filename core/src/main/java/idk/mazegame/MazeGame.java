@@ -28,29 +28,15 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.*;
 import idk.mazegame.EnemyAI.CreateMapBounds;
 import idk.mazegame.EnemyAI.Steering;
+import idk.mazegame.EnemyAI.PathFinding.Node;
+import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
+
 import static java.lang.Math.sqrt;
 
 import java.lang.ProcessBuilder.Redirect;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+// {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. 
 
-/**
- * bugs to fix:
- * fix grid-based movement animations
- * fix diagonal inputs
- * fix bug where if you release two input keys at just the right time - the movement gets locked and runs itself infinitely (might be fixed, not sure)
- *
- * improvements to make:
- * create a new renderer class that inherits IsometricTiledMapRenderer that has a Z-sorting function
- *
- * features to add:
- * make a UI
- * make a menu
- * create a new room when you walk into a doorway
- *
- * refactoring:
- * separate stuff into classes
- * */
 public class MazeGame extends Game {
 	public SpriteBatch batch;
 	private BitmapFont font;
@@ -64,11 +50,9 @@ public class MazeGame extends Game {
 
 	private  Chest chest;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
-	private ArrayList<Steering> enemiesAI = new ArrayList<>();
 	public static ArrayList<Projectile> entities = new ArrayList<>();
 
 	private Player player, player2;
-	private Steering target;
 	private TiledMap map;
 	private IsometricTiledMapRenderer renderer;
 	private TiledMapTileLayer entityLayer, floorLayer, overlapLayer;
@@ -84,15 +68,18 @@ public class MazeGame extends Game {
 	private Body p1, p2;
 	private Box2DDebugRenderer debug;
 	private int p1enemies,p2enemies;
-	public boolean debugger =false;
+	public static boolean debugger =false;
 	private Boolean pressed =false;
 	private ItemAttributes itemAttrs;
 	private int xp;
 	private int xp2;
 	private int gained;
 	private boolean colliding,hitting,hit,xp1Increased,xp2Increased=false;
-	private int amount;
+	private ShapeRenderer shaper;
+	private PathFindingSystem pathFinder;
 	private String[] attacking = new String[2];
+	private String nextRoom = "";
+	private String[] roomList = {"saferoom", "testroom", "forestroom", "lake", "cave", "barren"};
 	private int level1;
 	private int level2;
 	private Label LevelLable1;
@@ -107,14 +94,15 @@ public class MazeGame extends Game {
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
-		collsion();	
+		pathFinder = new PathFindingSystem();
 		map =  new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
+		pathFinder.generateGraph(map);
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
 		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
 		floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
 		overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
 		tile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("tiledmaps/tileSprites.png")),32,32,16,16));
-		
+		collsion();	
 
 		floorLayer.getCell(23, 7).setTile(tile);
 		floorLayer.getCell(24, 8).setTile(tile);
@@ -125,14 +113,6 @@ public class MazeGame extends Game {
 		screenHeight = Gdx.graphics.getHeight();
 
 		float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
-
-//		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/myfont.ttf"));
-//		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-//		parameter.size = 12;
-//		BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
-//		parameter.size = 32;
-//		BitmapFont font32 = generator.generateFont(parameter); // font size 32
-//		generator.dispose(); // don't forget to dispose to avoid memory leaks!
 
 		font = new BitmapFont(Gdx.files.internal("UI/myfont.fnt"));
 		font.getData().setScale(0.4f);
@@ -183,49 +163,12 @@ public class MazeGame extends Game {
 		p1.setUserData("player1");
 		p2.setUserData("player2");
 		createEnemies();
-		CreateMapBounds x = new CreateMapBounds(map,world);
 
 		song1.setLooping(true);
 		//song1.play();
 		song1.setVolume(0.5f);
 
-		//debug = new Box2DDebugRenderer(true, true, true, true, true, true);
-		
-//		long id = sound.play();
-//		long ourSoundID = sound.loop(1.0f,1.0f,0.0f);
-//
-//		Timer.schedule(new Timer.Task() {
-//			@Override
-//			public void run() {
-//				sound.pause(ourSoundID);
-//			}
-//		},10);
-//
-//		song2.play();
-//		song2.setVolume(0.5f);
-//
-//		song2.setOnCompletionListener(new Music.OnCompletionListener() {
-//			@Override
-//			public void onCompletion(Music music) {
-//				song1.play();
-//				song1.setVolume(0.5f);
-//			}
-//		});
-//
-//		Timer.schedule(new Timer.Task() {
-//			@Override
-//			public void run() {
-//				if(song2.isPlaying())
-//					if(song2.getPosition() >= 10.0f)
-//						song2.setVolume(song2.getVolume() - 0.125f);
-//			}
-//		},29,1,4);
-//
-//		sound.setVolume(id, 1.0f);
-//		sound.setPitch(id, 2.0f);
-//		sound.setPan(id, -1f, 1f);
-
-		//Gdx.input.setInputProcessor(this);
+		shaper = new ShapeRenderer();
 		//creating the HUD for the player level and other stats 
 		hudStage = new Stage();
 		Healt = new Stage();
@@ -313,16 +256,16 @@ public class MazeGame extends Game {
 				{
 					increaseXP(player2, enemies.get(count).getXpValue());
 				}
+				enemies.get(count).getCurrentNode().setOccupied(false);
+				enemies.get(count).getNextNode().setOccupied(false);
 				world.destroyBody(enemies.get(count).getBody());
 				if (enemies.size() == 1)
 				{	
 					enemies.clear();
-					enemiesAI.clear();
 				}
 				else
 				{
 					enemies.remove(count);
-					enemiesAI.remove(count);
 					for(int update=0;update<enemies.size();update++)
 					{
 						enemies.get(update).updateUserData(update);
@@ -338,7 +281,6 @@ public class MazeGame extends Game {
 					entities.clear();
 					player.resetAmmo();
 					player2.resetAmmo();
-			
 			}			
 		}
 		if(Gdx.input.isKeyJustPressed(Keys.K))
@@ -360,9 +302,11 @@ public class MazeGame extends Game {
 		{
 			if(Gdx.input.isKeyJustPressed(Keys.L))
 			{
-				for(int i=0;i<amount;i++)
+				for(int i=0;i<enemies.size();i++)
 				{
-					world.destroyBody(enemiesAI.get(i).getBody());
+					enemies.get(i).getCurrentNode().setOccupied(false);
+					enemies.get(i).getNextNode().setOccupied(false);
+					world.destroyBody(enemies.get(i).getBody());
 				}
 				createEnemies();
 			}
@@ -373,9 +317,11 @@ public class MazeGame extends Game {
 			}
 			if(Gdx.input.isKeyJustPressed(Keys.U))
 			{
-				for(int i=0;i<amount;i++)
+				for(int i=0;i<enemies.size();i++)
 				{
-					world.destroyBody(enemiesAI.get(i).getBody());
+					enemies.get(i).getCurrentNode().setOccupied(false);
+					enemies.get(i).getNextNode().setOccupied(false);
+					world.destroyBody(enemies.get(i).getBody());
 				}
 				enemies.clear();
 			}
@@ -400,13 +346,30 @@ public class MazeGame extends Game {
 		//renderer.render();
 		renderer.getBatch().begin();
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(0));
+		renderer.getBatch().end();
+		if(debugger==true)
+		{
+			shaper.begin(ShapeRenderer.ShapeType.Line);
+			for(int ads=0;ads<PathFindingSystem.graph.getNodeCount();ads++)
+			{
+				if (PathFindingSystem.graph.getNodes().get(ads).isOccupied) {
+					shaper.setColor(255f, 0f, 0f, 0f);
+					shaper.polygon(PathFindingSystem.graph.getNodes().get(ads).p.getVertices());
+					continue;
+				}
+	
+				shaper.setColor(255f, 255f, 255f, 255f);
+				shaper.polygon(PathFindingSystem.graph.getNodes().get(ads).p.getVertices());
+			}
+			shaper.end();
+		}
+		renderer.getBatch().begin();
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(1));
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(2));
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(3));
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(4));
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
-		//renderer.getBatch().setProjectionMatrix(camera.combined);
 		if(entities!= null)
 		{
 			for(int counter =0; counter<entities.size();counter++)
@@ -418,23 +381,33 @@ public class MazeGame extends Game {
 				}
 			}
 		}
-		if(enemiesAI != null) //if there is enemies to render, render them if not skip
-		{
-			for(int i=0;i<enemies.size();i++)
-			{
-				if(enemies.get(i)!=null && enemiesAI.get(i)!= null)
-				{
-					enemiesAI.get(i).update(Gdx.graphics.getDeltaTime(),enemies.get(i));
-					//enemies[i].getEnemySprite().setPosition(enemies[i].getBody().getPosition().x * Constants.PPM, enemies[i].getBody().getPosition().y* Constants.PPM);
-
-					enemies.get(i).getEnemySprite().setPosition(enemies.get(i).getBody().getPosition().x -7 , enemies.get(i).getBody().getPosition().y - 7);
-					drawHP(i);
-					enemies.get(i).getEnemySprite().draw(renderer.getBatch());
+		for (int c = 0; c < enemies.size(); c++) {
+			if (enemies.get(c).getPath().getCount() > 0) {
+				if (enemies.get(c).getTarget() == 1) {
+					if (enemies.get(c).getPath().get(enemies.get(c).getPath().getCount() - 1).tilePos.equals(player.getVect2Coordinates())) {
+					} else {
+						enemies.get(c).updatePath(player, enemies.get(c).getCoordinates());
+					}
+				} else if (enemies.get(c).getTarget() == 2) {
+					if (enemies.get(c).getPath().get(enemies.get(c).getPath().getCount() - 1).tilePos.equals(player2.getVect2Coordinates())) {
+					} else {
+						enemies.get(c).updatePath(player2, enemies.get(c).getCoordinates());
+					}
 				}
 			}
 		}
-	renderer.getBatch().end();
-	
+		if (enemies != null) //if there is enemies to render, render them if not skip
+		{
+			for (int i = 0; i < enemies.size(); i++) {
+				if (enemies.get(i) != null) {
+					enemies.get(i).updateBody();
+					enemies.get(i).getEnemySprite().setPosition(enemies.get(i).getBody().getPosition().x - 7, enemies.get(i).getBody().getPosition().y - 7);
+					enemies.get(i).getEnemySprite().draw(renderer.getBatch());
+					drawHP(i);
+				}
+			}
+		}
+		renderer.getBatch().end();
 		if(chestText != "")
 		{
 			renderer.getBatch().begin();
@@ -490,7 +463,7 @@ public class MazeGame extends Game {
 				}
 			},0.5f);
 			renderer.getBatch().end(); 
-		}
+		
 		renderer.getBatch().begin();
 		
 
@@ -510,26 +483,27 @@ public class MazeGame extends Game {
 
 		if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}else{}
 		if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
-	
-		
+		if(player.getAttackSprite()!=null && player.getAttackBody() != null)
+		{	
+			player.getAttackSprite().setPosition(player.getAttackBody().getPosition().x - player.getAttackSprite().getWidth()/2, 
+			player.getAttackBody().getPosition().y - player.getAttackSprite().getHeight()/2);
+			player.getAttackSprite().draw(renderer.getBatch());
+		}	
+		if(player2.getAttackSprite() != null)
+		{
+			player2.getAttackSprite().draw(renderer.getBatch());
+		}
 
-		//font.draw(renderer.getBatch(), myText, 10f, screenHeight - 10f, screenWidth, Align.topLeft, false );
-
-//		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(2));
-//		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(3));
-//		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(4));
-//		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), "Xp Multiplier: "+ Integer.toString(Enemy.xpMulti), 437.5f, 53.5f, screenWidth, Align.topLeft, false );
 		
-		// player stat display#
+		// player1 stat display
 		font.setColor(Color.YELLOW);
 		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -70.5f, screenWidth, Align.topLeft, false);
 		font.setColor(Color.WHITE);
-		//font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -90.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), slot1Text + player.getSlotDurability(1) + "%", 107.5f, -80.5f, screenWidth, Align.topLeft, true);
 		font.setColor(player.getItemColor(1));
 		font.draw(renderer.getBatch(), " "+player.getSlotName(1), 107.5f, -90.5f, screenWidth, Align.topLeft, true);
@@ -545,11 +519,9 @@ public class MazeGame extends Game {
 		font.draw(renderer.getBatch(), staminaText + (int)player.getStamina(), 107.5f, -140.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), coinText + player.getCoin(), 107.5f, -150.5f, screenWidth, Align.topLeft, false);
 
-
-		// player stat display
+		// player2 stat display
 
 		font.draw(renderer.getBatch(), "Player 2: ", 457.5f, -70.5f, screenWidth, Align.topLeft, false);
-		//font.draw(renderer.getBatch(), healthText + player2.getHealth(), 457.5f, -90.5f, screenWidth, Align.topLeft, false);
 		font.draw(renderer.getBatch(), slot1Text + player2.getSlotDurability(1) + "%", 445.5f, -80.5f, screenWidth, Align.topLeft, false);
 		font.setColor(player2.getItemColor(1));
 		font.draw(renderer.getBatch(), player2.getSlotName(1), (460.5f - (player2.getSlotName(1).length()*2)), -90.5f, screenWidth, Align.topLeft, true);
@@ -604,11 +576,11 @@ public class MazeGame extends Game {
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
 
-			for(int i=0;i<enemies.size();i++)
+			for(int i3=0;i3<enemies.size();i3++)
 			{
 				
-				enemies.get(i).getEnemySprite().draw(renderer.getBatch());
-				drawHP(i);
+				enemies.get(i3).getEnemySprite().draw(renderer.getBatch());
+				drawHP(i3);
 			}
 			if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
 			if(chest!=null)
@@ -630,12 +602,12 @@ public class MazeGame extends Game {
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(4));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
-			for(int i=0;i<enemies.size();i++)
+			for(int i4=0;i4<enemies.size();i4++)
 			{
-				if(enemies.get(i)!=null)
+				if(enemies.get(i4)!=null)
 				{
-					enemies.get(i).getEnemySprite().draw(renderer.getBatch());
-					drawHP(i);
+					enemies.get(i4).getEnemySprite().draw(renderer.getBatch());
+					drawHP(i4);
 				}
 			}
 			if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
@@ -678,8 +650,20 @@ public class MazeGame extends Game {
 
 		}
 
-		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 0) {
+		renderer.getBatch().begin();
+		for(int i2=0;i2<enemies.size();i2++)
+		{
+			enemies.get(i2).getEnemySprite().draw(renderer.getBatch());
 
+		}
+		renderer.getBatch().end();//remove this later
+
+		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 0) nextRoom = "down";
+		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) nextRoom = "up";
+		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) nextRoom = "left";
+		if (((int) (player.getCoordinates().x)) == 31 && ((int) (player.getCoordinates().y)) == 7) nextRoom = "right";
+
+		if (nextRoom != "") {
 			if((player.getLevel() >=15 && enemies.size()!=0) ||
 				(player2.getLevel()>= 15 && enemies.size()!=0))
 			{
@@ -687,8 +671,8 @@ public class MazeGame extends Game {
 				nextRoomText="you're level 15, kill all enemies to move on";
 				font.setColor(Color.RED);
 				font.draw(renderer.getBatch(), nextRoomText, 220.5f, -150,screenWidth, Align.topLeft, false);	
-				Timer timer=new Timer();
-				timer.scheduleTask(new Timer.Task() 
+				Timer timer2=new Timer();
+				timer2.scheduleTask(new Timer.Task() 
 				{
 					@Override
 					public void run() 
@@ -698,129 +682,64 @@ public class MazeGame extends Game {
 				},3f); 
 				renderer.getBatch().end();
 			}
-			else
-			{
+			else{
 				camera.position.set(304, -48,0);
 				map.dispose();
 				renderer.dispose();
-				map = new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
-				myText = "saferoom";
+				PathFindingSystem.graph.getNodes().clear();
+				myText = roomList[(int) (Math.random() * 6)];
+				map = new TmxMapLoader().load("tiledmaps/" + myText + ".tmx");
+				//map = new TmxMapLoader().load("tiledmaps/testroom.tmx");
+				pathFinder.generateGraph(map);
 				roomCount++;
 				myRightText = "no of rooms: " + roomCount;
 				renderer = new IsometricTiledMapRenderer(map, 1.2f);
 				entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
 				floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
 				overlapLayer =  (TiledMapTileLayer) map.getLayers().get(2);
-				player.getPlayerSprite().setPosition(366f,-35.5f);
-				player.getCoordinates().set(24,14,0);
+	
+				if (nextRoom == "down") {
+					player.getPlayerSprite().setPosition(366f,-35.5f);
+					player.getCoordinates().set(24,14,0);
+					player2.getPlayerSprite().setPosition(357f,-30.5f);
+					player2.getCoordinates().set(23,14,0);
+				}
+				if (nextRoom == "up") {
+					player.getPlayerSprite().setPosition(242.5f,-97f);
+					player.getCoordinates().set(24,1,0);
+					player2.getPlayerSprite().setPosition(252f,-102f);
+					player2.getCoordinates().set(25,1,0);
+				}
+				if (nextRoom == "left") {
+					player.getPlayerSprite().setPosition(357.5f,-97.25f);
+					player.getCoordinates().set(30,7,0);
+					player2.getPlayerSprite().setPosition(367f,-92.25f);
+					player2.getCoordinates().set(30,8,0);
+				}
+				if (nextRoom == "right") {
+					player.getPlayerSprite().setPosition(231.5f,-35.5f);
+					player.getCoordinates().set(17,7,0);
+					player2.getPlayerSprite().setPosition(222.5f,-40f);
+					player2.getCoordinates().set(17,6,0);
+				}
 	
 				for(int i=0;i<enemies.size();i++)
 				{
-					world.destroyBody(enemiesAI.get(i).getBody());
+					//enemies.get(i).getCurrentNode().setOccupied(false);
+					//enemies.get(i).getNextNode().setOccupied(false);
+					world.destroyBody(enemies.get(i).getBody());
 				}
+	
 				createChest();
 				createEnemies();
 				increaseXP(player, 10);
 				increaseXP(player2,10);
-			}
-			 
-		}
-
-		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) {
-			if((player.getLevel() >=15 && enemies.size()!=0) ||
-			(player2.getLevel()>= 15 && enemies.size()!=0))
-			{
-				renderer.getBatch().begin();
-				nextRoomText="you're level 15, kill all enemies to move on";
-				font.setColor(Color.RED);
-				font.draw(renderer.getBatch(), nextRoomText, 220.5f, -150,screenWidth, Align.topLeft, false);	
-				Timer timer=new Timer();
-				timer.scheduleTask(new Timer.Task() 
-				{
-					@Override
-					public void run() 
-					{
-						nextRoomText= "";
-					}
-				},3f); 
-				renderer.getBatch().end();
-			}
-			else
-			{
-				camera.position.set(304, -48,0);
-				map.dispose();
-				renderer.dispose();
-				map = new TmxMapLoader().load("tiledmaps/testRoom.tmx");
-				myText = "testroom";
-				roomCount++;
-				myRightText = "no of rooms: " + roomCount;
-				renderer = new IsometricTiledMapRenderer(map, 1.2f);
-				entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
-				floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-				overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
-				player.getPlayerSprite().setPosition(242.5f,-97f);
-				player.getCoordinates().set(24,1,0);
-	
-				for(int i=0;i<enemies.size();i++)
-				{
-					world.destroyBody(enemiesAI.get(i).getBody());
-				}
-				createChest();
-				createEnemies();
-				increaseXP(player, 10);
-				increaseXP(player2, 10);
-			}
-		
-		}
-
-		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) {
-			if((player.getLevel() >=15 && enemies.size()!=0) ||
-			(player2.getLevel()>= 15 && enemies.size()!=0))
-			{
-				renderer.getBatch().begin();
-				nextRoomText="you're level 15, kill all enemies to move on";
-				font.setColor(Color.RED);
-				font.draw(renderer.getBatch(), nextRoomText, 220.5f, -150,screenWidth, Align.topLeft, false);	
-				Timer timer=new Timer();
-				timer.scheduleTask(new Timer.Task() 
-				{
-					@Override
-					public void run() 
-					{
-						nextRoomText= "";
-					}
-				},3f); 
-				renderer.getBatch().end();
-			}
-			else
-			{
-				camera.position.set(304, -48,0);
-				map.dispose();
-				renderer.dispose();
-				map = new TmxMapLoader().load("tiledmaps/forestRoom.tmx");
-				myText = "forestroom";
-				roomCount++;
-				myRightText = "no of rooms: " + roomCount;
-				renderer = new IsometricTiledMapRenderer(map, 1.2f);
-				entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
-				floorLayer = (TiledMapTileLayer) map.getLayers().get(0);
-				overlapLayer = (TiledMapTileLayer) map.getLayers().get(2);
-				player.getPlayerSprite().setPosition(357.5f,-97.25f);
-				player.getCoordinates().set(30,7,0);
-	
-				for(int i=0;i<enemies.size();i++)
-				{
-					world.destroyBody(enemiesAI.get(i).getBody());
-				}
-				createChest();
-				createEnemies();
-				increaseXP(player, 10);
-				increaseXP(player2, 10);
+				nextRoom = "";
+				return;
 			}
 
 		
-		}
-		
+		}		
 		if(debug !=null)
 		{
 			debug.render(world,camera.combined);
@@ -843,7 +762,7 @@ public class MazeGame extends Game {
 		hudStage.draw();
 		Healt.draw();
 	}
-
+}
 	@Override
 	public void dispose() {
 		renderer.getBatch().dispose();
@@ -851,10 +770,6 @@ public class MazeGame extends Game {
 		player.dispose();
 		player2.dispose();
 		song1.dispose();
-	}
-	public void renderPlayer()
-	{
-
 	}
 	public void createChest() {
 		if(chest !=null)
@@ -897,13 +812,16 @@ public class MazeGame extends Game {
 	}
 	public void createEnemies()
 	{
+		for (int i = 0; i < enemies.size(); i++) {
+			enemies.get(i).resetPath();
+		}
 		enemies.clear();
-		enemiesAI.clear();
 		p1enemies =0;
 		p2enemies =0;
 		int type;
 		int type2;
 		int bossType=-1;
+		int amount;
 		if(player.getLevel() > 10 || player2.getLevel()>10)
 		{
 			type=(int)Math.floor(Math.random() *(4 - 1 + 1) + 1);
@@ -945,35 +863,27 @@ public class MazeGame extends Game {
 		}
 		for(int i=0;i<amount;i++)
 		{
-			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
-			int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
-			int gridX = x;
-			int gridY = y;
-			float realX = 298 + (gridX - gridY) * (9.5f);
-			float realY = 166 - (gridX + gridY) * (4.75f);
+			int randomNode = (int) (Math.random() * PathFindingSystem.graph.getNodeCount());
+			Node spawnPos = PathFindingSystem.graph.getNodes().get(randomNode);
+			if (spawnPos.tilePos.equals(player.getVect2Coordinates()) || spawnPos.tilePos.equals(player2.getVect2Coordinates())) 
+			PathFindingSystem.graph.getNodes().get((int) (Math.random() * (PathFindingSystem.graph.getNodeCount() - randomNode)));
+			int gridX = (int) spawnPos.tilePos.x;
+			int gridY = (int) (32 - spawnPos.tilePos.y);
+			float realX = 307 + (gridX - gridY) * (9.5f);
+			float realY = 180 - (gridX + gridY) * (4.75f);
 			enemies.add(new Enemy(world, realX, realY, type,type2,i,bossType,roomCount));
-			enemiesAI.add(enemies.get(i).addAI(enemies.get(i)));
+			enemies.get(i).setCoords(spawnPos.tilePos);
 			int randomPlayer=(int)Math.floor(Math.random() *(2 - 1 + 1) + 1);
 			if (randomPlayer == 1) {
 				enemies.get(i).setTarget(player);
 				p1enemies++;
-				target = new Steering(p1, 0);
+				enemies.get(i).setPath(player, spawnPos);
 			}
 			else if (randomPlayer == 2) {
 				enemies.get(i).setTarget(player2);
 				p2enemies++;
-				target = new Steering(p2, 0);
-			}
-			//Seek<Vector2> seek = new Seek<Vector2>(enemiesAI[i],target);
-			//enemiesAI[i].setBehaviour(seek);
-			 
-			Arrive<Vector2> arriveSB = new Arrive<Vector2>(enemiesAI.get(i),target)
-			.setTimeToTarget(1f)
-			.setArrivalTolerance(1f)
-			.setDecelerationRadius(5);
-			enemiesAI.get(i).setBehaviour(arriveSB);
-			
-			 
+				enemies.get(i).setPath(player2, spawnPos);
+			} 
 		}
 	}
 	public void collsion()
