@@ -119,6 +119,8 @@ public class Item {
 
     public double getDamage() { return damage; }
 
+    public double getDefence() { return defence; }
+
     public double getDurability() {
         int percent = (int)(durability / maxDurability * 100);
         return percent;

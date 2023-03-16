@@ -27,13 +27,20 @@ public class Inventory {
     }
 
     public Item getFirstItem() {
+        double score;
+        double[] topScore = {0.0, 0.0};
         for (int i = 0; i < inv.size(); i++) {
             if (inv.get(i).type != 4) { //If the item can be equipped
-                return inv.get(i);
+                score = inv.get(i).getDamage() + inv.get(i).getDefence();
+                if (score > topScore[0]) {
+                    topScore[0] = score;
+                    topScore[1] = i;
+                }
             }
         }
 
-        return null; //If no item is found, return nothing
+        if (topScore[0] > 0.1) return inv.get((int)topScore[1]); //return best item
+        else return null; //If no item is found, return nothing
     }
 
     public Item getFirstSingle() {
