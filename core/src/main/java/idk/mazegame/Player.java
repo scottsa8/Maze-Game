@@ -101,6 +101,14 @@ public class Player {
         }
     }
 
+    public double getSlotDurability(int slot) {
+        if (slot == 1) {
+            return slots[1].getDurability();
+        } else {
+            return slots[2].getDurability();
+        }
+    }
+
     public void addToInv(Item item) {
         inv.inventoryAdd(item, 0);
         slotsCheck();
@@ -429,19 +437,20 @@ public class Player {
         //item usage
         if (Gdx.input.isKeyJustPressed(useSlot1)) {
             slots[1].useItem();
-            /**if (slots[1].type == 0) {
+            if (slots[1].type == 0) {
                 if (attackCircle == null) {
                     String x = slots[1].name;
                     meleeAttack(x, (int)slots[1].getDamage());
                 }
             } else if (slots[1].type == 1) {
-                rangeAttack(1, (int)slots[1].getDamage());
+                if(ammo<1){
+                    rangeAttack(slots[1].name,1,(int)slots[1].getDamage());
+                }
             } else if (slots[1].type == 2) {
-                rangeAttack(0), (int)slots[1].getDamage();
-            }**/
-
-            String x = slots[1].name;
-            meleeAttack(x, (int)slots[1].getDamage());
+                if(ammo<1){
+                    rangeAttack(slots[1].name,0,(int)slots[1].getDamage());
+                }
+            }
 
             slotsCheck();
         }
@@ -449,20 +458,21 @@ public class Player {
 
         if (Gdx.input.isKeyJustPressed(useSlot2)) {
             slots[2].useItem();
-            /**if (slots[2].type == 0) {
+            if (slots[2].type == 0) {
                 if(attackCircle ==null)
                 {
                     String x = slots[2].name;
                     meleeAttack(x, (int)slots[2].getDamage());
                 }
             } else if (slots[2].type == 1) {
-                rangeAttack(1, (int)slots[2].getDamage());
+                if(ammo<1){
+                    rangeAttack(slots[2].name,1,(int)slots[2].getDamage());
+                }
             } else if (slots[2].type == 2) {
-                rangeAttack(0, (int)slots[2].getDamage());
-            }**/
-            if(ammo<1){
-                rangeAttack(slots[2].name,1,(int)slots[2].getDamage());
-            }        
+                if(ammo<1){
+                    rangeAttack(slots[2].name,0,(int)slots[2].getDamage());
+                }
+            }
 
             slotsCheck();
         }

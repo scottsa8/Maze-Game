@@ -22,6 +22,7 @@ public class Item {
     private double defence;
     private double range;
     private double durability;
+    private double maxDurability;
     private double weight; //Used for affecting the durability of the item
 
     public Item(ItemAttributes itemAttrs) { //Create generic item
@@ -58,7 +59,8 @@ public class Item {
         damage = Double.valueOf(itemAttrs[4])*10;
         defence = Double.valueOf(itemAttrs[5])*10;
         range = Double.valueOf(itemAttrs[6]);
-        durability = Double.valueOf(itemAttrs[7]);
+        durability = Double.valueOf(itemAttrs[7])*2;
+        maxDurability = Double.valueOf(itemAttrs[7])*2;
         weight = Double.valueOf(itemAttrs[8]);
 
         if (name.equals("Fist")) {
@@ -116,6 +118,11 @@ public class Item {
     }
 
     public double getDamage() { return damage; }
+
+    public double getDurability() {
+        int percent = (int)(durability / maxDurability * 100);
+        return percent;
+    }
 
     public void useItem() { //Performs the action of the item and modifies it accordingly
         //1. Find what action is performed with this item

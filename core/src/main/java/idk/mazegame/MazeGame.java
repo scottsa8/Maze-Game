@@ -527,11 +527,11 @@ public class MazeGame extends Game {
 		font.draw(renderer.getBatch(), "Player 1: ", 107.5f, -80.5f, screenWidth, Align.topLeft, false);
 		font.setColor(Color.WHITE);
 		//font.draw(renderer.getBatch(), healthText + player.getHealth(), 107.5f, -90.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), slot1Text, 107.5f, -100.5f, screenWidth, Align.topLeft, true);
+		font.draw(renderer.getBatch(), slot1Text + player.getSlotDurability(1) + "%", 107.5f, -100.5f, screenWidth, Align.topLeft, true);
 		font.setColor(player.getItemColor(1));
 		font.draw(renderer.getBatch(), " "+player.getSlotName(1), 107.5f, -110.5f, screenWidth, Align.topLeft, true);
 		font.setColor(Color.WHITE);
-		font.draw(renderer.getBatch(), slot2Text, 107.5f, -120.5f, screenWidth, Align.topLeft, true);
+		font.draw(renderer.getBatch(), slot2Text + player.getSlotDurability(2) + "%", 107.5f, -120.5f, screenWidth, Align.topLeft, true);
 		font.setColor(player.getItemColor(2));
 		font.draw(renderer.getBatch(), " "+player.getSlotName(2), 107.5f, -130.5f, screenWidth, Align.topLeft, true);
 		font.setColor(Color.WHITE);
@@ -543,11 +543,11 @@ public class MazeGame extends Game {
 
 		font.draw(renderer.getBatch(), "Player 2: ", 457.5f, -80.5f, screenWidth, Align.topLeft, false);
 		//font.draw(renderer.getBatch(), healthText + player2.getHealth(), 457.5f, -90.5f, screenWidth, Align.topLeft, false);
-		font.draw(renderer.getBatch(), slot1Text, 460.5f, -100.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot1Text + player2.getSlotDurability(1) + "%", 450.5f, -100.5f, screenWidth, Align.topLeft, false);
 		font.setColor(player2.getItemColor(1));
 		font.draw(renderer.getBatch(), player2.getSlotName(1), (460.5f - (player2.getSlotName(1).length()*2)), -110.5f, screenWidth, Align.topLeft, true);
 		font.setColor(Color.WHITE);
-		font.draw(renderer.getBatch(), slot2Text, 460.5f, -120.5f, screenWidth, Align.topLeft, false);
+		font.draw(renderer.getBatch(), slot2Text + player2.getSlotDurability(2) + "%", 460.5f, -120.5f, screenWidth, Align.topLeft, false);
 		font.setColor(player2.getItemColor(2));
 		font.draw(renderer.getBatch(), player2.getSlotName(2), (460.5f - (player2.getSlotName(2).length() *2)), -130.5f, screenWidth, Align.topLeft, true);
 		font.setColor(Color.WHITE);
