@@ -100,6 +100,11 @@ public class Player {
             return slots[2].name;
         }
     }
+
+    public void addToInv(Item item) {
+        inv.inventoryAdd(item, 0);
+    }
+
     public Color getItemColor(int slot){
         if(slot ==1){
             return slots[1].getItemColor(slots[1]);

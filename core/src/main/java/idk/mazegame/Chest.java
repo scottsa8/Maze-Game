@@ -46,6 +46,7 @@ public class Chest {
     {
         opened= true;
         //create item add to to the player
+        
     }
     public boolean isOpened()
     {

@@ -66,4 +66,9 @@ public class ItemAttributes {
 
         return itemToReturn;
     }
+    
+    public int[] getLengths() {
+        int[] arr = 
+        return {meleeItems.size(), rangedItems.size()}
+    }
 }
