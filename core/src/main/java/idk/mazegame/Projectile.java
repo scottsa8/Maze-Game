@@ -1,8 +1,11 @@
 package idk.mazegame;
 
 import java.lang.invoke.VolatileCallSite;
+import java.nio.file.attribute.PosixFilePermission;
 import java.sql.Driver;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -18,8 +21,14 @@ public class Projectile
     public Vector2 direction;
     private  Body body;
     private boolean hit;
+    private TextureAtlas textureAtlas;
+    private Sprite projSprite;
     public Projectile(World world, Vector2 pos,Vector2 direction,int index, String name, int playerNum, int damage, int speed)
     {
+        textureAtlas = new TextureAtlas("items/magic.atlas");
+        projSprite = new Sprite(textureAtlas.findRegion("magic",0));
+        projSprite.setPosition(pos.x, pos.y);
+
         position = new Vector2(pos);
         velocity=speed;
         this.direction = direction;
@@ -38,6 +47,10 @@ public class Projectile
 
       
     }
+    public Sprite getSprite()
+    {
+        return projSprite;
+    }
     public void update()
     {
         if(direction.x == 1 && direction.y ==0)
@@ -50,6 +63,7 @@ public class Projectile
         position.y -=velocity;
  
       body.setTransform(position.x, position.y, 0);
+      projSprite.setPosition(position.x, position.y);
     }
     public Body getBody()
     {

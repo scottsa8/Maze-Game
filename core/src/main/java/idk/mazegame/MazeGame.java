@@ -414,6 +414,7 @@ public class MazeGame extends Game {
 				if(entities.get(counter).isHit() !=true)
 				{
 					entities.get(counter).update();
+					entities.get(counter).getSprite().draw(renderer.getBatch());
 				}
 			}
 		}
