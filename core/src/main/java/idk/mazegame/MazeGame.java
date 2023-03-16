@@ -447,15 +447,15 @@ public class MazeGame extends Game {
 
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
-		if(player.getAttackSprite()!=null)
+		if(player.getAttackSprite()!=null && player.getAttackBody() != null)
 		{	
-			player.getAttackSprite().setPosition(player.getPlayerSprite().getX() + 7 ,player.getPlayerSprite().getY() - 4);
+			player.getAttackSprite().setPosition(player.getAttackBody().getPosition().x - player.getAttackSprite().getWidth()/2, player.getAttackBody().getPosition().y - player.getAttackSprite().getHeight()/2);
 			System.out.println(new Vector2(player.getAttackSprite().getX(), player.getAttackSprite().getY()));
 			player.getAttackSprite().draw(renderer.getBatch());
 		}	
 		if(player2.getAttackSprite() != null)
 		{
-			player.getAttackSprite().draw(renderer.getBatch());
+			player2.getAttackSprite().draw(renderer.getBatch());
 		}
 
 		//font.draw(renderer.getBatch(), myText, 10f, screenHeight - 10f, screenWidth, Align.topLeft, false );
