@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 
 import idk.mazegame.EnemyAI.Constants;
+import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
 
 public class Player {
     private int playerNum;
@@ -519,7 +520,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y + 2f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x), (int)(coordinates.y + 1f)) != null)
-                    walk(9);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x, coordinates.y + 1f)).isOccupied())
+                        walk(9);
                 else {
                     lastKeyedDirection = 9;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -531,13 +533,13 @@ public class Player {
                 idle();
             }
 
-
             return;
         }
         if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(right))) {
             if (entityLayer.getCell( (int)(coordinates.x - 2f), (int)(coordinates.y + 1f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y)) != null)
-                    walk(7);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x -1f, coordinates.y)).isOccupied())
+                        walk(7);
                 else {
                     lastKeyedDirection = 7;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -554,7 +556,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(down) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x), (int)(coordinates.y + 1f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y)) != null)
-                    walk(3);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y)).isOccupied())
+                        walk(3);
                 else {
                     lastKeyedDirection = 3;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -571,7 +574,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(down) && Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right))) {
             if (entityLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x), (int)(coordinates.y - 1f)) != null)
-                    walk(1);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x, coordinates.y - 1f)).isOccupied())
+                        walk(1);
                 else {
                     lastKeyedDirection = 1;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -588,7 +592,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(down))) {
             if (entityLayer.getCell( (int)(coordinates.x - 2f), (int)(coordinates.y)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y - 1f)) != null)
-                    walk(4);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x - 1f, coordinates.y - 1f)).isOccupied())
+                        walk(4);
                 else {
                     lastKeyedDirection = 4;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -605,7 +610,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x), (int)(coordinates.y + 2f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y + 1f)) != null)
-                    walk(6);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y + 1f)).isOccupied())
+                        walk(6);
                 else {
                     lastKeyedDirection = 6;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -622,7 +628,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(down) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x), (int)(coordinates.y)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y - 1f)) != null)
-                    walk(2);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y - 1f)).isOccupied())
+                        walk(2);
                 else {
                     lastKeyedDirection = 2;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -639,7 +646,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(up) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x - 2f), (int)(coordinates.y + 2f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y + 1f)) != null)
-                    walk(8);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x - 1f, coordinates.y + 1f)).isOccupied())
+                        walk(8);
                 else {
                     lastKeyedDirection = 8;
                     secondlastKeyedDirection = lastKeyedDirection;
