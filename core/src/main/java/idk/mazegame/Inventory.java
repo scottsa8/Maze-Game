@@ -58,11 +58,20 @@ public class Inventory {
     }
 
     public void printInventory() {
+        double score;
+        double[] topScore = {0.0, 0.0};
         System.out.print("\n");
         for (int i = 0; i < inv.size(); i++) {
             if (i == inv.size()-1 && inv.size() > 1) {
+                score = inv.get(i).getDamage() + inv.get(i).getDefence();
+                if (score > topScore[0]) {
+                    topScore[0] = score;
+                    topScore[1] = i;
+                }
                 System.out.print("& " + inv.get(i).name + "\n");
             } else System.out.print(inv.get(i).name + " ");
         }
+
+        System.out.println("Best rated item: " + inv.get((int)topScore[1]).name);
     }
 }
