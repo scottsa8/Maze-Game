@@ -508,8 +508,8 @@ public class MazeGame extends Game {
 			}
 		}
 
-		if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}
-		if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}
+		if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}else{}
+		if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
 	
 		
 
@@ -596,7 +596,7 @@ public class MazeGame extends Game {
 			renderer.getBatch().begin();
 
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(0));
-			player.getPlayerSprite().draw(renderer.getBatch());
+			if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}else{}
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(1));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(2));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(3));
@@ -610,7 +610,7 @@ public class MazeGame extends Game {
 				enemies.get(i).getEnemySprite().draw(renderer.getBatch());
 				drawHP(i);
 			}
-			player2.getPlayerSprite().draw(renderer.getBatch());
+			if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
 			if(chest!=null)
 			{
 				chest.getChestSprite().draw(renderer.getBatch());
@@ -623,7 +623,7 @@ public class MazeGame extends Game {
 			renderer.getBatch().begin();
 
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(0));
-			player.getPlayerSprite().draw(renderer.getBatch());
+			if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}else{}
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(1));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(2));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(3));
@@ -638,7 +638,7 @@ public class MazeGame extends Game {
 					drawHP(i);
 				}
 			}
-			player2.getPlayerSprite().draw(renderer.getBatch());
+			if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
 			if(chest!=null)
 			{
 				chest.getChestSprite().draw(renderer.getBatch());
@@ -653,7 +653,7 @@ public class MazeGame extends Game {
 			renderer.getBatch().begin();
 
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(0));
-			player.getPlayerSprite().draw(renderer.getBatch());
+			if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}else{}
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(1));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(2));
 			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(3));
@@ -669,7 +669,7 @@ public class MazeGame extends Game {
 					drawHP(i);
 				}
 			}
-			player2.getPlayerSprite().draw(renderer.getBatch());
+			if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
 			if(chest!=null)
 			{
 				chest.getChestSprite().draw(renderer.getBatch());
@@ -825,14 +825,16 @@ public class MazeGame extends Game {
 		{
 			debug.render(world,camera.combined);
 		}	
+		player.checkForDeath();
+		player2.checkForDeath();
 
 		level1 = player.getLevel();
 		LevelLable1.setText("Player 1 Level: " + level1);
 		level2 = player2.getLevel();
 		LevelLable2.setText("Player 2 Level: " + level2);
-		HP1 = player.getHealth();
+		HP1 = player2.getHealth();
 		player1HP.setText("Health: " + HP1);
-		HP2 = player2.getHealth();
+		HP2 = player.getHealth();
 		player2HP.setText("Health: " + HP2);
 		hudStage.getRoot().setPosition(650, 815);
 		Healt.getRoot().setPosition(1, 750);
@@ -849,6 +851,10 @@ public class MazeGame extends Game {
 		player.dispose();
 		player2.dispose();
 		song1.dispose();
+	}
+	public void renderPlayer()
+	{
+
 	}
 	public void createChest() {
 		if(chest !=null)

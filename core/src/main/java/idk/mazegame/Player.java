@@ -75,9 +75,10 @@ public class Player {
     private int coin;
     public void checkForDeath()
     {
-        if(health == 0)
+        if(health <= 0)
         {
             dead = true;
+            health=0;
         }
     }
     public boolean isDead()
@@ -104,7 +105,6 @@ public class Player {
         {
             health-=damage;
         }
-        checkForDeath();
     }
     public int getPlayerNum()
     {
