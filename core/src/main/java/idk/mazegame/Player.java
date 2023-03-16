@@ -43,6 +43,7 @@ public class Player {
     private World world;
     private Body attackCircle;
     private Sprite attackSprite;
+    private TextureAtlas attackAtlas = new TextureAtlas("sprites/slash.atlas");
     private int ammo =0; // temp for now, not sure how max ammo will work 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs, int num) {
         playerNum = num;
@@ -737,29 +738,48 @@ public class Player {
     public void meleeAttack(String name)
     {
         Vector2 pos = new Vector2();
-        TextureAtlas t = new TextureAtlas("items/slash.atlas");
-        attackSprite = new Sprite(t.findRegion("slash",5));
-        attackSprite.setScale(0.3f);
+        //TextureAtlas t = new TextureAtlas("sprites/slash.atlas");
+        attackSprite = new Sprite(attackAtlas.findRegion("slash",5));
+        //attackSprite.setScale(0.3f);
 
-        if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +12);
-        if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM -12);
-        if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -12, getPlayerSprite().getHeight()/2 / Constants.PPM);   
-        if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
+        if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7)) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 2.5f, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
+            attackSprite.setRotation(45);
+            attackSprite.setFlip(true, true);
+        }
+        if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1)) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 2.5f, getPlayerSprite().getHeight()/2 / Constants.PPM - 5.5f);
+            attackSprite.setRotation(45);
+        }
+        if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1)) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM - 7.5f, getPlayerSprite().getHeight()/2 / Constants.PPM);
+            attackSprite.setRotation(135);
+        }
+        if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3)) {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 12, getPlayerSprite().getHeight()/2 / Constants.PPM);
-        if (lastKeyedDirection == 9)
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM+6, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
-        if (lastKeyedDirection == 7)
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM-6, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
-        if (lastKeyedDirection == 3)
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM +6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
-        if (lastKeyedDirection == 1)
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
-          
-        attackCircle = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
-        System.out.println("WANT THIS:" +pos);
+            attackSprite.setRotation(135);
+        }
+        if (lastKeyedDirection == 9) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM+7, getPlayerSprite().getHeight()/2 / Constants.PPM +2);
+            attackSprite.setFlip(true,true);
+        }
+        if (lastKeyedDirection == 7) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM-3, getPlayerSprite().getHeight()/2 / Constants.PPM +2);
+            //attackSprite.setRotation(90);
+            attackSprite.setFlip(true,false);
+        }
+        if (lastKeyedDirection == 3) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 7f, getPlayerSprite().getHeight()/2 / Constants.PPM -3);
+            attackSprite.setRotation(90);
+        }
+        if (lastKeyedDirection == 1) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM - 2.5f, getPlayerSprite().getHeight()/2 / Constants.PPM -3);
+        }
+
+        System.out.println("pos:" + pos);
+        System.out.println("other pos:" + new Vector2(getPlayerSprite().getX() + 7.5f + pos.x, getPlayerSprite().getY() + 4f + pos.y));
+        attackCircle = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + pos.x*2, getPlayerSprite().getY() + pos.y*2),new Vector2(0,0), true, world);
+        //System.out.println("WANT THIS:" +pos);
         System.out.println("body pos:" +attackCircle.getPosition());
         attackCircle.setUserData(name.toString());
 
@@ -770,7 +790,7 @@ public class Player {
                         try{
                             world.destroyBody(attackCircle);
                             attackCircle=null;
-                            attackSprite=null;
+                            //attackSprite=null;
                         }
                       catch(Exception e){};
                     }
