@@ -1,62 +1,62 @@
 
 slash.png
-size: 512, 64
+size: 256, 32
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 slash
   rotate: false
   xy: 2, 2
-  size: 32, 32
-  orig: 32, 32
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 3
 slash
   rotate: false
-  xy: 36, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 20, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 0
 slash
   rotate: false
-  xy: 70, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 38, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 5
 slash
   rotate: false
-  xy: 104, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 56, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 2
 slash
   rotate: false
-  xy: 138, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 74, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 7
 slash
   rotate: false
-  xy: 172, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 92, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 4
 slash
   rotate: false
-  xy: 206, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 110, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 1
 slash
   rotate: false
-  xy: 240, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 128, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 6

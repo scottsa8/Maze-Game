@@ -1,48 +1,48 @@
 
 magic.png
-size: 256, 64
+size: 128, 32
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 magic
   rotate: false
   xy: 2, 2
-  size: 32, 32
-  orig: 32, 32
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 0
 magic
   rotate: false
-  xy: 36, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 20, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 5
 magic
   rotate: false
-  xy: 70, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 38, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 2
 magic
   rotate: false
-  xy: 104, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 56, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 4
 magic
   rotate: false
-  xy: 138, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 74, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 1
 magic
   rotate: false
-  xy: 172, 2
-  size: 32, 32
-  orig: 32, 32
+  xy: 92, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: 3
