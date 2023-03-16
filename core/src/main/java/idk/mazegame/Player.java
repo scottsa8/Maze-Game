@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 import idk.mazegame.EnemyAI.Constants;
+import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
 
 public class Player {
     private int playerNum;
@@ -41,6 +42,7 @@ public class Player {
     private World world;
     private Body attackCircle;
     private Sprite attackSprite;
+    private TextureAtlas attackAtlas = new TextureAtlas("sprites/slash.atlas");
     private int ammo = 0;
     private Boolean dead =false;
 
@@ -586,7 +588,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y + 2f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x), (int)(coordinates.y + 1f)) != null)
-                    walk(9);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x, coordinates.y + 1f)).isOccupied())
+                        walk(9);
                 else {
                     lastKeyedDirection = 9;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -602,7 +605,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(up) && Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(right))) {
             if (entityLayer.getCell( (int)(coordinates.x - 2f), (int)(coordinates.y + 1f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y)) != null)
-                    walk(7);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x -1f, coordinates.y)).isOccupied())
+                        walk(7);
                 else {
                     lastKeyedDirection = 7;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -618,7 +622,9 @@ public class Player {
         if (Gdx.input.isKeyPressed(down) && Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x), (int)(coordinates.y + 1f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y)) != null)
-                    walk(3);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y)).isOccupied())
+                        if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x, coordinates.y - 1f)).isOccupied())
+                            walk(3);
                 else {
                     lastKeyedDirection = 3;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -634,7 +640,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(down) && Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right))) {
             if (entityLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x), (int)(coordinates.y - 1f)) != null)
-                    walk(1);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x, coordinates.y - 1f)).isOccupied())
+                        walk(1);
                 else {
                     lastKeyedDirection = 1;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -650,7 +657,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(left) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(down))) {
             if (entityLayer.getCell( (int)(coordinates.x - 2f), (int)(coordinates.y)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y - 1f)) != null)
-                    walk(4);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x - 1f, coordinates.y - 1f)).isOccupied())
+                        walk(4);
                 else {
                     lastKeyedDirection = 4;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -666,7 +674,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(right) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x), (int)(coordinates.y + 2f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y + 1f)) != null)
-                    walk(6);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y + 1f)).isOccupied())
+                        walk(6);
                 else {
                     lastKeyedDirection = 6;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -682,7 +691,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(down) && !(Gdx.input.isKeyPressed(up) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x), (int)(coordinates.y)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y - 1f)) != null)
-                    walk(2);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y - 1f)).isOccupied())
+                        walk(2);
                 else {
                     lastKeyedDirection = 2;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -698,7 +708,8 @@ public class Player {
         if (Gdx.input.isKeyPressed(up) && !(Gdx.input.isKeyPressed(down) || Gdx.input.isKeyPressed(right) || Gdx.input.isKeyPressed(left))) {
             if (entityLayer.getCell( (int)(coordinates.x - 2f), (int)(coordinates.y + 2f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y + 1f)) != null)
-                    walk(8);
+                    if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x - 1f, coordinates.y + 1f)).isOccupied())
+                        walk(8);
                 else {
                     lastKeyedDirection = 8;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -785,26 +796,41 @@ public class Player {
     public void meleeAttack(String name,int damage)
     {
         Vector2 pos = new Vector2();
-        TextureAtlas t = new TextureAtlas("items/slash.atlas");
-        attackSprite = new Sprite(t.findRegion("slash",5));
-        attackSprite.setScale(0.3f);
+        attackSprite = new Sprite(attackAtlas.findRegion("slash",5));
 
-        if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +12);
-        if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM -12);
-        if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -12, getPlayerSprite().getHeight()/2 / Constants.PPM);   
-        if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
+        if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7)) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 2.5f, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
+            attackSprite.setRotation(45);
+            attackSprite.setFlip(true, true);
+        }
+        if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1)) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 2.5f, getPlayerSprite().getHeight()/2 / Constants.PPM - 5.5f);
+            attackSprite.setRotation(45);
+        }
+        if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1)) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM - 7.5f, getPlayerSprite().getHeight()/2 / Constants.PPM);
+            attackSprite.setRotation(135);
+        }
+        if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3)) {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 12, getPlayerSprite().getHeight()/2 / Constants.PPM);
-        if (lastKeyedDirection == 9)
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM+6, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
-        if (lastKeyedDirection == 7)
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM-6, getPlayerSprite().getHeight()/2 / Constants.PPM +6);
-        if (lastKeyedDirection == 3)
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM +6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
-        if (lastKeyedDirection == 1)
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
+            attackSprite.setRotation(135);
+        }
+        if (lastKeyedDirection == 9) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM+7, getPlayerSprite().getHeight()/2 / Constants.PPM +2);
+            attackSprite.setFlip(true,true);
+        }
+        if (lastKeyedDirection == 7) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM-3, getPlayerSprite().getHeight()/2 / Constants.PPM +2);
+            //attackSprite.setRotation(90);
+            attackSprite.setFlip(true,false);
+        }
+        if (lastKeyedDirection == 3) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 7f, getPlayerSprite().getHeight()/2 / Constants.PPM -3);
+            attackSprite.setRotation(90);
+        }
+        if (lastKeyedDirection == 1) {
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM - 2.5f, getPlayerSprite().getHeight()/2 / Constants.PPM -3);
+        }
           
         attackCircle = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
         attackCircle.setUserData(name.toString());
@@ -816,7 +842,6 @@ public class Player {
                         try{
                             world.destroyBody(attackCircle);
                             attackCircle=null;
-                            attackSprite=null;
                         }
                       catch(Exception e){};
                     }
