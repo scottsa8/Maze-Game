@@ -24,6 +24,8 @@ public class Item {
     private double durability;
     private double maxDurability;
     private double weight; //Used for affecting the durability of the item
+    private int pathIndex;
+    private String path;
 
     public Item(ItemAttributes itemAttrs) { //Create generic item
         attributes = itemAttrs;
@@ -49,8 +51,7 @@ public class Item {
         //1. Find the item using the type and type index
         String[] itemAttrs = attributes.getAttributes(thisType, thisTypeIndex);
 
-        System.out.println(itemAttrs);
-
+        //System.out.println(itemAttrs);
         //2. Associate this item with all the attributes of the found item
         type = Integer.valueOf(itemAttrs[0]);
         typeIndex = Integer.valueOf(itemAttrs[1]);
@@ -62,7 +63,8 @@ public class Item {
         durability = Double.valueOf(itemAttrs[7])*2;
         maxDurability = Double.valueOf(itemAttrs[7])*2;
         weight = Double.valueOf(itemAttrs[8]);
-
+        path = itemAttrs[9];
+      
         if (name.equals("Fist") || type == 4) {
             System.out.println("ITEM - Error: This cannot have rarity. Ignore this.");
         } else {
@@ -119,6 +121,10 @@ public class Item {
     public double getDurability() {
         int percent = (int)(durability / maxDurability * 100);
         return percent;
+    }
+    public String getPath()
+    {
+        return path;
     }
 
     public void useItem() { //Performs the action of the item and modifies it accordingly

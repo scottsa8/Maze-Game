@@ -28,6 +28,8 @@ import idk.mazegame.EnemyAI.PathFinding.Node;
 import idk.mazegame.EnemyAI.PathFinding.PathFindingSystem;
 import static java.lang.Math.sqrt;
 
+import java.nio.file.AtomicMoveNotSupportedException;
+
 // {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. 
 
 public class MazeGame extends Game {
@@ -199,7 +201,7 @@ public class MazeGame extends Game {
 		world.step(1/10f, 6, 2);
 
 		if (inputDelay == 0) {
-			
+
 			player.update(floorLayer, entityLayer);
 			player2.update(floorLayer, entityLayer);
 			inputDelay = MAX_INPUT_DELAY;
@@ -466,6 +468,7 @@ public class MazeGame extends Game {
 		{
 			if(chest.isOpened() == true)
 			{
+				chest.getItemSprite().draw(renderer.getBatch());
 				world.destroyBody(chest.getBody());
 				chest= null;
 			}	

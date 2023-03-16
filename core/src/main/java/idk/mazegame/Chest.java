@@ -8,7 +8,9 @@ import idk.mazegame.EnemyAI.Constants;
 
 public class Chest {
     private TextureAtlas textureAtlas;
+    private TextureAtlas textureAtlas2;
     private Sprite chestSprite;
+    private Sprite itemSprite;
     private Body body;
     private boolean opened = false;
     public Chest(World world, float x, float y) {
@@ -45,11 +47,22 @@ public class Chest {
     public void open(Player p, ItemAttributes attrs)
     {
         opened= true;
-        //create item add to to the player
-        p.addToInv(new Item(attrs, p.getLevel()));
+        Item temp = new Item(attrs, p.getLevel());
+        String path = temp.getPath();
+        Double pathIndex = Double.valueOf(path);
+ 
+        textureAtlas2 = new TextureAtlas("items/items.atlas");
+        itemSprite = new Sprite(textureAtlas2.findRegion("item",(int)Math.round(pathIndex)));
+        itemSprite.setPosition(Gdx.graphics.getWidth()/2 - chestSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - chestSprite.getHeight()/2);
+        
+        p.addToInv(temp);
     }
     public boolean isOpened()
     {
         return opened;
+    }
+    public Sprite getItemSprite()
+    {
+        return itemSprite;
     }
 }
