@@ -41,12 +41,11 @@ public class Enemy {
     private float moveAmountX = 0f, moveAmountY = 0f;
     private Vector2 curPos = new Vector2();
     private Vector2 nextPos = new Vector2();
-    private String direction = "Right";
 
     public Enemy(World world,float x, float y, int type, int index) {
         String enemyAtlas = getAtlas(type);
         textureAtlas = new TextureAtlas(enemyAtlas);
-        enemySprite = new Sprite(textureAtlas.findRegion(name+direction,0));
+        enemySprite = new Sprite(textureAtlas.findRegion(name+"Right",0));
         this.body = createBody(world,x,y);
         this.body.setUserData("enemy"+","+index);        
     }
@@ -122,10 +121,6 @@ public class Enemy {
                 body.setTransform(body.getPosition().set(body.getPosition().x + (0.0675f * moveAmountX), body.getPosition().y + (0.0675f * moveAmountY)), 0);
                 currentFrame++;
                 timer = 1;
-
-                if (currentFrame % 4 == 0) {
-                    enemySprite.setRegion(textureAtlas.findRegion(name + direction, currentFrame/4 - 1));
-                }
             }
 
             if (currentFrame == 16) {
@@ -245,50 +240,42 @@ public class Enemy {
         if (pathCoords.equals(new Vector2(0,1))) {
             moveAmountX = ENEMY_SPEED*DIAG_MOD;
             moveAmountY = (ENEMY_SPEED*DIAG_MOD)/2;
-            direction = "Up";
             isMoving = true;
 
         }
         if (pathCoords.equals(new Vector2(-1,0))) {
             moveAmountX = -ENEMY_SPEED*DIAG_MOD;
             moveAmountY = (ENEMY_SPEED*DIAG_MOD)/2;
-            direction = "Up";
             isMoving = true;
         }
         if (pathCoords.equals(new Vector2(1,0))) {
             moveAmountX = ENEMY_SPEED*DIAG_MOD;
             moveAmountY = (-ENEMY_SPEED*DIAG_MOD)/2;
-            direction = "Down";
             isMoving = true;
         }
         if (pathCoords.equals(new Vector2(0,-1))) {
             moveAmountX = -ENEMY_SPEED*DIAG_MOD;
             moveAmountY = (-ENEMY_SPEED*DIAG_MOD)/2;
-            direction = "Down";
             isMoving = true;
         }
         if (pathCoords.equals(new Vector2(-1,-1))) {
             moveAmountX = -ENEMY_SPEED*2;
             moveAmountY = 0;
-            direction = "Left";
             isMoving = true;
         }
         if (pathCoords.equals(new Vector2(1,1))) {
             moveAmountX = ENEMY_SPEED*2;
             moveAmountY = 0;
-            direction = "Right";
             isMoving = true;
             }
         if (pathCoords.equals(new Vector2(1,-1))) {
             moveAmountX = 0;
             moveAmountY = -ENEMY_SPEED;
-            direction = "Down";
             isMoving = true;
             }
         if (pathCoords.equals(new Vector2(-1,1))) {
             moveAmountX = 0;
             moveAmountY = ENEMY_SPEED;
-            direction = "Up";
             isMoving = true;
         }
 
@@ -412,13 +399,5 @@ public class Enemy {
     {
         return dead;
     }
-
-    public Node getCurrentNode() {
-        return path.get(currentNode);
-    }
-
-    public Node getNextNode() {
-        if (currentNode+1 >= path.getCount()) return path.get(currentNode);
-        return path.get(currentNode+1);
-    }
+  
 }

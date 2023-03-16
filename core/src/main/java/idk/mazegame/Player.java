@@ -42,6 +42,7 @@ public class Player {
     private Leveling level = new Leveling();
     private World world;
     private Body attackCircle;
+    private Sprite attackSprite;
     private int ammo =0; // temp for now, not sure how max ammo will work 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs, int num) {
         playerNum = num;
@@ -736,12 +737,16 @@ public class Player {
     public void meleeAttack(String name)
     {
         Vector2 pos = new Vector2();
+        TextureAtlas t = new TextureAtlas("items/slash.atlas");
+        attackSprite = new Sprite(t.findRegion("slash",5));
+        attackSprite.setScale(0.3f);
+
         if (lastKeyedDirection == 8 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 7))
-        pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +12);
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM +12);
         if (lastKeyedDirection == 2 && !(secondlastKeyedDirection == 3 || secondlastKeyedDirection == 1))
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM, getPlayerSprite().getHeight()/2 / Constants.PPM -12);
         if (lastKeyedDirection == 4 && !(secondlastKeyedDirection == 7 || secondlastKeyedDirection == 1))
-            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -12, getPlayerSprite().getHeight()/2 / Constants.PPM);
+            pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -12, getPlayerSprite().getHeight()/2 / Constants.PPM);   
         if (lastKeyedDirection == 6 && !(secondlastKeyedDirection == 9 || secondlastKeyedDirection == 3))
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM + 12, getPlayerSprite().getHeight()/2 / Constants.PPM);
         if (lastKeyedDirection == 9)
@@ -752,10 +757,12 @@ public class Player {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM +6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
         if (lastKeyedDirection == 1)
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM -6, getPlayerSprite().getHeight()/2 / Constants.PPM -6);
-               
-        attackCircle = ShapeMaker.createCircle(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
+          
+        attackCircle = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
+        System.out.println("WANT THIS:" +pos);
+        System.out.println("body pos:" +attackCircle.getPosition());
         attackCircle.setUserData(name.toString());
-       
+
         Timer timer=new Timer();
                 timer.scheduleTask(new Timer.Task() {
                     @Override
@@ -763,10 +770,19 @@ public class Player {
                         try{
                             world.destroyBody(attackCircle);
                             attackCircle=null;
+                            attackSprite=null;
                         }
                       catch(Exception e){};
                     }
                 },0.1f);  
+    }
+    public Sprite getAttackSprite()
+    {
+        return attackSprite;
+    }
+    public Body getAttackBody()
+    {
+        return attackCircle;
     }
     public void rangeAttack(int range)
     {

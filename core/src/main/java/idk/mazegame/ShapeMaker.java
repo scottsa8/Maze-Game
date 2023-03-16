@@ -1,5 +1,7 @@
 package idk.mazegame;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -15,7 +17,7 @@ public class ShapeMaker
 {
     public static Body createCircle(Vector2 pos,Vector2 bodyPos, boolean bullet, World world)
     {
-        
+   
         BodyDef circle = new BodyDef();
         circle.bullet = bullet;
         circle.type = BodyDef.BodyType.StaticBody;

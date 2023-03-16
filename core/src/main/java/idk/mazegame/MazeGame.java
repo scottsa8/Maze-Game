@@ -296,8 +296,8 @@ public class MazeGame extends Game {
 		{
 			if(enemies.get(count).isDead() == true)
 			{
-				enemies.get(count).getCurrentNode().setOccupied(false);
-				enemies.get(count).getNextNode().setOccupied(false);
+			//	enemies.get(count).getCurrentNode().setOccupied(false);
+			//	enemies.get(count).getNextNode().setOccupied(false);
 				world.destroyBody(enemies.get(count).getBody());
 				if (enemies.size() == 1)
 				{	
@@ -338,8 +338,8 @@ public class MazeGame extends Game {
 		{
 			for(int i=0;i<amount;i++)
 			{
-				enemies.get(i).getCurrentNode().setOccupied(false);
-				enemies.get(i).getNextNode().setOccupied(false);
+			//	enemies.get(i).getCurrentNode().setOccupied(false);
+			//	enemies.get(i).getNextNode().setOccupied(false);
 				world.destroyBody(enemies.get(i).getBody());
 			}
 			createEnemies();
@@ -404,6 +404,7 @@ public class MazeGame extends Game {
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
 		//renderer.getBatch().setProjectionMatrix(camera.combined);
+	
 		if(entities!= null)
 		{
 			for(int counter =0; counter<entities.size();counter++)
@@ -446,6 +447,16 @@ public class MazeGame extends Game {
 
 		player2.getPlayerSprite().draw(renderer.getBatch());
 		player.getPlayerSprite().draw(renderer.getBatch());
+		if(player.getAttackSprite()!=null)
+		{	
+			player.getAttackSprite().setPosition(player.getPlayerSprite().getX() + 7 ,player.getPlayerSprite().getY() - 4);
+			System.out.println(new Vector2(player.getAttackSprite().getX(), player.getAttackSprite().getY()));
+			player.getAttackSprite().draw(renderer.getBatch());
+		}	
+		if(player2.getAttackSprite() != null)
+		{
+			player.getAttackSprite().draw(renderer.getBatch());
+		}
 
 		//font.draw(renderer.getBatch(), myText, 10f, screenHeight - 10f, screenWidth, Align.topLeft, false );
 
@@ -626,8 +637,8 @@ public class MazeGame extends Game {
 
 			for(int i=0;i<enemies.size();i++)
 			{
-				enemies.get(i).getCurrentNode().setOccupied(false);
-				enemies.get(i).getNextNode().setOccupied(false);
+				//enemies.get(i).getCurrentNode().setOccupied(false);
+				//enemies.get(i).getNextNode().setOccupied(false);
 				world.destroyBody(enemies.get(i).getBody());
 			}
 
@@ -669,7 +680,7 @@ public class MazeGame extends Game {
 		p1enemies = 0;
 		p2enemies = 0;
 		int type = 2;//(int)Math.floor(Math.random() *(3 - 1 + 1) + 1);
-		amount = (int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
+		amount = 0;//(int)Math.floor(Math.random() *(max - min + 1) + min); //random enemies.size() of enemies between 4-8 (needs tweaking)
 		//amount = 1;
 		for (int i = 0; i < amount; i++) {
 //			int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
