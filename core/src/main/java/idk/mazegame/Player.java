@@ -103,6 +103,7 @@ public class Player {
 
     public void addToInv(Item item) {
         inv.inventoryAdd(item, 0);
+        slotsCheck();
     }
 
     public Color getItemColor(int slot){
