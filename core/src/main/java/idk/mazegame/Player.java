@@ -623,7 +623,6 @@ public class Player {
             if (entityLayer.getCell( (int)(coordinates.x), (int)(coordinates.y + 1f)) == null)
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y)) != null)
                     if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y)).isOccupied())
-                        if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x, coordinates.y - 1f)).isOccupied())
                             walk(3);
                 else {
                     lastKeyedDirection = 3;

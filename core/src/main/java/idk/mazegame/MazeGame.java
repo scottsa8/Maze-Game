@@ -199,6 +199,7 @@ public class MazeGame extends Game {
 		world.step(1/10f, 6, 2);
 
 		if (inputDelay == 0) {
+			
 			player.update(floorLayer, entityLayer);
 			player2.update(floorLayer, entityLayer);
 			inputDelay = MAX_INPUT_DELAY;
