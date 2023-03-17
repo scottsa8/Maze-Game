@@ -180,6 +180,14 @@ public class Item {
         {
             return Color.ORANGE;
         }
+        else if(i.type ==4 && !(i.name.contains("God")))
+        {
+            return Color.RED;
+        }
+        else if(i.type ==4 && (i.name.contains("God")))
+        {
+            return Color.GOLD;
+        }
         else
         {
             return Color.WHITE;

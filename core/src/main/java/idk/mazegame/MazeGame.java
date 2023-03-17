@@ -434,7 +434,7 @@ public class MazeGame extends Game {
 				{
 					generated=null;
 				}
-			},1f); 
+			},1.2f); 
 			
 			renderer.getBatch().end();
 		}
@@ -520,7 +520,7 @@ public class MazeGame extends Game {
 		font.draw(renderer.getBatch(), player2.getSlotName(2), (460.5f - (player2.getSlotName(2).length() *2)), -110.5f, screenWidth, Align.topLeft, true);
 		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), bagText ,445.5f,-120.5f,screenWidth,Align.topLeft,false);
-		font.setColor(Color.RED);
+		font.setColor(player2.getItemColor(0));
 		font.draw(renderer.getBatch(), player2.getSlotName(0), (460.5f - (player2.getSlotName(0).length() *2)), -130.5f, screenWidth, Align.topLeft, true);
 		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), staminaText + (int)player2.getStamina(), 455.5f, -140.5f, screenWidth, Align.topLeft, false);

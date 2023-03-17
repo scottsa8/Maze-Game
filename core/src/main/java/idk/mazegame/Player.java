@@ -73,7 +73,7 @@ public class Player {
         if(health <= 0)
         {
             dead = false;
-            body.setUserData("dead");
+            //body.setUserData("dead");
             health=0;
         }
     }
@@ -132,7 +132,9 @@ public class Player {
     }
 
     public Color getItemColor(int slot){
-        if(slot ==1){
+        if(slot ==0){
+            return slots[1].getItemColor(slots[0]);
+        }else if(slot ==1){
             return slots[1].getItemColor(slots[1]);
         } else {
             return slots[2].getItemColor(slots[2]);
