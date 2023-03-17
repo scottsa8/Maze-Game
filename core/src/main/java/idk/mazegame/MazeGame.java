@@ -87,6 +87,7 @@ public class MazeGame extends Game {
 	private Stage Healt;
 	private int bossCount;
 	public static Item generated;
+	private int displayTime = 30;
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
@@ -100,8 +101,8 @@ public class MazeGame extends Game {
 		tile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("tiledmaps/tileSprites.png")),32,32,16,16));
 		collsion();	
 
-		floorLayer.getCell(23, 7).setTile(tile);
-		floorLayer.getCell(24, 8).setTile(tile);
+		//floorLayer.getCell(23, 7).setTile(tile);
+		//floorLayer.getCell(24, 8).setTile(tile);
 
 		batch = new SpriteBatch();
 
@@ -478,22 +479,6 @@ public class MazeGame extends Game {
 		}
 		
 		renderer.getBatch().begin();
-		
-
-		if(chest!=null)
-		{
-			if(chest.isOpened() == true)
-			{
-				chest.getItemSprite().draw(renderer.getBatch());
-				world.destroyBody(chest.getBody());
-				chest = null;
-			}	
-			else
-			{
-				chest.getChestSprite().setPosition(chest.getBody().getPosition().x -7 , chest.getBody().getPosition().y - 7);
-				chest.getChestSprite().draw(renderer.getBatch());
-			}
-		}
 
 		if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}else{}
 		if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
@@ -652,6 +637,115 @@ public class MazeGame extends Game {
 			}
 			renderer.getBatch().end();
 
+		}
+
+//		if (entityLayer.getCell((int) (player2.getCoordinates().x), (int) (player2.getCoordinates().y)) != null) {
+////			tmpTile = (StaticTiledMapTile) entityLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).getTile();
+////			overlapLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tmpTile);
+//			renderer.getBatch().begin();
+//
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(0));
+//			if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(1));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(2));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(3));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(4));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
+//
+//			for(int i3=0;i3<enemies.size();i3++)
+//			{
+//
+//				enemies.get(i3).getEnemySprite().draw(renderer.getBatch());
+//				drawHP(i3);
+//			}
+//			if(chest!=null)
+//			{
+//				chest.getChestSprite().draw(renderer.getBatch());
+//			}
+//			renderer.getBatch().end();
+//		}
+//		if (entityLayer.getCell((int) (player2.getCoordinates().x - 1), (int) (player2.getCoordinates().y)) != null) {
+////			tmpTile = (StaticTiledMapTile) entityLayer.getCell((int) (player.getCoordinates().x - 1), (int) (player.getCoordinates().y)).getTile();
+////			overlapLayer.getCell((int) (player.getCoordinates().x - 1), (int) (player.getCoordinates().y)).setTile(tmpTile);
+//			renderer.getBatch().begin();
+//
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(0));
+//			if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(1));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(2));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(3));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(4));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
+//			for(int i4=0;i4<enemies.size();i4++)
+//			{
+//				if(enemies.get(i4)!=null)
+//				{
+//					enemies.get(i4).getEnemySprite().draw(renderer.getBatch());
+//					drawHP(i4);
+//				}
+//			}
+//
+//			if(chest!=null)
+//			{
+//				chest.getChestSprite().draw(renderer.getBatch());
+//			}
+//
+//			renderer.getBatch().end();
+//
+//		}
+//		if (entityLayer.getCell((int) (player2.getCoordinates().x), (int) (player2.getCoordinates().y + 1)) != null) {
+////			tmpTile = (StaticTiledMapTile) entityLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y + 1)).getTile();
+////			overlapLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y + 1)).setTile(tmpTile);
+//			renderer.getBatch().begin();
+//
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(0));
+//			if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(1));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(2));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(3));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(4));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(5));
+//			renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(6));
+//
+//			for(int i=0;i<enemies.size();i++)
+//			{
+//				if(enemies.get(i)!=null)
+//				{
+//					enemies.get(i).getEnemySprite().draw(renderer.getBatch());
+//					drawHP(i);
+//				}
+//			}
+//
+//			if(chest!=null)
+//			{
+//				chest.getChestSprite().draw(renderer.getBatch());
+//			}
+//			renderer.getBatch().end();
+//
+//		}
+
+		if(chest!=null)
+		{
+			renderer.getBatch().begin();
+			if(chest.isOpened() == true)
+			{
+
+				chest.getItemSprite().draw(renderer.getBatch());
+				if (displayTime == 0) {
+					world.destroyBody(chest.getBody());
+					chest = null;
+					displayTime = 30;
+				}
+				displayTime--;
+			}
+			else
+			{
+				chest.getChestSprite().setPosition(chest.getBody().getPosition().x -7 , chest.getBody().getPosition().y - 7);
+				chest.getChestSprite().draw(renderer.getBatch());
+			}
+			renderer.getBatch().end();
 		}
 
 		renderer.getBatch().begin();
