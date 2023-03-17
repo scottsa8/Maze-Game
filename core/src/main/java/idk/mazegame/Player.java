@@ -833,7 +833,7 @@ public class Player {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM - 2.5f, getPlayerSprite().getHeight()/2 / Constants.PPM -3);
         }
           
-        attackCircle = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),pos, true, world);
+        attackCircle = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + pos.x*2, getPlayerSprite().getY() + pos.y*2),new Vector2(0,0), true, world);
         attackCircle.setUserData("attack"+","+name.toString()+","+playerNum+","+damage);
 
         Timer timer=new Timer();
