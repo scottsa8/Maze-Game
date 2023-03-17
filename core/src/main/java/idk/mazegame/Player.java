@@ -421,6 +421,7 @@ public class Player {
     }
 
     public void update(TiledMapTileLayer floorLayer, TiledMapTileLayer entityLayer) {
+        if (dead) return;
         getBody().setTransform(getBody().getPosition().set(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f), 0);
         if(MazeGame.debugger==true)
         {
