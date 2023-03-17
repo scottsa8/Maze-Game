@@ -45,6 +45,7 @@ public class Player {
     private TextureAtlas attackAtlas = new TextureAtlas("items/slash.atlas");
     private int ammo = 0;
     private Boolean dead =false;
+    private Boolean canTakeDamage=true;
 
     public Player(FileHandle atlasfile, ItemAttributes gameAttrs, int num) {
         playerNum = num;
@@ -82,7 +83,9 @@ public class Player {
     }
     public void takeDamage(int damage)
     {
-        health-=damage;
+        if(canTakeDamage){
+            health-=damage;
+        }
     }
     public int getPlayerNum()
     {
@@ -337,10 +340,18 @@ public class Player {
     public void slotsCheck() { //Checks if any of the slots are empty and if any item in the inventory can fill its gap
   
         if (slots[1].type < 0) {
+            if(slots[1].type==3)
+            {
+                canTakeDamage=true;
+            }
             slot1Remove();
         }
 
         if (slots[2].type < 0) {
+            if(slots[2].type==3)
+            {
+                canTakeDamage=true;
+            }
             slot2Remove();
         }
 
@@ -453,11 +464,25 @@ public class Player {
                     rangeAttack(slots[1].name,0,(int)slots[1].getDamage());
                 }
             } else if (slots[1].type == 3) {
-                health+=1;
+                Timer timer3=new Timer();
+                timer3.scheduleTask(new Timer.Task() 
+                {
+                    @Override
+                    public void run() 
+                    {
+                        canTakeDamage=false;
+                        slots[1].useItem();
+                        if(slots[1].getDurability()<=0){
+                            slotsCheck();
+                            canTakeDamage=true;
+                            timer3.stop();}
+                    }
+                },0.1f,0.1f); 
             }
             slotsCheck();
+            
         }
-
+       
         if (Gdx.input.isKeyJustPressed(useSlot2)) {
             slots[2].useItem();
             if (slots[2].type == 0) {
@@ -475,11 +500,26 @@ public class Player {
                     rangeAttack(slots[2].name,0,(int)slots[2].getDamage());
                 }
             } else if (slots[2].type == 3) {
-                health+=1;
+                Timer timer3=new Timer();
+                timer3.scheduleTask(new Timer.Task() 
+                {
+                    @Override
+                    public void run() 
+                    {
+                        canTakeDamage=false;
+                        slots[2].useItem();
+                        if(slots[2].getDurability()<=0){
+                            slotsCheck();
+                            canTakeDamage=true;
+                            timer3.stop();
+                        }
+                    }
+                },0.1f,0.1f); 
             }
             slotsCheck();
+           
         }
-
+       
         if ((Gdx.input.isKeyJustPressed(useSlot3))) {
             if (slots[0].name.equals("Empty")) {
             } else {
