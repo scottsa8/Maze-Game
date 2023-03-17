@@ -146,7 +146,7 @@ public class MazeGame extends Game {
 		//player2.getPlayerSprite().setPosition(300,-9);
 		player.setUseSlot1(Input.Keys.Q);
 		player.setUseSlot2(Input.Keys.E);
-		player.setUseSlot3(Input.Keys.ENTER);
+		player.setUseSlot3(Input.Keys.F);
 		player2.setUp(Input.Keys.UP);
 		player2.setLeft(Input.Keys.LEFT);
 		player2.setDown(Input.Keys.DOWN);
@@ -864,9 +864,9 @@ public class MazeGame extends Game {
 		LevelLable1.setText("Player 1 Level: " + level1);
 		level2 = player2.getLevel();
 		LevelLable2.setText("Player 2 Level: " + level2);
-		HP1 = player2.getHealth();
+		HP1 = player.getHealth();
 		player1HP.setText("Health: " + HP1);
-		HP2 = player.getHealth();
+		HP2 = player2.getHealth();
 		player2HP.setText("Health: " + HP2);
 		hudStage.getRoot().setPosition(650, 815);
 		Healt.getRoot().setPosition(1, 750);

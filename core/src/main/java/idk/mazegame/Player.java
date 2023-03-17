@@ -25,7 +25,7 @@ public class Player {
     private int lastKeyedDirection = 0;
     private int secondlastKeyedDirection = 0;
     private int up = Input.Keys.W, down = Input.Keys.S, left = Input.Keys.A, right = Input.Keys.D;
-    private int useSlot1 = Input.Keys.CONTROL_RIGHT, useSlot2 = Input.Keys.SHIFT_RIGHT, useSlot3 = Input.Keys.F;
+    private int useSlot1 = Input.Keys.CONTROL_RIGHT, useSlot2 = Input.Keys.SHIFT_RIGHT, useSlot3 = Input.Keys.ENTER;
     private boolean inputIsLocked = false, isMoving = false, nextStep = false; // to use for certain parts where player input is disabled: tile-based movement, cutscenes, stamina, debuff
     private float moveAmountX = 0f, moveAmountY = 0f, targetX = 0, targetY = 0;
     private final int MAX_FRAMES = 4;
@@ -71,7 +71,7 @@ public class Player {
     {
         if(health <= 0)
         {
-            dead = true;
+            dead = false;
             body.setUserData("dead");
             health=0;
         }
