@@ -321,17 +321,17 @@ public class MazeGame extends Game {
 				}
 				enemies.clear();
 			}
-			if(Gdx.input.isKeyPressed(Keys.Y))
+			if(Gdx.input.isKeyJustPressed(Keys.Y))
 			{
 				roomCount+=5;
 			}
 		}
-		try{
-			floorLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tile);
-		}
-		catch (NullPointerException e){
-			Gdx.app.log("Block:", "null");
-		}
+		// try{
+		// 	floorLayer.getCell((int) (player.getCoordinates().x), (int) (player.getCoordinates().y)).setTile(tile);
+		// }
+		// catch (NullPointerException e){
+		// 	Gdx.app.log("Block:", "null");
+		// }
 
 		Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
 		//Gdx.gl.glClearColor(0.08f, 0.72f, 2.48f, 1f);
@@ -859,6 +859,7 @@ public class MazeGame extends Game {
 			}
 			
 		}
+
 		for(int i=0;i<amount;i++)
 		{
 			int randomNode = (int) (Math.random() * PathFindingSystem.graph.getNodeCount());

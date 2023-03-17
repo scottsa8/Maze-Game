@@ -81,24 +81,25 @@ public class Player {
     }
     public void takeDamage(int damage)
     {
-        if(slots[1].getDefence() != 0 || slots[2].getDefence()!=0)
-        {
-            double temp = slots[1].getDefence();
-            double temp2 = slots[2].getDefence();
-            if(temp==0 && temp2!=0)
+            if(slots[1].name=="Shield" || slots[2].name =="Shield")
             {
-                //use the defence item -- durability
-                health =- damage/(int)temp;
+                if(slots[1].getDefence()==0 && slots[2].getDefence()!=0)
+                {
+                    slots[2].useItem();
+                    health =- damage/(int)slots[2].getDefence();
+                }
+                else
+                {
+                    slots[1].useItem();
+                    health =- damage/(int)slots[1].getDefence();
+                }
+                slotsCheck();
             }
             else
             {
-                health =- damage/(int)temp2;
+                health-=damage;
             }
-        }
-        else
-        {
-            health-=damage;
-        }
+      
     }
     public int getPlayerNum()
     {
