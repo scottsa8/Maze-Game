@@ -74,7 +74,7 @@ public class MazeGame extends Game {
 	private PathFindingSystem pathFinder;
 	private String[] attacking = new String[2];
 	private String nextRoom = "";
-	private String[] roomList = {"saferoom", "testroom", "forestroom", "lake", "cave", "barren"};
+	private String[] roomList = {"saferoom", "testroom", "forestroom", "lake", "cave", "barren", "plain", "crossroads", "path", "dirtpatch"};
 	private int level1;
 	private int level2;
 	private Label LevelLable1;
@@ -706,7 +706,7 @@ public class MazeGame extends Game {
 				map.dispose();
 				renderer.dispose();
 				PathFindingSystem.graph.getNodes().clear();
-				myText = roomList[(int) (Math.random() * 6)];
+				myText = roomList[(int) (Math.random() * roomList.length)];
 				map = new TmxMapLoader().load("tiledmaps/" + myText + ".tmx");
 				//map = new TmxMapLoader().load("tiledmaps/testroom.tmx");
 				pathFinder.generateGraph(map);
