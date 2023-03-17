@@ -41,10 +41,16 @@ public class Item {
         attributes = itemAttrs;
         int[] types = attributes.getLengths();
 
-        int randomTypes = new Random().nextInt(types.length);
-        int randomTypeIndex = new Random().nextInt(types[randomTypes]);
+        int check = 0;
+        while (check == 0) {
+            int randomTypes = new Random().nextInt(types.length);
+            int randomTypeIndex = new Random().nextInt(types[randomTypes]);
 
-        generateItem(randomTypes, randomTypeIndex, level);
+            if (randomTypeIndex == 0 && (randomTypes != 0 || randomTypes != 4)) {
+                generateItem(randomTypes, randomTypeIndex, level);
+                check = 1;
+            }
+        }
     }
 
     private void generateItem(int thisType, int thisTypeIndex, int level) { //used for creating an item
