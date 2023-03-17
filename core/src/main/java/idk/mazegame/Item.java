@@ -45,7 +45,6 @@ public class Item {
         while (check == 0) {
             int randomTypes = new Random().nextInt(types.length);
             int randomTypeIndex = new Random().nextInt(types[randomTypes]);
-
             if (randomTypeIndex == 0 && (randomTypes != 0 || randomTypes != 4)) {
                 generateItem(randomTypes, randomTypeIndex, level);
                 check = 1;
