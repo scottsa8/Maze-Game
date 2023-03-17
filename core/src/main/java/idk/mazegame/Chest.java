@@ -54,7 +54,7 @@ public class Chest {
  
         textureAtlas2 = new TextureAtlas("items/items.atlas");
         itemSprite = new Sprite(textureAtlas2.findRegion("item",(int)Math.round(pathIndex)));
-        itemSprite.setPosition(Gdx.graphics.getWidth()/2 - chestSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - chestSprite.getHeight()/2);
+        itemSprite.setPosition(body.getPosition().x - 7, body.getPosition().y + 13);
         
         p.addToInv(temp);
     }
