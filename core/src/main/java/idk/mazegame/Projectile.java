@@ -4,6 +4,9 @@ import java.lang.invoke.VolatileCallSite;
 import java.nio.file.attribute.PosixFilePermission;
 import java.sql.Driver;
 
+import javax.management.relation.InvalidRoleValueException;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -23,6 +26,7 @@ public class Projectile
     private boolean hit;
     private TextureAtlas textureAtlas;
     private Sprite projSprite;
+    private int index;
     public Projectile(World world, Vector2 pos,Vector2 direction,int index, String name, int playerNum, int damage, int speed)
     {
         textureAtlas = new TextureAtlas("items/magic.atlas");
@@ -53,6 +57,18 @@ public class Projectile
     }
     public void update()
     {
+        if(velocity ==1)
+        {
+            if(index ==6){
+                index=0;
+            }
+        }else if(velocity ==2)
+        {
+            if(index ==1)
+            {
+                index=0;
+            }
+        }
         if(direction.x == 1 && direction.y ==0)
         position.x +=velocity;
         if(direction.x==2 && direction.y ==0)
@@ -61,7 +77,13 @@ public class Projectile
         position.y += velocity;
         if(direction.y ==2 && direction.x ==0)
         position.y -=velocity;
- 
+        if(velocity==1){
+            projSprite.setColor(Color.BLUE);
+        }else if (velocity==2){
+            projSprite.setColor(Color.WHITE);
+        }
+        projSprite.setRegion(textureAtlas.findRegion("magic",index));
+        index++;
       body.setTransform(position.x, position.y, 0);
       projSprite.setPosition(position.x, position.y);
     }
