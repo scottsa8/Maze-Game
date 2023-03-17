@@ -26,7 +26,7 @@ public class Projectile
     private boolean hit;
     private TextureAtlas textureAtlas;
     private Sprite projSprite;
-    private int index;
+    private int index, animationTimer = 2;
     public Projectile(World world, Vector2 pos,Vector2 direction,int index, String name, int playerNum, int damage, int speed)
     {
         textureAtlas = new TextureAtlas("items/magic.atlas");
@@ -83,9 +83,13 @@ public class Projectile
             projSprite.setColor(Color.WHITE);
         }
         projSprite.setRegion(textureAtlas.findRegion("magic",index));
-        index++;
+        if(animationTimer == 0) {
+            animationTimer = 2;
+            index++;
+        }
+        animationTimer--;
       body.setTransform(position.x, position.y, 0);
-      projSprite.setPosition(position.x, position.y);
+      projSprite.setPosition(position.x - projSprite.getWidth()/2, position.y - projSprite.getHeight()/2);
     }
     public Body getBody()
     {
