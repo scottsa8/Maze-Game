@@ -25,7 +25,7 @@ public class Player {
     private int lastKeyedDirection = 0;
     private int secondlastKeyedDirection = 0;
     private int up = Input.Keys.W, down = Input.Keys.S, left = Input.Keys.A, right = Input.Keys.D;
-    private int useSlot1 = Input.Keys.CONTROL_RIGHT, useSlot2 = Input.Keys.SHIFT_RIGHT, useSlot3 = Input.Keys.ENTER;
+    private int useSlot1 = Input.Keys.CONTROL_RIGHT, useSlot2 = Input.Keys.SHIFT_RIGHT, useSlot3 = Input.Keys.F;
     private boolean inputIsLocked = false, isMoving = false, nextStep = false; // to use for certain parts where player input is disabled: tile-based movement, cutscenes, stamina, debuff
     private float moveAmountX = 0f, moveAmountY = 0f, targetX = 0, targetY = 0;
     private final int MAX_FRAMES = 4;
@@ -81,25 +81,7 @@ public class Player {
     }
     public void takeDamage(int damage)
     {
-            if(slots[1].name=="Shield" || slots[2].name =="Shield")
-            {
-                if(slots[1].getDefence()==0 && slots[2].getDefence()!=0)
-                {
-                    slots[2].useItem();
-                    health =- damage/(int)slots[2].getDefence();
-                }
-                else
-                {
-                    slots[1].useItem();
-                    health =- damage/(int)slots[1].getDefence();
-                }
-                slotsCheck();
-            }
-            else
-            {
-                health-=damage;
-            }
-      
+        health-=damage;
     }
     public int getPlayerNum()
     {
@@ -442,7 +424,7 @@ public class Player {
         if(MazeGame.debugger==true)
         {
             if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) { //TESTING - Adds a sword to the inventory
-                inv.inventoryAdd(new Item(itemAttrs, 2, 0), 0);
+                inv.inventoryAdd(new Item(itemAttrs, 3, 0), 0);
                 slotsCheck();
             }
     
@@ -469,7 +451,7 @@ public class Player {
                     rangeAttack(slots[1].name,0,(int)slots[1].getDamage());
                 }
             } else if (slots[1].type == 3) {
-                //Shield action
+                health+=1;
             }
             slotsCheck();
         }
@@ -491,7 +473,7 @@ public class Player {
                     rangeAttack(slots[2].name,0,(int)slots[2].getDamage());
                 }
             } else if (slots[2].type == 3) {
-                //Shield action
+                health+=1;
             }
             slotsCheck();
         }
