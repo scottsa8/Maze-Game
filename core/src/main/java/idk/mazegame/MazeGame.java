@@ -482,16 +482,6 @@ public class MazeGame extends Game {
 		if(player.isDead()==false){player.getPlayerSprite().draw(renderer.getBatch());}else{}
 		if(player2.isDead()==false){player2.getPlayerSprite().draw(renderer.getBatch());}else{}
 
-		if(player.getAttackSprite()!=null && player.getAttackBody() != null)
-		{	
-			player.getAttackSprite().setPosition(player.getAttackBody().getPosition().x - player.getAttackSprite().getWidth()/2, 
-			player.getAttackBody().getPosition().y - player.getAttackSprite().getHeight()/2);
-			player.getAttackSprite().draw(renderer.getBatch());
-		}	
-		if(player2.getAttackSprite() != null)
-		{
-			player2.getAttackSprite().draw(renderer.getBatch());
-		}
 		font.setColor(Color.WHITE);
 		font.draw(renderer.getBatch(), myText, 107.5f, 63.5f, screenWidth, Align.topLeft, false );
 		font.draw(renderer.getBatch(), myRightText, 437.5f, 63.5f, screenWidth, Align.topLeft, false );
@@ -654,12 +644,27 @@ public class MazeGame extends Game {
 			enemies.get(i2).getEnemySprite().draw(renderer.getBatch());
 
 		}
+		
+		if(player.getAttackSprite()!=null && player.getAttackBody() != null)
+		{
+			player.getAttackSprite().setPosition(player.getAttackBody().getPosition().x - player.getAttackSprite().getWidth()/2,
+					player.getAttackBody().getPosition().y - player.getAttackSprite().getHeight()/2);
+			player.getAttackSprite().draw(renderer.getBatch());
+		}
+		if(player2.getAttackSprite() != null && player2.getAttackBody() != null)
+		{
+			player2.getAttackSprite().setPosition(player2.getAttackBody().getPosition().x - player2.getAttackSprite().getWidth()/2,
+					player2.getAttackBody().getPosition().y - player2.getAttackSprite().getHeight()/2);
+			player2.getAttackSprite().draw(renderer.getBatch());
+		}
+		
 		renderer.getBatch().end();//remove this later
 
-		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 0) nextRoom = "down";
-		if (((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) nextRoom = "up";
-		if (((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) nextRoom = "left";
-		if (((int) (player.getCoordinates().x)) == 31 && ((int) (player.getCoordinates().y)) == 7) nextRoom = "right";
+		if ((((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 0) || (((int) (player2.getCoordinates().x)) == 24 && ((int) (player2.getCoordinates().y)) == 0)) nextRoom = "down";
+		if ((((int) (player.getCoordinates().x)) == 24 && ((int) (player.getCoordinates().y)) == 15) || (((int) (player2.getCoordinates().x)) == 24 && ((int) (player2.getCoordinates().y)) == 15)) nextRoom = "up";
+		if ((((int) (player.getCoordinates().x)) == 16 && ((int) (player.getCoordinates().y)) == 7) || (((int) (player2.getCoordinates().x)) == 16 && ((int) (player2.getCoordinates().y)) == 7)) nextRoom = "left";
+		if ((((int) (player.getCoordinates().x)) == 31 && ((int) (player.getCoordinates().y)) == 7) || (((int) (player2.getCoordinates().x)) == 31 && ((int) (player2.getCoordinates().y)) == 7))nextRoom = "right";
+
 
 		if (nextRoom != "") {
 			if((player.getLevel() >=15 && enemies.size()!=0) ||
