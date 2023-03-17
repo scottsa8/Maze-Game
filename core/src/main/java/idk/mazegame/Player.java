@@ -592,6 +592,11 @@ public class Player {
                 if (floorLayer.getCell( (int)(coordinates.x), (int)(coordinates.y + 1f)) != null)
                     if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x, coordinates.y + 1f)).isOccupied())
                         walk(9);
+                    else {
+                        lastKeyedDirection = 9;
+                        secondlastKeyedDirection = lastKeyedDirection;
+                        idle();
+                    }
                 else {
                     lastKeyedDirection = 9;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -609,6 +614,11 @@ public class Player {
                 if (floorLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y)) != null)
                     if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x -1f, coordinates.y)).isOccupied())
                         walk(7);
+                    else {
+                        lastKeyedDirection = 7;
+                        secondlastKeyedDirection = lastKeyedDirection;
+                        idle();
+                    }
                 else {
                     lastKeyedDirection = 7;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -626,6 +636,11 @@ public class Player {
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y)) != null)
                     if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y)).isOccupied())
                             walk(3);
+                    else {
+                        lastKeyedDirection = 3;
+                        secondlastKeyedDirection = lastKeyedDirection;
+                        idle();
+                    }
                 else {
                     lastKeyedDirection = 3;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -643,6 +658,11 @@ public class Player {
                 if (floorLayer.getCell( (int)(coordinates.x), (int)(coordinates.y - 1f)) != null)
                     if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x, coordinates.y - 1f)).isOccupied())
                         walk(1);
+                    else {
+                        lastKeyedDirection = 1;
+                        secondlastKeyedDirection = lastKeyedDirection;
+                        idle();
+                    }
                 else {
                     lastKeyedDirection = 1;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -660,6 +680,11 @@ public class Player {
                 if (floorLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y - 1f)) != null)
                     if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x - 1f, coordinates.y - 1f)).isOccupied())
                         walk(4);
+                    else {
+                        lastKeyedDirection = 4;
+                        secondlastKeyedDirection = lastKeyedDirection;
+                        idle();
+                    }
                 else {
                     lastKeyedDirection = 4;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -677,6 +702,11 @@ public class Player {
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y + 1f)) != null)
                     if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y + 1f)).isOccupied())
                         walk(6);
+                    else {
+                        lastKeyedDirection = 6;
+                        secondlastKeyedDirection = lastKeyedDirection;
+                        idle();
+                    }
                 else {
                     lastKeyedDirection = 6;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -694,6 +724,11 @@ public class Player {
                 if (floorLayer.getCell( (int)(coordinates.x + 1f), (int)(coordinates.y - 1f)) != null)
                     if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x + 1f, coordinates.y - 1f)).isOccupied())
                         walk(2);
+                    else {
+                        lastKeyedDirection = 2;
+                        secondlastKeyedDirection = lastKeyedDirection;
+                        idle();
+                    }
                 else {
                     lastKeyedDirection = 2;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -711,6 +746,11 @@ public class Player {
                 if (floorLayer.getCell( (int)(coordinates.x - 1f), (int)(coordinates.y + 1f)) != null)
                     if (!PathFindingSystem.VectorToNode(new Vector2(coordinates.x - 1f, coordinates.y + 1f)).isOccupied())
                         walk(8);
+                    else {
+                        lastKeyedDirection = 8;
+                        secondlastKeyedDirection = lastKeyedDirection;
+                        idle();
+                    }
                 else {
                     lastKeyedDirection = 8;
                     secondlastKeyedDirection = lastKeyedDirection;
@@ -832,7 +872,7 @@ public class Player {
         if (lastKeyedDirection == 1) {
             pos = new Vector2(getPlayerSprite().getWidth()/2 / Constants.PPM - 2.5f, getPlayerSprite().getHeight()/2 / Constants.PPM -3);
         }
-          
+
         attackCircle = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + pos.x*2, getPlayerSprite().getY() + pos.y*2),new Vector2(0,0), true, world);
         attackCircle.setUserData("attack"+","+name.toString()+","+playerNum+","+damage);
 
@@ -917,11 +957,11 @@ public class Player {
             dir = new Vector2(2,0); 
         }
 
-            dest = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),
+            dest = ShapeMaker.createSquare(new Vector2(getPlayerSprite().getX() + dir.x*2, getPlayerSprite().getY() + dir.y*2),
             pos, true, world);
             dest.setUserData("dest");
-            
-            MazeGame.entities.add(new Projectile(world,new Vector2(getPlayerSprite().getX() + 7.5f, getPlayerSprite().getY() + 4f),dir,ammo,
+
+            MazeGame.entities.add(new Projectile(world,new Vector2(getPlayerSprite().getX() + dir.x*2, getPlayerSprite().getY() + dir.y*2),dir,ammo,
             name.toString(),playerNum,damage,speed));
           
             dir= new Vector2(0,0);
