@@ -799,12 +799,14 @@ public class MazeGame extends Game {
 			}
 			chest = null;
 		}
-		int x = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17); //random numbers for x and y offsets
-		int y = (int)Math.floor(Math.random() *(29 - 17 + 1) + 17);
-		int gridX = x;
-		int gridY = y;
-		float realX = 298 + (gridX - gridY) * (9.5f);
-		float realY = 166 - (gridX + gridY) * (4.75f);
+		int randomNode = (int) (Math.random() * PathFindingSystem.graph.getNodeCount());
+		Node spawnPos = PathFindingSystem.graph.getNodes().get(randomNode);
+		if (spawnPos.tilePos.equals(player.getVect2Coordinates()) || spawnPos.tilePos.equals(player2.getVect2Coordinates()))
+			PathFindingSystem.graph.getNodes().get((int) (Math.random() * (PathFindingSystem.graph.getNodeCount() - randomNode)));
+		int gridX = (int) spawnPos.tilePos.x;
+		int gridY = (int) (32 - spawnPos.tilePos.y);
+		float realX = 307 + (gridX - gridY) * (9.5f);
+		float realY = 180 - (gridX + gridY) * (4.75f);
 		chest = new Chest(world, realX, realY);
 	}
 	public void drawHP(int index)
