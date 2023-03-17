@@ -428,7 +428,7 @@ public class MazeGame extends Game {
 			{
 				xpText ="both players" + " gained "+gained+"xp";
 				font.setColor(Color.CHARTREUSE);
-				font.draw(renderer.getBatch(), xpText, 107.5f, 30.5f,screenWidth, Align.topLeft, false);	
+				font.draw(renderer.getBatch(), xpText, 107.5f, 28.5f,screenWidth, Align.topLeft, false);	
 			}
 			else
 			{
@@ -436,13 +436,13 @@ public class MazeGame extends Game {
 				{
 					xpText ="player 1" + " gained "+gained+"xp";
 					font.setColor(Color.YELLOW);
-					font.draw(renderer.getBatch(), xpText, 107.5f, 30.5f,screenWidth, Align.topLeft, false);	
+					font.draw(renderer.getBatch(), xpText, 107.5f, 28.5f,screenWidth, Align.topLeft, false);	
 				}
 				else if(xp2Increased)
 				{
 					xpText ="player 2" + " gained "+gained+"xp";
 					font.setColor(Color.WHITE);
-					font.draw(renderer.getBatch(), xpText, 107.5f, 30.5f,screenWidth, Align.topLeft, false);	
+					font.draw(renderer.getBatch(), xpText, 107.5f, 28.5f,screenWidth, Align.topLeft, false);	
 				}
 			}
 			font.setColor(Color.WHITE);

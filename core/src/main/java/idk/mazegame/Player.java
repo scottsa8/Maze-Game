@@ -71,7 +71,7 @@ public class Player {
     {
         if(health <= 0)
         {
-            dead = true;
+            dead = false;
             health=0;
         }
     }
@@ -441,7 +441,7 @@ public class Player {
         if(MazeGame.debugger==true)
         {
             if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) { //TESTING - Adds a sword to the inventory
-                inv.inventoryAdd(new Item(itemAttrs, 0, 1), 0);
+                inv.inventoryAdd(new Item(itemAttrs, 2, 0), 0);
                 slotsCheck();
             }
     

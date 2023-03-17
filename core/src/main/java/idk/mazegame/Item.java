@@ -82,8 +82,8 @@ public class Item {
             else if (randomNum <= 95) rarity = 4;
             else if (randomNum <= 99) rarity = 5;
             else if (randomNum <= 100) rarity = 6;
-
-            //4. Modify attributes according to rarity
+           
+           // 4. Modify attributes according to rarity
             attributeUpdate();
         }
     }
