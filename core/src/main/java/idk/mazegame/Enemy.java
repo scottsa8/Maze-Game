@@ -46,6 +46,7 @@ public class Enemy {
     private Vector2 curPos = new Vector2();
     private Vector2 nextPos = new Vector2();
     private String direction = "Right";
+    private int attackDelay = 10, moveDelay = 20;
 
     public Enemy(World world,float x, float y, int type,int type2, int index,int bossType,int roomCount) {
         String enemyAtlas = getAtlas(type,type2,bossType,roomCount);
@@ -87,6 +88,7 @@ public class Enemy {
         node = PathFindingSystem.VectorToNode(currentPos);
 		path = graphPath.getPath(node, playerNode);
         currentNode = 0;
+        attackDelay = 10;
     }
     public Vector2 getCoordinates()
     {
@@ -133,27 +135,32 @@ public class Enemy {
     public void updateBody()
     {
         if (isMoving) {
-            if (timer == 0) {
-                body.setTransform(body.getPosition().set(body.getPosition().x + (0.0675f * moveAmountX), body.getPosition().y + (0.0675f * moveAmountY)), 0);
-                currentFrame++;
-                timer = 1;
+            if (moveDelay == 0) {
+                if (timer == 0) {
+                    body.setTransform(body.getPosition().set(body.getPosition().x + (0.0675f * moveAmountX), body.getPosition().y + (0.0675f * moveAmountY)), 0);
+                    currentFrame++;
+                    timer = 1;
 
-                if (currentFrame % 4 == 0) {
-                    enemySprite.setRegion(textureAtlas.findRegion(name + direction, currentFrame/4 - 1));
+                    if (currentFrame % 4 == 0) {
+                        enemySprite.setRegion(textureAtlas.findRegion(name + direction, currentFrame / 4 - 1));
+                    }
                 }
-            }
-            if (currentFrame == 16) {
-                isMoving = false;
-                currentNode++;
-                this.setCoords(path.get(currentNode).tilePos);
-                path.get(currentNode-1).setOccupied(false);
-                path.get(currentNode).setOccupied(true);
-                curPos = null;
-                nextPos = null;
-                currentFrame = 0;
+                if (currentFrame == 16) {
+                    isMoving = false;
+                    currentNode++;
+                    this.setCoords(path.get(currentNode).tilePos);
+                    path.get(currentNode - 1).setOccupied(false);
+                    path.get(currentNode).setOccupied(true);
+                    curPos = null;
+                    nextPos = null;
+                    currentFrame = 0;
+                    moveDelay = 20;
+                    return;
+                }
+                timer--;
                 return;
             }
-            timer--;
+            moveDelay--;
             return;
         }
         try{
@@ -165,7 +172,14 @@ public class Enemy {
         }
         if(path.getCount() == currentNode+2)
         {
-            attack(target);
+
+            if (attackDelay == 0) {
+                attack(target);
+                attackDelay = 10;
+                return;
+            }
+
+            attackDelay--;
             return;
         }
         else {
@@ -270,7 +284,7 @@ public class Enemy {
             {
                 atlas = "skeletonKing.atlas";
                 name="skeleton";
-                damage=35;
+                damage=10;
                 health =250;
                 xpValue =100;
                 color= Color.FIREBRICK;
@@ -279,7 +293,7 @@ public class Enemy {
             {
                 atlas = "impPink.atlas";
                 name="imp";
-                damage=30;
+                damage=8;
                 health =200;
                 xpValue =80;
                 color= Color.PINK;
@@ -290,7 +304,7 @@ public class Enemy {
 		{
 			atlas = "zombieSprites.atlas";
 			name="zombie";
-            damage=5;
+            damage=1;
             health =100;
             xpValue =5 *xpMulti;
             color= Color.GREEN;
@@ -299,7 +313,7 @@ public class Enemy {
 		{
 			atlas = "demon.atlas";
 			name="demon";
-            damage=10;
+            damage=3;
             health =100;
             xpValue =10*xpMulti;
             color= Color.RED;
@@ -308,7 +322,7 @@ public class Enemy {
         {
             atlas = "skeleton.atlas";
 			name="skeleton";
-            damage=10;
+            damage=3;
             health =100;
             xpValue =10*xpMulti;
             color= Color.WHITE;
@@ -319,7 +333,7 @@ public class Enemy {
             {
                 atlas ="ghost.atlas";
                 name="ghost";
-                damage=20;
+                damage=4;
                 health =120;
                 xpValue =15*xpMulti;
                 color= Color.BLACK;
@@ -329,7 +343,7 @@ public class Enemy {
                 atlas ="impGolden.atlas";
                 name="imp";
                 health =120;
-                damage=20;
+                damage=3;
                 xpValue =50*xpMulti;
                 color = Color.GOLD;
             }
@@ -337,7 +351,7 @@ public class Enemy {
         {
             atlas = "zombieSprites.atlas";
             name="zombie";
-            damage=20;
+            damage=1;
             health =100;
             xpValue =5*xpMulti;
             color= Color.GREEN;
@@ -398,6 +412,11 @@ public class Enemy {
         {
             die(this);
         }
+//        int gridX = (int) path.get(currentNode).tilePos.x;
+//        int gridY = (int) (32 - path.get(currentNode).tilePos.y);
+//        float realX = 307 + (gridX - gridY) * (9.5f);
+//        float realY = 180 - (gridX + gridY) * (4.75f);
+//        body.setTransform(realX, realY, 0);
     }
     public int getHealth()
     {
