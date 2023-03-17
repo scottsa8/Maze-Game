@@ -15,6 +15,6 @@
 2,1,Fire Scroll,Instructions not included.,5,0,100,1,1,14
 3,0,Shield,Blocks incoming attacks for a short period of time.,0,10,3,100,10,15
 4,0,Empty,Nothing,0,0,0,100,0,0
-4,1,Health Potion,Tastes like sewage but it's good for you,0,100,0,50,50,0
-4,2,Greater Health Potion,May be better for you but the taste...,0,1000,0,100,100,0
-4,3,God potion,Place Holder,0,1000,0,100,100,0
+4,1,Health Potion,Tastes like sewage but it's good for you,0,100,0,50,50,16
+4,2,Greater Health Potion,May be better for you but the taste...,0,1000,0,100,100,17
+4,3,God potion,Place Holder,0,1000,0,100,100,18
