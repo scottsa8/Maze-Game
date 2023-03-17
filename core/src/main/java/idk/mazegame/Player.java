@@ -140,6 +140,7 @@ public class Player {
     }
 
     public void addToInv(Item item) {
+        MazeGame.generated = item;
         inv.inventoryAdd(item, 0);
         slotsCheck();
     }

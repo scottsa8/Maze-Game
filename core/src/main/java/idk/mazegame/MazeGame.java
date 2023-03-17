@@ -86,6 +86,7 @@ public class MazeGame extends Game {
 	private Stage hudStage;
 	private Stage Healt;
 	private int bossCount;
+	public static Item generated;
 	@Override
 	public void create() {
 		//setScreen(new PlayScreen());
@@ -419,6 +420,21 @@ public class MazeGame extends Game {
 					chestText= "";
 				}
 			},1f); 
+			font.setColor(Color.CYAN);
+			font.draw(renderer.getBatch(), "Obtained: ", 250.5f, -140, screenWidth, Align.topLeft, false);	
+			font.setColor(generated.getItemColor(generated));
+			font.draw(renderer.getBatch(), generated.name, 290.5f, -140, screenWidth, Align.topLeft, false);	
+			font.setColor(Color.WHITE);
+			Timer timer3=new Timer();
+			timer3.scheduleTask(new Timer.Task() 
+			{
+				@Override
+				public void run() 
+				{
+					generated=null;
+				}
+			},1f); 
+			
 			renderer.getBatch().end();
 		}
 		if(xp1Increased || xp2Increased)
@@ -470,7 +486,7 @@ public class MazeGame extends Game {
 			{
 				chest.getItemSprite().draw(renderer.getBatch());
 				world.destroyBody(chest.getBody());
-				chest= null;
+				chest = null;
 			}	
 			else
 			{

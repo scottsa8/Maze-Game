@@ -13,6 +13,7 @@ public class Chest {
     private Sprite itemSprite;
     private Body body;
     private boolean opened = false;
+    private Item generated;
     public Chest(World world, float x, float y) {
         textureAtlas = new TextureAtlas("items/chest.atlas");
         chestSprite = new Sprite(textureAtlas.findRegion("chest",-1));
@@ -47,15 +48,19 @@ public class Chest {
     public void open(Player p, ItemAttributes attrs)
     {
         opened= true;
-        Item temp = new Item(attrs, p.getLevel());
-        String path = temp.getPath();
+        generated = new Item(attrs, p.getLevel());
+        String path = generated.getPath();
         Double pathIndex = Double.valueOf(path);
  
         textureAtlas2 = new TextureAtlas("items/items.atlas");
         itemSprite = new Sprite(textureAtlas2.findRegion("item",(int)Math.round(pathIndex)));
         itemSprite.setPosition(Gdx.graphics.getWidth()/2 - chestSprite.getWidth()/2, Gdx.graphics.getHeight()/2 - chestSprite.getHeight()/2);
         
-        p.addToInv(temp);
+        p.addToInv(generated);
+    }
+    public Item getItem()
+    {
+        return generated;
     }
     public boolean isOpened()
     {
