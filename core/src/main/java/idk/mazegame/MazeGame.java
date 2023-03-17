@@ -74,7 +74,7 @@ public class MazeGame extends Game {
 	private PathFindingSystem pathFinder;
 	private String[] attacking = new String[2];
 	private String nextRoom = "";
-	private String[] roomList = {"saferoom", "testroom", "forestroom", "lake", "cave", "barren", "plain", "crossroads", "path", "dirtpatch"};
+	private String[] roomList = {"saferoom", "testroom", "forestroom", "lake", "cave", "barren", "dirtpatch"};
 	private int level1;
 	private int level2;
 	private Label LevelLable1;
