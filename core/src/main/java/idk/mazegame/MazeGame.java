@@ -74,7 +74,14 @@ public class MazeGame extends Game {
 	private PathFindingSystem pathFinder;
 	private String[] attacking = new String[2];
 	private String nextRoom = "";
-	private String[] roomList = {"CaveGrave", "CaveLava", "CaveRocky", "CaveTree", "ClayDesert", "ClayDesertBig", "ClayRocky", "ClaySparse", "ForestBlob", "ForestSpiral", "ForestSquares", "IceEmpty", "IceLake", "IceLakeFrozen", "IceRocky", "IceSparse", "saferoom", "testroom", "forestroom", "lake", "cave", "barren", "dirtpatch", "path", "plain", "crossroads"};
+	int theme = 0;
+	private String[][] roomList = {
+			{"CaveGrave", "CaveLava", "CaveRocky", "CaveTree", "cave"},
+			{"ClayDesert", "ClayDesertBig", "ClayRocky", "ClaySparse", "dirtpatch"},
+			{"ForestBlob", "ForestSpiral", "ForestSquares", "forestroom", "path", "plain", "crossroads", "barren", "lake"},
+			{"IceEmpty", "IceLake", "IceLakeFrozen", "IceRocky", "IceSparse"},
+			{"saferoom", "testroom"}
+	};
 	private int level1;
 	private int level2;
 	private Label LevelLable1;
@@ -800,8 +807,11 @@ public class MazeGame extends Game {
 				map.dispose();
 				renderer.dispose();
 				PathFindingSystem.graph.getNodes().clear();
-				myText = roomList[(int) (Math.random() * roomList.length)];
-				map = new TmxMapLoader().load("tiledmaps/" + myText + ".tmx");
+				if(((int)(Math.random() * 5)) == 1)
+				{
+					theme = (int) (Math.random() * roomList.length);
+				}
+				map = new TmxMapLoader().load("tiledmaps/" + roomList[theme][(int) (Math.random() * roomList[theme].length)] + ".tmx");
 				//map = new TmxMapLoader().load("tiledmaps/testroom.tmx");
 				pathFinder.generateGraph(map);
 				roomCount++;
