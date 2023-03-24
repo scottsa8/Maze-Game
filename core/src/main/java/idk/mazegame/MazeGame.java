@@ -815,7 +815,8 @@ public class MazeGame extends Game {
 				{
 					theme = (int) (Math.random() * roomList.length);
 				}
-				map = new TmxMapLoader().load("tiledmaps/" + roomList[theme][(int) (Math.random() * roomList[theme].length)] + ".tmx");
+				myText = roomList[theme][(int) (Math.random() * roomList[theme].length)];
+				map = new TmxMapLoader().load("tiledmaps/" + myText + ".tmx");
 				//map = new TmxMapLoader().load("tiledmaps/testroom.tmx");
 				pathFinder.generateGraph(map);
 				roomCount++;
