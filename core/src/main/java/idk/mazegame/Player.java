@@ -72,8 +72,8 @@ public class Player {
     {
         if(health <= 0)
         {
-            dead = false;
-            //body.setUserData("dead");
+            dead = true;
+            body.setUserData("dead");
             health=0;
         }
     }
