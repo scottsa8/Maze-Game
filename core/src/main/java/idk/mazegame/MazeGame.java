@@ -99,7 +99,7 @@ public class MazeGame extends Game {
 	public void create() {
 		//setScreen(new PlayScreen());
 		pathFinder = new PathFindingSystem();
-		map =  new TmxMapLoader().load("tiledmaps/safeRoom.tmx");
+		map =  new TmxMapLoader().load("tiledmaps/saferoom.tmx");
 		pathFinder.generateGraph(map);
 		renderer = new IsometricTiledMapRenderer(map, 1.2f);
 		entityLayer = (TiledMapTileLayer) map.getLayers().get(1);
