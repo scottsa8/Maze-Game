@@ -430,8 +430,12 @@ public class MazeGame extends Game {
 			},1f); 
 			font.setColor(Color.CYAN);
 			font.draw(renderer.getBatch(), "Obtained: ", 250.5f, -140, screenWidth, Align.topLeft, false);	
-			font.setColor(generated.getItemColor(generated));
-			font.draw(renderer.getBatch(), generated.name, 290.5f, -140, screenWidth, Align.topLeft, false);	
+			try {
+				font.setColor(generated.getItemColor(generated));
+				font.draw(renderer.getBatch(), generated.name, 290.5f, -140, screenWidth, Align.topLeft, false);
+			} catch (NullPointerException e) {
+				System.out.println(e);
+			}
 			font.setColor(Color.WHITE);
 			Timer timer3=new Timer();
 			timer3.scheduleTask(new Timer.Task() 
